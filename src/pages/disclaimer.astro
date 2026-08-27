@@ -1,0 +1,92 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { firm } from '../data/site';
+---
+
+<Legal
+  title="Disclaimer"
+  description="Disclaimer for the website of Anveshana Advocates & Consultants, published in accordance with the rules of the Bar Council of India."
+  eyebrow="Legal"
+  lines={['Disclaimer']}
+  lead="Published in accordance with the rules of the Bar Council of India."
+  updated="August 2026"
+>
+  <h2>No advertisement or solicitation</h2>
+  <p>
+    The rules of the Bar Council of India prohibit advocates from advertising
+    or soliciting work in any form or manner. This website is not intended to
+    be, and does not constitute, an advertisement, solicitation, invitation or
+    inducement of any kind.
+  </p>
+  <p>
+    By accessing this website, the user acknowledges and confirms of their own
+    accord that:
+  </p>
+  <ul>
+    <li>
+      There has been no advertisement, personal communication, solicitation,
+      invitation or inducement of any sort whatsoever from {firm.legalName}
+      or any of its members to solicit work through this website;
+    </li>
+    <li>
+      The user wishes to gain more information about the firm for their own
+      information and use;
+    </li>
+    <li>
+      All information contained on this website is provided only on the
+      user's specific request, and any material downloaded from it is entirely
+      at the user's own volition; and
+    </li>
+    <li>
+      Any transmission, receipt or use of this website will not create, and
+      does not constitute, an advocate–client relationship.
+    </li>
+  </ul>
+
+  <h2>Not legal advice</h2>
+  <p>
+    Nothing on this website is, or should be construed as, legal advice or a
+    legal opinion on any specific facts or circumstances. The content is
+    general in nature and may not reflect the most current legal position.
+    Law, procedure and limitation periods change, and their application varies
+    with the facts of each matter.
+  </p>
+  <p>
+    <strong>
+      You should not act, or refrain from acting, on the basis of anything
+      contained on this website without seeking independent legal advice on
+      your own circumstances.
+    </strong>
+    The firm accepts no liability for any consequence of any action taken by a
+    user relying on material or information published here.
+  </p>
+
+  <h2>No advocate–client relationship</h2>
+  <p>
+    Contacting the firm through this website, by email, or by telephone does
+    not by itself create an advocate–client relationship. Such a relationship
+    arises only when the firm has confirmed in writing that it is able to act
+    for you, after the necessary conflict checks have been completed and the
+    terms of engagement have been agreed.
+  </p>
+  <p>
+    Please do not send confidential or privileged information to the firm
+    until an engagement has been confirmed. Information sent before that point
+    may not be treated as confidential and may not be protected by privilege.
+  </p>
+
+  <h2>Third-party links</h2>
+  <p>
+    This website may contain links to external websites, including mapping
+    services. The firm is not responsible for the content, accuracy or privacy
+    practices of any external website, and a link should not be taken as an
+    endorsement.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    If you have any question about this disclaimer, please write to
+    <a href={`mailto:${firm.email}`}>{firm.email}</a> or call
+    <a href={`tel:${firm.phoneHref}`}>{firm.phone}</a>.
+  </p>
+</Legal>

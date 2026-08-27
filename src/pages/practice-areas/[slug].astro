@@ -1,0 +1,337 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CTABand from '../../components/CTABand.astro';
+import { firm, practiceAreas } from '../../data/site';
+import type { PracticeArea } from '../../data/site';
+
+export function getStaticPaths() {
+  return practiceAreas.map((area) => ({
+    params: { slug: area.slug },
+    props: { area },
+  }));
+}
+
+interface Props {
+  area: PracticeArea;
+}
+
+const { area } = Astro.props;
+const url = `${firm.url}/practice-areas/${area.slug}/`;
+const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
+
+const schema = [
+  {
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: area.title,
+    serviceType: area.title,
+    description: area.summary,
+    url,
+    provider: { '@id': `${firm.url}/#organisation` },
+    areaServed: { '@type': 'City', name: 'Bengaluru' },
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: `${area.title} services`,
+      itemListElement: area.scope.map((item) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: item.name, description: item.note },
+      })),
+    },
+  },
+  {
+    '@type': 'FAQPage',
+    '@id': `${url}#faq`,
+    mainEntity: area.faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${firm.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Practice Areas', item: `${firm.url}/practice-areas/` },
+      { '@type': 'ListItem', position: 3, name: area.title, item: url },
+    ],
+  },
+];
+---
+
+<Base title={`${area.title} in Bengaluru`} description={area.metaDescription} schema={schema}>
+  <PageHero
+    eyebrow="Practice Area"
+    index={area.index}
+    lines={[area.title]}
+    lead={area.summary}
+    breadcrumbs={[
+      { label: 'Practice Areas', href: '/practice-areas/' },
+      { label: area.title },
+    ]}
+  />
+
+  <!-- Positioning copy + the concrete matters handled -->
+  <section class="detail section on-bone">
+    <div class="container detail__grid">
+      <div class="detail__body prose" data-reveal>
+        {area.body.map((para) => <p>{para}</p>)}
+      </div>
+
+      <aside class="detail__scope" aria-labelledby="scope-title">
+        <h2 class="eyebrow" id="scope-title" data-reveal>Matters we handle</h2>
+        <ul class="scope" data-reveal-group="70">
+          {area.scope.map((item) => (
+            <li class="scope__item" data-reveal>
+              <h3 class="scope__name">{item.name}</h3>
+              <p class="scope__note">{item.note}</p>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- FAQ. Native <details> so it is keyboard- and
+       screen-reader-correct without any JavaScript. -->
+  <section class="faq section on-ink" aria-labelledby="faq-title">
+    <div class="container faq__inner">
+      <div class="faq__head">
+        <p class="eyebrow" data-reveal>Common questions</p>
+        <h2 class="faq__title" id="faq-title" data-reveal style="--reveal-delay: 80ms">
+          Questions we are asked
+        </h2>
+      </div>
+
+      <div class="faq__list" data-reveal-group="80">
+        {area.faqs.map((faq) => (
+          <details class="faq__item" data-reveal>
+            <summary class="faq__q">
+              <span>{faq.q}</span>
+              <span class="faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq__a"><p>{faq.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Related areas -->
+  <section class="related section section--tight on-bone" aria-labelledby="related-title">
+    <div class="container">
+      <p class="eyebrow" data-reveal>Related practice</p>
+      <h2 class="related__title" id="related-title" data-reveal style="--reveal-delay: 80ms">
+        Also handled by the firm
+      </h2>
+      <ul class="related__list" data-reveal-group="90">
+        {related.map((item) => (
+          <li data-reveal>
+            <a class="related__card" href={`/practice-areas/${item.slug}/`} data-tilt="3">
+              <span class="index-num">{item.index}</span>
+              <h3 class="related__name">{item.title}</h3>
+              <p class="related__summary">{item.summary}</p>
+              <span class="related__arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CTABand />
+</Base>
+
+<style>
+  /* ---- Detail ------------------------------------------- */
+  .detail {
+    background: var(--bone);
+    color: var(--text-on-bone);
+  }
+
+  .detail__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-2xl);
+  }
+
+  @media (min-width: 960px) {
+    .detail__grid {
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: var(--sp-3xl);
+    }
+  }
+
+  .detail__body p { font-size: var(--fs-lead); line-height: 1.7; }
+  .detail__body p:first-child { color: var(--text-on-bone); }
+
+  .scope {
+    display: grid;
+    gap: 0;
+    margin-top: var(--sp-md);
+    border-top: 1px solid var(--rule-on-bone);
+  }
+
+  .scope__item {
+    padding-block: var(--sp-md);
+    border-bottom: 1px solid var(--rule-on-bone-soft);
+  }
+
+  .scope__name {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text-on-bone);
+    margin-bottom: 0.3rem;
+  }
+
+  .scope__note {
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--text-on-bone-dim);
+  }
+
+  /* ---- FAQ ----------------------------------------------- */
+  .faq {
+    background: var(--ink);
+    color: var(--text-on-ink);
+  }
+
+  .faq__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-xl);
+  }
+
+  @media (min-width: 960px) {
+    .faq__inner {
+      grid-template-columns: 0.75fr 1.25fr;
+      gap: var(--sp-3xl);
+      align-items: start;
+    }
+  }
+
+  .faq .eyebrow { margin-bottom: var(--sp-md); }
+
+  .faq__title {
+    font-size: var(--fs-h3);
+    color: var(--white);
+  }
+
+  .faq__list { border-top: 1px solid var(--rule-on-ink); }
+
+  .faq__item { border-bottom: 1px solid var(--rule-on-ink); }
+
+  .faq__q {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-md);
+    padding-block: var(--sp-md);
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: var(--fs-h5);
+    font-weight: 400;
+    line-height: 1.35;
+    color: var(--text-on-ink);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .faq__q::-webkit-details-marker { display: none; }
+  .faq__q:hover { color: var(--accent); }
+
+  /* A plus that becomes a minus — drawn in CSS so it inherits
+     colour and needs no icon asset. */
+  .faq__icon {
+    position: relative;
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin-top: 0.35em;
+  }
+
+  .faq__icon::before,
+  .faq__icon::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 1px;
+    background: var(--champagne);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .faq__icon::after { transform: rotate(90deg); }
+
+  .faq__item[open] .faq__icon::after { transform: rotate(0deg); }
+
+  .faq__a {
+    padding-bottom: var(--sp-md);
+    max-width: 62ch;
+  }
+
+  .faq__a p {
+    font-size: var(--fs-small);
+    line-height: 1.8;
+    color: var(--text-on-ink-dim);
+  }
+
+  /* ---- Related ------------------------------------------- */
+  .related {
+    background: var(--bone);
+    color: var(--text-on-bone);
+  }
+
+  .related .eyebrow { margin-bottom: var(--sp-md); }
+
+  .related__title {
+    font-size: var(--fs-h3);
+    color: var(--text-on-bone);
+    margin-bottom: var(--sp-xl);
+  }
+
+  .related__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: var(--sp-md);
+  }
+
+  .related__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    height: 100%;
+    padding: var(--sp-md);
+    background: var(--bone-2);
+    border: 1px solid var(--rule-on-bone-soft);
+    transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
+  }
+
+  .related__card:hover {
+    border-color: var(--accent);
+    background: var(--white);
+  }
+
+  .related__name {
+    font-size: var(--fs-h4);
+    font-weight: 400;
+    color: var(--text-on-bone);
+  }
+
+  .related__summary {
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: var(--text-on-bone-dim);
+  }
+
+  .related__arrow {
+    margin-top: auto;
+    padding-top: var(--sp-sm);
+    color: var(--accent);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .related__card:hover .related__arrow { transform: translateX(5px); }
+</style>

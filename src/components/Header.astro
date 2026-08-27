@@ -1,0 +1,363 @@
+---
+import Logotype from './Logotype.astro';
+import { nav, firm } from '../data/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header class="header" data-header>
+  <div class="header__inner">
+    <a class="header__brand" href="/" aria-label={`${firm.legalName} — home`}>
+      <Logotype tone="brand" descriptor={false} />
+    </a>
+
+    <nav class="header__nav" aria-label="Primary">
+      <ul>
+        {nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={['header__link', isActive(item.href) && 'is-active']}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a class="header__phone" href={`tel:${firm.phoneHref}`}>
+        <span class="header__phone-label">Direct</span>
+        <span class="header__phone-number">{firm.phone}</span>
+      </a>
+      <a class="btn btn--sm header__cta" href="/contact/" data-magnetic="0.2">
+        Request Consultation
+      </a>
+
+      <button
+        class="header__toggle"
+        type="button"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="site-menu"
+        aria-label="Open menu"
+      >
+        <span class="header__toggle-bar"></span>
+        <span class="header__toggle-bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Full-screen menu (small viewports) -->
+<div class="menu" id="site-menu" data-menu aria-hidden="true">
+  <div class="menu__inner">
+    <nav aria-label="Mobile">
+      <ul class="menu__list">
+        {nav.map((item, i) => (
+          <li style={`--i:${i}`}>
+            <a href={item.href} class="menu__link">
+              <span class="menu__index">{String(i + 1).padStart(2, '0')}</span>
+              <span>{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="menu__foot">
+      <a class="menu__contact" href={`tel:${firm.phoneHref}`}>{firm.phone}</a>
+      <a class="menu__contact" href={`mailto:${firm.email}`}>{firm.email}</a>
+      <p class="menu__address">
+        {firm.address.line1}, {firm.address.city} {firm.address.postalCode}
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-header);
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    transition:
+      height var(--dur) var(--ease),
+      background-color var(--dur) var(--ease),
+      transform var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+    border-bottom: 1px solid transparent;
+  }
+
+  /* Over the hero the header is glass; past it, solid ink with
+     a hairline. The blur is what keeps the wordmark legible
+     against a moving background. */
+  .header.is-scrolled {
+    height: var(--header-h-scrolled);
+    background: rgb(10 22 38 / 0.86);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom-color: var(--rule-on-ink-soft);
+  }
+
+  .header.is-hidden {
+    transform: translate3d(0, -100%, 0);
+  }
+
+  .header__inner {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-lg);
+  }
+
+  .header__brand {
+    font-size: 1.06rem;
+    color: var(--text-on-ink);
+    flex: none;
+    margin-right: auto;
+  }
+
+  /* ---- Desktop nav --------------------------------------- */
+  .header__nav {
+    display: none;
+  }
+
+  .header__nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.25rem, 2.4vw, 2.5rem);
+  }
+
+  .header__link {
+    position: relative;
+    display: block;
+    padding-block: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-on-ink-dim);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .header__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--champagne);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .header__link:hover,
+  .header__link.is-active {
+    color: var(--text-on-ink);
+  }
+
+  .header__link:hover::after,
+  .header__link:focus-visible::after,
+  .header__link.is-active::after {
+    transform: scaleX(1);
+  }
+
+  /* ---- Actions ------------------------------------------- */
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-md);
+    flex: none;
+  }
+
+  .header__phone {
+    display: none;
+    flex-direction: column;
+    gap: 0.2rem;
+    text-align: right;
+    padding-right: var(--sp-md);
+    border-right: 1px solid var(--rule-on-ink);
+  }
+
+  .header__phone-label {
+    font-family: var(--font-sans);
+    font-size: 0.58rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .header__phone-number {
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: var(--text-on-ink);
+    line-height: 1;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .header__phone:hover .header__phone-number { color: var(--accent); }
+
+  .header__cta { display: none; }
+
+  /* ---- Hamburger ----------------------------------------- */
+  .header__toggle {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-content: center;
+    gap: 7px;
+  }
+
+  .header__toggle-bar {
+    display: block;
+    width: 26px;
+    height: 1px;
+    background: var(--text-on-ink);
+    transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  }
+
+  .header__toggle[aria-expanded='true'] .header__toggle-bar:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+
+  .header__toggle[aria-expanded='true'] .header__toggle-bar:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  @media (min-width: 1000px) {
+    .header__nav { display: block; }
+    .header__phone { display: flex; }
+    .header__cta { display: inline-flex; }
+    .header__toggle { display: none; }
+    .header__brand { margin-right: 0; }
+    .header__nav { margin-inline: auto; }
+  }
+
+  /* ---- Full-screen menu ---------------------------------- */
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-menu);
+    background: var(--obsidian);
+    display: grid;
+    align-content: center;
+    padding: calc(var(--header-h) + 2rem) var(--gutter) var(--sp-2xl);
+    /* Clipped away rather than hidden, so it can animate open. */
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+    transition: clip-path 640ms var(--ease), visibility 0s linear 640ms;
+  }
+
+  .menu.is-open {
+    clip-path: inset(0 0 0 0);
+    visibility: visible;
+    transition: clip-path 640ms var(--ease), visibility 0s;
+  }
+
+  .menu__inner {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2xl);
+  }
+
+  .menu__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .menu__link {
+    display: flex;
+    align-items: baseline;
+    gap: 1.1rem;
+    padding-block: 0.6rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 1.2rem + 4.4vw, 3.4rem);
+    font-weight: 300;
+    letter-spacing: var(--ls-display);
+    color: var(--text-on-ink);
+    /* Each item trails the one above as the panel opens. */
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+    transition:
+      opacity 620ms var(--ease) calc(var(--i) * 70ms + 180ms),
+      transform 620ms var(--ease) calc(var(--i) * 70ms + 180ms),
+      color var(--dur) var(--ease);
+  }
+
+  .menu.is-open .menu__link {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .menu__link:hover { color: var(--accent); }
+
+  .menu__index {
+    font-family: var(--font-sans);
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    flex: none;
+  }
+
+  .menu__foot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: var(--sp-lg);
+    border-top: 1px solid var(--rule-on-ink);
+    opacity: 0;
+    transition: opacity 620ms var(--ease) 480ms;
+  }
+
+  .menu.is-open .menu__foot { opacity: 1; }
+
+  .menu__contact {
+    font-family: var(--font-sans);
+    font-size: 0.94rem;
+    letter-spacing: 0.05em;
+    color: var(--text-on-ink);
+  }
+
+  .menu__contact:hover { color: var(--accent); }
+
+  .menu__address {
+    font-size: var(--fs-small);
+    color: var(--text-on-ink-faint);
+    max-width: 34ch;
+    margin-top: 0.35rem;
+  }
+
+  @media (min-width: 1000px) {
+    .menu { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu__link,
+    .menu__foot {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

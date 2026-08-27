@@ -1,0 +1,237 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CTABand from '../components/CTABand.astro';
+import { firm, people } from '../data/site';
+
+const description =
+  'The advocates of Anveshana Advocates & Consultants, Bengaluru. The advocate you brief at the first consultation is the advocate who argues your matter.';
+
+const schema = [
+  ...people.map((person) => ({
+    '@type': 'Person',
+    '@id': `${firm.url}/people/#${person.slug}`,
+    name: `${person.honorific} ${person.name}`,
+    jobTitle: person.role,
+    worksFor: { '@id': `${firm.url}/#organisation` },
+    knowsAbout: person.focus,
+    ...(person.email ? { email: person.email } : {}),
+  })),
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${firm.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'People', item: `${firm.url}/people/` },
+    ],
+  },
+];
+
+const initialsOf = (name: string) =>
+  name.split(' ').map((part) => part[0]).join('');
+---
+
+<Base title="People" description={description} schema={schema}>
+  <PageHero
+    eyebrow="People"
+    lines={['The advocate', 'you <em class="accent-italic">brief.</em>']}
+    lead="No account managers and no handoffs. The person you meet at the first consultation is the person who prepares your matter and appears on it."
+    breadcrumbs={[{ label: 'People' }]}
+  />
+
+  <section class="people section on-bone">
+    <div class="container">
+      {people.map((person, i) => (
+        <article class="profile" id={person.slug}>
+          <div class="profile__plate-wrap" data-reveal="wipe">
+            <div class="profile__plate">
+              {person.photo ? (
+                <img
+                  class="profile__photo"
+                  src={person.photo}
+                  alt={`${person.honorific} ${person.name}`}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  width="640"
+                  height="800"
+                />
+              ) : (
+                <>
+                  <span class="profile__initials" aria-hidden="true">
+                    {initialsOf(person.name)}
+                  </span>
+                  <span class="profile__glow" aria-hidden="true"></span>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div class="profile__body">
+            <p class="eyebrow" data-reveal>{person.role}</p>
+            <h2 class="profile__name" data-reveal style="--reveal-delay: 70ms">
+              <span class="profile__honorific">{person.honorific}</span>
+              {person.name}
+            </h2>
+
+            <div class="profile__bio prose" data-reveal style="--reveal-delay: 140ms">
+              {person.bio.map((para) => <p>{para}</p>)}
+            </div>
+
+            <div class="profile__meta" data-reveal style="--reveal-delay: 210ms">
+              <div class="profile__meta-block">
+                <h3 class="profile__meta-label">Principal areas</h3>
+                <ul class="profile__focus">
+                  {person.focus.map((area) => <li>{area}</li>)}
+                </ul>
+              </div>
+
+              {person.email && (
+                <div class="profile__meta-block">
+                  <h3 class="profile__meta-label">Contact</h3>
+                  <a class="profile__email" href={`mailto:${person.email}`}>
+                    {person.email}
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <CTABand
+    eyebrow="Speak to us"
+    lines={['Ask for the', 'advocate <em class="accent-italic">by name.</em>']}
+    body="Tell us briefly what your matter concerns and we will put you in front of the right person at the firm — usually within the same working day."
+  />
+</Base>
+
+<style>
+  .people { background: var(--bone); color: var(--text-on-bone); }
+
+  .profile {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-lg);
+    padding-block: clamp(2.5rem, 5vw, 4.5rem);
+    border-bottom: 1px solid var(--rule-on-bone-soft);
+    /* Anchor links from the homepage teaser must clear the
+       fixed header. */
+    scroll-margin-top: calc(var(--header-h) + 2rem);
+  }
+
+  .profile:first-child { padding-top: 0; }
+  .profile:last-child { border-bottom: 0; padding-bottom: 0; }
+
+  @media (min-width: 880px) {
+    .profile {
+      grid-template-columns: 0.72fr 1.28fr;
+      gap: var(--sp-2xl);
+      align-items: start;
+    }
+  }
+
+  .profile__plate {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(155deg, var(--ink-2), var(--obsidian));
+    border: 1px solid var(--rule-on-bone);
+  }
+
+  .profile__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.04);
+  }
+
+  .profile__initials {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 9vw, 7rem);
+    font-weight: 300;
+    color: var(--white);
+    opacity: 0.24;
+  }
+
+  .profile__glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at 50% 108%, rgb(42 159 214 / 0.24), transparent 62%);
+  }
+
+  .profile__body { padding-top: 0.25rem; }
+  .profile .eyebrow { margin-bottom: var(--sp-sm); }
+
+  .profile__name {
+    font-size: var(--fs-h2);
+    font-weight: 300;
+    color: var(--text-on-bone);
+    margin-bottom: var(--sp-md);
+  }
+
+  .profile__honorific {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-on-bone-faint);
+    margin-bottom: 0.45rem;
+  }
+
+  .profile__bio p { line-height: 1.78; }
+
+  .profile__meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-md);
+    margin-top: var(--sp-lg);
+    padding-top: var(--sp-md);
+    border-top: 1px solid var(--rule-on-bone-soft);
+  }
+
+  @media (min-width: 620px) {
+    .profile__meta { grid-template-columns: 1.3fr 1fr; gap: var(--sp-xl); }
+  }
+
+  .profile__meta-label {
+    font-family: var(--font-sans);
+    font-size: var(--fs-eyebrow);
+    font-weight: 500;
+    letter-spacing: var(--ls-eyebrow);
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.7rem;
+  }
+
+  .profile__focus {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+  }
+
+  .profile__focus li {
+    font-size: var(--fs-small);
+    color: var(--text-on-bone-dim);
+  }
+
+  .profile__focus li + li::before {
+    content: '·';
+    margin-right: 0.9rem;
+    color: var(--accent);
+  }
+
+  .profile__email {
+    font-size: var(--fs-small);
+    color: var(--text-on-bone-dim);
+    overflow-wrap: anywhere;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .profile__email:hover { color: var(--accent); }
+</style>

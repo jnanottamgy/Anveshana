@@ -1,0 +1,170 @@
+---
+/**
+ * PRACTICE INDEX
+ *
+ * The six practice areas as a numbered index rather than a card
+ * grid. An index is how a firm's own table of contents would be
+ * set, and it lets the display serif carry the section instead
+ * of six competing boxes.
+ *
+ * Each row reveals a champagne fill sweeping in from the left
+ * on hover — the same gesture as the buttons, so the whole
+ * interface shares one vocabulary.
+ */
+import { practiceAreas } from '../data/site';
+
+interface Props {
+  /* Home shows a heading; the practice-areas page supplies its
+     own hero, so it turns the heading off. */
+  heading?: boolean;
+}
+
+const { heading = true } = Astro.props;
+---
+
+<section class="practice section on-ink" aria-labelledby={heading ? 'practice-title' : undefined}>
+  <div class="container">
+    {heading && (
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow" data-reveal>Practice Areas</p>
+          <h2 class="section-head__title practice__title" id="practice-title" data-reveal
+              style="--reveal-delay: 80ms">
+            Six areas. One standard.
+          </h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-delay: 160ms">
+          We take a limited number of matters at a time, across the areas
+          below. Where a matter falls outside them, we will tell you so and
+          point you to counsel who can help.
+        </p>
+      </div>
+    )}
+
+    <ul class="practice__list" data-reveal-group="70">
+      {practiceAreas.map((area) => (
+        <li class="practice__row" data-reveal>
+          <a class="practice__link" href={`/practice-areas/${area.slug}/`}>
+            <span class="practice__index index-num">{area.index}</span>
+            <span class="practice__body">
+              <span class="practice__name">{area.title}</span>
+              <span class="practice__summary">{area.summary}</span>
+            </span>
+            <span class="practice__arrow" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .practice {
+    background: var(--ink);
+    color: var(--text-on-ink);
+  }
+
+  .practice__title { color: var(--white); }
+
+  .practice__list {
+    border-top: 1px solid var(--rule-on-ink);
+  }
+
+  .practice__row { border-bottom: 1px solid var(--rule-on-ink); }
+
+  .practice__link {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: var(--sp-md);
+    padding: clamp(1.5rem, 2.6vw, 2.4rem) 0;
+    isolation: isolate;
+    transition: padding-inline var(--dur) var(--ease);
+  }
+
+  /* The sweep. Sits behind the row content and grows from the
+     left edge, so the row reads as being "selected" rather than
+     merely highlighted. */
+  .practice__link::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 0;
+    z-index: -1;
+    background: linear-gradient(
+      90deg,
+      rgb(198 166 100 / 0.13),
+      rgb(198 166 100 / 0.02) 55%,
+      transparent
+    );
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-slow) var(--ease);
+  }
+
+  .practice__link:hover::before,
+  .practice__link:focus-visible::before {
+    transform: scaleX(1);
+  }
+
+  @media (min-width: 700px) {
+    .practice__link:hover,
+    .practice__link:focus-visible {
+      padding-inline: clamp(0.75rem, 1.6vw, 1.5rem);
+    }
+  }
+
+  .practice__index {
+    padding-top: 0.55em;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .practice__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .practice__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 1.1rem + 2.4vw, 3.1rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: var(--ls-display);
+    color: var(--text-on-ink);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .practice__link:hover .practice__name { color: var(--accent); }
+
+  .practice__summary {
+    font-size: var(--fs-small);
+    line-height: 1.65;
+    color: var(--text-on-ink-faint);
+    max-width: 54ch;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .practice__link:hover .practice__summary { color: var(--text-on-ink-dim); }
+
+  .practice__arrow {
+    align-self: center;
+    font-size: 1.15rem;
+    color: var(--accent);
+    opacity: 0;
+    transform: translate3d(-10px, 0, 0);
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+
+  .practice__link:hover .practice__arrow,
+  .practice__link:focus-visible .practice__arrow {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  /* On touch the arrow can never be revealed by hover, so it is
+     simply always present. */
+  @media (hover: none) {
+    .practice__arrow { opacity: 0.55; transform: none; }
+  }
+</style>

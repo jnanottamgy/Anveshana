@@ -1,0 +1,179 @@
+/* ============================================================
+   ANVESHANA — DESIGN TOKENS
+   "Ink & Champagne"
+
+   Palette derived by sampling the firm's own logo artwork:
+   the monogram gradient runs #1092CA -> #3AA7DD, the counter
+   dot is #438DCB. That cyan is demoted to a live accent; the
+   system is anchored in ink and metal so the brand reads as
+   senior counsel rather than software startup.
+   ============================================================ */
+
+:root {
+  /* ---- Core surfaces ------------------------------------- */
+  --ink: #0a1626;          /* dominant dark surface, midnight navy */
+  --ink-2: #0e1d31;        /* raised dark surface */
+  --ink-3: #14273f;        /* hairline-adjacent dark */
+  --obsidian: #060e19;     /* deepest layer, footer */
+
+  --bone: #f4f1ea;         /* warm paper — never pure white */
+  --bone-2: #ece7dc;       /* recessed paper */
+  --bone-3: #ded7c8;       /* paper hairline */
+  --white: #fffdf9;        /* warm white, for type on ink */
+
+  /* ---- Metal & accent ------------------------------------ */
+  --champagne: #c6a664;    /* primary metallic accent, for ink surfaces */
+  --champagne-lo: #a8894b; /* pressed / darker metal */
+  --champagne-hi: #e2c88f; /* highlight along a metal edge */
+
+  /* Bronze: the same metal, darkened for use as TEXT on the
+     bone surfaces. Champagne on bone measures 2.06:1 — nowhere
+     near legible — so light sections swap to this via --accent
+     below. 5.06:1 on bone, 4.63:1 on bone-2. */
+  --bronze: #7e6230;
+
+  --azure: #2a9fd6;        /* the logo blue, used live and sparingly */
+  --azure-deep: #1b7fb8;
+  --azure-lo: #1092ca;     /* sampled: top of monogram gradient */
+  --azure-hi: #3aa7dd;     /* sampled: foot of monogram gradient */
+  --azure-dot: #438dcb;    /* sampled: the counter dot */
+
+  /* ---- Text ---------------------------------------------- */
+  /* Every value below clears WCAG AA (4.5:1) against every
+     surface it is used on — verified, not estimated. */
+  --text-on-ink: #f1ede4;
+  --text-on-ink-dim: #a9b4c2;
+  --text-on-ink-faint: #77869a;  /* 4.90 on ink, 5.22 on obsidian */
+
+  --text-on-bone: #101b28;
+  --text-on-bone-dim: #55636f;   /* 5.47 on bone */
+  --text-on-bone-faint: #5f6a76; /* 4.89 on bone */
+
+  --slate: #7c8a9c;
+
+  /* The metallic accent, resolved per surface. Components use
+     var(--accent) for accented TEXT and read the correct metal
+     automatically from the .on-ink / .on-bone context. Solid
+     champagne fills (buttons) keep using --champagne directly,
+     since dark text on gold is already high contrast. */
+  --accent: var(--champagne);
+
+  /* ---- Rules & borders ----------------------------------- */
+  --rule-on-ink: rgb(241 237 228 / 0.14);
+  --rule-on-ink-soft: rgb(241 237 228 / 0.08);
+  --rule-on-bone: rgb(16 27 40 / 0.14);
+  --rule-on-bone-soft: rgb(16 27 40 / 0.07);
+  --rule-metal: rgb(198 166 100 / 0.42);
+
+  /* ---- Typography ---------------------------------------- */
+  --font-display: 'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Jost', 'Futura', 'Century Gothic', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Fluid display scale — clamp(min, preferred, max).
+     Tuned so the hero reads monumental on desktop without
+     overflowing a 360px phone. */
+  --fs-display: clamp(3.25rem, 1.6rem + 7.1vw, 9rem);
+  --fs-h1: clamp(2.6rem, 1.5rem + 4.7vw, 5.75rem);
+  --fs-h2: clamp(2.1rem, 1.35rem + 3.1vw, 4.15rem);
+  --fs-h3: clamp(1.65rem, 1.24rem + 1.7vw, 2.7rem);
+  --fs-h4: clamp(1.32rem, 1.14rem + 0.75vw, 1.85rem);
+  --fs-h5: clamp(1.12rem, 1.03rem + 0.38vw, 1.35rem);
+
+  --fs-lead: clamp(1.08rem, 0.99rem + 0.38vw, 1.32rem);
+  --fs-body: clamp(0.98rem, 0.94rem + 0.17vw, 1.06rem);
+  --fs-small: 0.875rem;
+  --fs-micro: 0.75rem;
+
+  /* Eyebrow / small-caps label — the Jost workhorse */
+  --fs-eyebrow: 0.72rem;
+  --ls-eyebrow: 0.22em;
+  --ls-display: -0.022em;   /* Cormorant needs negative tracking when huge */
+  --ls-wide: 0.08em;
+
+  --lh-display: 0.98;
+  --lh-heading: 1.08;
+  --lh-body: 1.72;
+
+  /* ---- Spacing ------------------------------------------- */
+  --sp-3xs: 0.25rem;
+  --sp-2xs: 0.5rem;
+  --sp-xs: 0.75rem;
+  --sp-sm: 1rem;
+  --sp-md: 1.5rem;
+  --sp-lg: 2.25rem;
+  --sp-xl: 3.5rem;
+  --sp-2xl: 5rem;
+  --sp-3xl: 7.5rem;
+  --sp-4xl: 11rem;
+
+  /* Section rhythm — generous space is the cheapest luxury signal */
+  --section-y: clamp(5.5rem, 3rem + 9vw, 11rem);
+  --section-y-tight: clamp(4rem, 2.5rem + 6vw, 7.5rem);
+
+  /* ---- Layout -------------------------------------------- */
+  --gutter: clamp(1.25rem, 0.6rem + 3vw, 4.5rem);
+  --measure: 68ch;            /* comfortable reading width */
+  --container: 1320px;
+  --container-narrow: 940px;
+  --container-text: 720px;
+  --header-h: 84px;
+  --header-h-scrolled: 66px;
+
+  /* ---- Motion -------------------------------------------- */
+  /* Expo-out. The single most important value in the system:
+     fast departure, long graceful settle. Nothing bounces. */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --dur-fast: 220ms;
+  --dur: 460ms;
+  --dur-slow: 780ms;
+  --dur-reveal: 1100ms;
+  --dur-curtain: 900ms;
+
+  /* ---- Elevation ----------------------------------------- */
+  --shadow-sm: 0 1px 2px rgb(6 14 25 / 0.06), 0 2px 8px rgb(6 14 25 / 0.04);
+  --shadow-md: 0 4px 12px rgb(6 14 25 / 0.08), 0 14px 34px rgb(6 14 25 / 0.07);
+  --shadow-lg: 0 10px 26px rgb(6 14 25 / 0.11), 0 34px 76px rgb(6 14 25 / 0.13);
+  --shadow-ink: 0 24px 70px rgb(2 7 14 / 0.55);
+
+  /* ---- Depth (3D) ---------------------------------------- */
+  --persp: 1200px;
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-header: 800;
+  --z-menu: 900;
+  --z-cursor: 950;
+  --z-curtain: 980;
+  --z-gate: 1000;
+
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius: 4px;
+  --radius-pill: 999px;
+}
+
+/* The site is dark-first by identity, not by user preference.
+   These are the two surface contexts every component reads. */
+.on-ink {
+  --fg: var(--text-on-ink);
+  --fg-dim: var(--text-on-ink-dim);
+  --fg-faint: var(--text-on-ink-faint);
+  --bg: var(--ink);
+  --rule: var(--rule-on-ink);
+  --rule-soft: var(--rule-on-ink-soft);
+  --accent: var(--champagne);
+}
+
+.on-bone {
+  --fg: var(--text-on-bone);
+  --fg-dim: var(--text-on-bone-dim);
+  --fg-faint: var(--text-on-bone-faint);
+  --bg: var(--bone);
+  --rule: var(--rule-on-bone);
+  --rule-soft: var(--rule-on-bone-soft);
+  --accent: var(--bronze);
+}

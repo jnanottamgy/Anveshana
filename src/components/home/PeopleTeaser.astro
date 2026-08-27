@@ -1,0 +1,68 @@
+---
+import PersonCard from '../PersonCard.astro';
+import { people } from '../../data/site';
+---
+
+<section class="team section on-bone" aria-labelledby="team-title">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div>
+        <p class="eyebrow" data-reveal>The People</p>
+        <h2 class="section-head__title team__title" id="team-title" data-reveal
+            style="--reveal-delay: 80ms">
+          You will know who is arguing your matter.
+        </h2>
+      </div>
+      <div class="team__aside" data-reveal style="--reveal-delay: 160ms">
+        <p class="lead">
+          No account managers, no handoffs. The advocate you brief is the
+          advocate who appears.
+        </p>
+        <a class="link-underline team__link" href="/people/">
+          Meet the firm
+          <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="team__grid" data-reveal-group="140">
+      {people.map((person) => (
+        <div data-reveal>
+          <PersonCard person={person} href={`/people/#${person.slug}`} />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .team {
+    background: var(--bone);
+    color: var(--text-on-bone);
+  }
+
+  .team__title { color: var(--text-on-bone); }
+  .team .eyebrow { margin-bottom: var(--sp-md); }
+
+  .team__aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-md);
+  }
+
+  .team__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: var(--sp-lg);
+  }
+
+  /* Two people should not stretch to fill a 1320px row — cap the
+     track so the cards keep a portrait proportion. */
+  @media (min-width: 720px) {
+    .team__grid {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
+      gap: var(--sp-xl);
+    }
+  }
+</style>

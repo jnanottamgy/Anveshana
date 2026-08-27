@@ -1,0 +1,99 @@
+---
+/**
+ * LOGOTYPE — the mark + wordmark lockup.
+ *
+ * The wordmark is set live in Jost rather than embedded as
+ * outlines: Jost is a close geometric match for the face used
+ * in the supplied artwork, and keeping it as text means it
+ * stays crisp at every size, inherits colour, and remains
+ * readable to search engines and screen readers.
+ */
+import Monogram from './Monogram.astro';
+
+interface Props {
+  variant?: 'row' | 'stack';
+  tone?: 'brand' | 'metal' | 'current';
+  descriptor?: boolean;
+  class?: string;
+}
+
+const {
+  variant = 'row',
+  tone = 'brand',
+  descriptor = true,
+  class: className = '',
+} = Astro.props;
+---
+
+<span class:list={['logotype', `logotype--${variant}`, className]}>
+  <Monogram tone={tone} class="logotype__mark" />
+  <span class="logotype__text">
+    <span class="logotype__name">Anveshana</span>
+    {descriptor && (
+      <span class="logotype__descriptor">Advocates &amp; Consultants</span>
+    )}
+  </span>
+</span>
+
+<style>
+  .logotype {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    line-height: 1;
+    color: inherit;
+  }
+
+  .logotype :global(.logotype__mark) {
+    width: 1.62em;
+    height: 1.4em;
+    flex: none;
+  }
+
+  .logotype__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.36em;
+  }
+
+  .logotype__name {
+    font-family: var(--font-sans);
+    font-size: 1em;
+    font-weight: 400;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    line-height: 1;
+    /* The trailing letterspace pushes the optical centre right;
+       pull it back so the lockup sits square. */
+    margin-right: -0.17em;
+  }
+
+  .logotype__descriptor {
+    font-family: var(--font-sans);
+    font-size: 0.33em;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--accent);
+    margin-right: -0.3em;
+    white-space: nowrap;
+  }
+
+  /* ---- Stacked (footer, curtain, mobile menu) ------------- */
+  .logotype--stack {
+    flex-direction: column;
+    gap: 0.75em;
+    text-align: center;
+  }
+
+  .logotype--stack :global(.logotype__mark) {
+    width: 2.4em;
+    height: 2.1em;
+  }
+
+  .logotype--stack .logotype__text {
+    align-items: center;
+    gap: 0.45em;
+  }
+</style>

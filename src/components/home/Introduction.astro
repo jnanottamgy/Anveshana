@@ -1,0 +1,153 @@
+---
+import SplitText from '../SplitText.astro';
+import { commitments, forums } from '../../data/site';
+---
+
+<section class="intro section on-bone" aria-labelledby="intro-title">
+  <div class="container">
+    <div class="intro__head">
+      <div>
+        <p class="eyebrow" data-reveal>The Firm</p>
+        <SplitText
+          as="h2"
+          id="intro-title"
+          class="intro__title"
+          lines={[
+            'A small practice,',
+            'by <em class="accent-italic">design.</em>',
+          ]}
+        />
+      </div>
+
+      <div class="intro__copy prose" data-reveal style="--reveal-delay: 160ms">
+        <p>
+          Anveshana is a litigation-led firm in Seshadripuram, in the heart of
+          Bengaluru. We advise individuals, families and companies across
+          criminal, civil and property, family, employment, commercial and
+          cyber matters.
+        </p>
+        <p>
+          We have stayed deliberately small. It means the advocate you meet at
+          the first consultation is the advocate who argues your matter — not a
+          name on a letterhead who hands the file to someone you have never
+          spoken to.
+        </p>
+      </div>
+    </div>
+
+    <ol class="commitments" data-reveal-group="120">
+      {commitments.map((item) => (
+        <li class="commitment" data-reveal>
+          <span class="index-num">{item.index}</span>
+          <h3 class="commitment__title">{item.title}</h3>
+          <p class="commitment__body">{item.body}</p>
+        </li>
+      ))}
+    </ol>
+
+    <div class="forums">
+      <p class="eyebrow" data-reveal>Appearing before</p>
+      <ul class="forums__list" data-reveal-group="60">
+        {forums.map((forum) => (
+          <li class="forums__item" data-reveal>{forum}</li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .intro {
+    background: var(--bone);
+    color: var(--text-on-bone);
+  }
+
+  .intro__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-lg);
+    padding-bottom: clamp(3rem, 6vw, 5.5rem);
+  }
+
+  @media (min-width: 900px) {
+    .intro__head {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-2xl);
+      align-items: start;
+    }
+  }
+
+  .intro .eyebrow { margin-bottom: var(--sp-md); }
+
+  .intro__title {
+    font-size: var(--fs-h2);
+    color: var(--text-on-bone);
+  }
+
+  .intro__copy { padding-top: 0.5rem; }
+
+  /* ---- Commitments --------------------------------------- */
+  .commitments {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-lg);
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+    border-top: 1px solid var(--rule-on-bone-soft);
+    border-bottom: 1px solid var(--rule-on-bone-soft);
+  }
+
+  @media (min-width: 800px) {
+    .commitments {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-xl);
+    }
+  }
+
+  .commitment {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .commitment__title {
+    font-size: var(--fs-h4);
+    font-weight: 400;
+    color: var(--text-on-bone);
+  }
+
+  .commitment__body {
+    font-size: var(--fs-small);
+    line-height: 1.75;
+    color: var(--text-on-bone-dim);
+    max-width: 42ch;
+  }
+
+  /* ---- Forums -------------------------------------------- */
+  .forums { padding-top: clamp(2.5rem, 5vw, 4rem); }
+  .forums .eyebrow { margin-bottom: var(--sp-md); }
+
+  .forums__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  /* Deliberately quiet chips: this is credibility, not a
+     feature list, so it should read as a footnote in the
+     firm's own hand rather than as marketing. */
+  .forums__item {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--text-on-bone-dim);
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--rule-on-bone);
+    border-radius: var(--radius-pill);
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+
+  .forums__item:hover {
+    border-color: var(--accent);
+    color: var(--text-on-bone);
+  }
+</style>

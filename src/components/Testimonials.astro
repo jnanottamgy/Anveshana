@@ -1,0 +1,260 @@
+---
+/**
+ * TESTIMONIALS
+ *
+ * Set as an editorial pull-quote rather than a carousel of
+ * cards: one quote at a time, at display size, so it is read
+ * rather than skimmed past.
+ *
+ * Advance is manual. An auto-rotating slider moves the text a
+ * visitor is still reading, and it is a persistent nuisance for
+ * anyone using a screen reader.
+ */
+import { testimonials } from '../data/site';
+---
+
+<section class="quotes section on-ink" aria-labelledby="quotes-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>In their words</p>
+      <h2 class="section-head__title quotes__title" id="quotes-title" data-reveal
+          style="--reveal-delay: 80ms">
+        What clients say
+      </h2>
+    </div>
+
+    <div class="quotes__stage" data-quotes data-reveal style="--reveal-delay: 160ms">
+      <span class="quotes__mark" aria-hidden="true">&ldquo;</span>
+
+      <div class="quotes__viewport" aria-live="polite">
+        {testimonials.map((item, i) => (
+          <figure
+            class:list={['quote', i === 0 && 'is-current']}
+            data-quote={i}
+            aria-hidden={i === 0 ? undefined : 'true'}
+          >
+            <blockquote class="quote__text">{item.quote}</blockquote>
+            <figcaption class="quote__by">
+              <span class="quote__name">{item.name}</span>
+              <span class="quote__where">{item.location}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <div class="quotes__controls">
+        <div class="quotes__counter">
+          <span data-quote-current>1</span>
+          <span class="quotes__slash" aria-hidden="true">/</span>
+          <span>{testimonials.length}</span>
+        </div>
+        <div class="quotes__buttons">
+          <button type="button" class="quotes__btn" data-quote-prev aria-label="Previous testimonial">
+            <span aria-hidden="true">&larr;</span>
+          </button>
+          <button type="button" class="quotes__btn" data-quote-next aria-label="Next testimonial">
+            <span aria-hidden="true">&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const stage = document.querySelector('[data-quotes]');
+
+  if (stage) {
+    const slides = Array.from(stage.querySelectorAll<HTMLElement>('[data-quote]'));
+    const counter = stage.querySelector('[data-quote-current]');
+    let index = 0;
+
+    const show = (next: number) => {
+      index = (next + slides.length) % slides.length;
+      slides.forEach((slide, i) => {
+        const current = i === index;
+        slide.classList.toggle('is-current', current);
+        /* Hidden slides are removed from the accessibility tree
+           so a screen reader never reads five quotes at once. */
+        if (current) slide.removeAttribute('aria-hidden');
+        else slide.setAttribute('aria-hidden', 'true');
+      });
+      if (counter) counter.textContent = String(index + 1);
+    };
+
+    stage.querySelector('[data-quote-next]')?.addEventListener('click', () => show(index + 1));
+    stage.querySelector('[data-quote-prev]')?.addEventListener('click', () => show(index - 1));
+
+    stage.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { show(index + 1); }
+      if (e.key === 'ArrowLeft') { show(index - 1); }
+    });
+  }
+</script>
+
+<style>
+  .quotes {
+    position: relative;
+    background: var(--ink);
+    color: var(--text-on-ink);
+    overflow: hidden;
+  }
+
+  .quotes__title { color: var(--white); }
+
+  .quotes__stage { position: relative; }
+
+  /* Oversized quotation mark, bled off the top-left of the
+     stage. Cormorant's quote glyph is beautiful at this size
+     and does the decorative work no graphic could. */
+  .quotes__mark {
+    position: absolute;
+    /* Sits clear of the first line rather than behind it — at
+       this size an overlap reads as a rendering fault, not as a
+       flourish. */
+    top: -0.62em;
+    left: -0.11em;
+    font-family: var(--font-display);
+    font-size: clamp(9rem, 18vw, 17rem);
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* The viewport is sized by the tallest quote (all slides are
+     stacked in the same grid cell), so advancing never causes
+     the page below to jump. */
+  .quotes__viewport {
+    display: grid;
+    position: relative;
+    /* Above the oversized quotation glyph without needing a
+       negative z-index, which would escape this stacking
+       context and disappear behind the section background. */
+    z-index: 1;
+  }
+
+  .quote {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, 14px, 0);
+    filter: blur(3px);
+    transition:
+      opacity 620ms var(--ease),
+      transform 620ms var(--ease),
+      filter 620ms var(--ease),
+      visibility 0s linear 620ms;
+  }
+
+  .quote.is-current {
+    opacity: 1;
+    visibility: visible;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+    transition:
+      opacity 620ms var(--ease),
+      transform 620ms var(--ease),
+      filter 620ms var(--ease),
+      visibility 0s;
+  }
+
+  .quote__text {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 0.95rem + 2.1vw, 2.85rem);
+    font-weight: 300;
+    line-height: 1.32;
+    letter-spacing: -0.012em;
+    color: var(--white);
+    max-width: 24ch;
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 700px) {
+    .quote__text { max-width: 30ch; }
+  }
+
+  .quote__by {
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+    font-family: var(--font-sans);
+  }
+
+  .quote__name {
+    font-size: 0.86rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-on-ink);
+  }
+
+  .quote__where {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .quote__where::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: currentColor;
+    vertical-align: middle;
+    margin-right: 0.85rem;
+  }
+
+  /* ---- Controls ------------------------------------------ */
+  .quotes__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-md);
+    margin-top: var(--sp-xl);
+    padding-top: var(--sp-md);
+    border-top: 1px solid var(--rule-on-ink);
+  }
+
+  .quotes__counter {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    color: var(--text-on-ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .quotes__slash { color: var(--accent); }
+
+  .quotes__buttons { display: flex; gap: 0.6rem; }
+
+  .quotes__btn {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    font-size: 1rem;
+    color: var(--text-on-ink-dim);
+    border: 1px solid var(--rule-on-ink);
+    border-radius: 50%;
+    transition:
+      color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      background-color var(--dur) var(--ease);
+  }
+
+  .quotes__btn:hover,
+  .quotes__btn:focus-visible {
+    color: var(--obsidian);
+    background: var(--champagne);
+    border-color: var(--accent);
+  }
+</style>

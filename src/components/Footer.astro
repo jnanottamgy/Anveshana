@@ -1,0 +1,225 @@
+---
+import Monogram from './Monogram.astro';
+import { firm, nav, practiceAreas } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <!-- Oversized mark, bled off the corner. Reads as a watermark
+       on letterhead rather than as a logo placement. -->
+  <Monogram tone="current" class="footer__watermark" />
+
+  <div class="container footer__inner">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="/" class="footer__brand-link" aria-label={`${firm.legalName} — home`}>
+          <span class="footer__name">Anveshana</span>
+          <span class="footer__descriptor">Advocates &amp; Consultants</span>
+        </a>
+        <p class="footer__tagline">
+          A litigation-led practice in the heart of Bengaluru, advising
+          individuals and companies across criminal, civil, family,
+          employment, commercial and cyber matters.
+        </p>
+      </div>
+
+      <nav class="footer__col" aria-label="Practice areas">
+        <h2 class="footer__heading">Practice</h2>
+        <ul>
+          {practiceAreas.map((area) => (
+            <li>
+              <a href={`/practice-areas/${area.slug}/`}>{area.title}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="Firm">
+        <h2 class="footer__heading">Firm</h2>
+        <ul>
+          {nav.map((item) => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+          <li><a href="/disclaimer/">Disclaimer</a></li>
+          <li><a href="/privacy/">Privacy</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col">
+        <h2 class="footer__heading">Contact</h2>
+        <address class="footer__address">
+          <a href={firm.mapsPlace} target="_blank" rel="noopener noreferrer">
+            {firm.address.line1}<br />
+            {firm.address.line2}<br />
+            {firm.address.city} {firm.address.postalCode}
+          </a>
+          <a class="footer__link-strong" href={`tel:${firm.phoneHref}`}>{firm.phone}</a>
+          <a class="footer__link-strong" href={`mailto:${firm.email}`}>{firm.email}</a>
+        </address>
+      </div>
+    </div>
+
+    <div class="footer__bar">
+      <p>&copy; {year} {firm.legalName}. All rights reserved.</p>
+      <p class="footer__bci">
+        Bar Council of India rules prohibit advocates from advertising or
+        soliciting work. This website is for informational purposes only.
+        <a href="/disclaimer/">Read the full disclaimer</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    background: var(--obsidian);
+    color: var(--text-on-ink-dim);
+    padding-block: var(--section-y-tight) var(--sp-xl);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* :global — the class is passed into Monogram, so the element
+     carries that component's scope id rather than this one's. */
+  :global(.footer__watermark) {
+    position: absolute;
+    right: -4%;
+    bottom: -22%;
+    width: min(46vw, 520px);
+    height: auto;
+    color: var(--text-on-ink);
+    opacity: 0.032;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .footer__inner { position: relative; }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-xl);
+    padding-bottom: var(--sp-xl);
+    border-bottom: 1px solid var(--rule-on-ink-soft);
+  }
+
+  @media (min-width: 640px) {
+    .footer__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1040px) {
+    .footer__grid {
+      grid-template-columns: 1.55fr 1fr 1fr 1.2fr;
+      gap: var(--sp-2xl);
+    }
+  }
+
+  .footer__brand-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-bottom: var(--sp-md);
+  }
+
+  .footer__name {
+    font-family: var(--font-sans);
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-on-ink);
+    line-height: 1;
+  }
+
+  .footer__descriptor {
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .footer__tagline {
+    font-size: var(--fs-small);
+    line-height: 1.75;
+    max-width: 40ch;
+    color: var(--text-on-ink-faint);
+  }
+
+  .footer__heading {
+    font-family: var(--font-sans);
+    font-size: var(--fs-eyebrow);
+    font-weight: 500;
+    letter-spacing: var(--ls-eyebrow);
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--sp-md);
+  }
+
+  .footer__col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .footer__col a,
+  .footer__address a {
+    font-size: var(--fs-small);
+    color: var(--text-on-ink-dim);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .footer__col a:hover,
+  .footer__address a:hover {
+    color: var(--accent);
+  }
+
+  .footer__address {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    font-style: normal;
+    line-height: 1.7;
+  }
+
+  .footer__link-strong {
+    color: var(--text-on-ink) !important;
+    letter-spacing: 0.03em;
+  }
+
+  .footer__link-strong:hover { color: var(--accent) !important; }
+
+  .footer__bar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+    padding-top: var(--sp-lg);
+    font-size: var(--fs-micro);
+    color: var(--text-on-ink-faint);
+    line-height: 1.7;
+  }
+
+  .footer__bci { max-width: 78ch; }
+
+  .footer__bci a {
+    color: var(--text-on-ink-dim);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .footer__bci a:hover { color: var(--accent); }
+
+  @media (min-width: 880px) {
+    .footer__bar {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--sp-xl);
+    }
+    .footer__bci { text-align: right; }
+  }
+</style>

@@ -1,0 +1,100 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { firm } from '../data/site';
+---
+
+<Legal
+  title="Privacy"
+  description="How Anveshana Advocates & Consultants handles information collected through this website."
+  eyebrow="Legal"
+  lines={['Privacy']}
+  lead="What this website collects, what it does not, and how enquiries are handled."
+  updated="August 2026"
+>
+  <h2>The short version</h2>
+  <p>
+    This website does not run advertising trackers, does not set analytics
+    cookies, and does not build a profile of you. The only information it
+    receives is what you choose to type into the enquiry form.
+  </p>
+
+  <h2>Information we collect</h2>
+  <h3>Enquiries</h3>
+  <p>
+    If you complete the enquiry form, we receive the name, telephone number,
+    email address, category of matter and description that you provide. We use
+    it solely to respond to your enquiry and, if you become a client, to act
+    on the matter. We do not sell it, rent it, or share it for marketing.
+  </p>
+
+  <h3>Local storage</h3>
+  <p>
+    Your browser stores two small values on your own device: a record that you
+    have acknowledged the disclaimer, so you are not asked again on every
+    visit, and a note that you have already seen the opening animation in this
+    browsing session. Neither is a tracking cookie, neither identifies you,
+    and neither is transmitted to us or to anyone else. Clearing your browser
+    data removes both.
+  </p>
+
+  <h3>Server logs</h3>
+  <p>
+    Like any website, this site is served by a hosting provider that records
+    standard technical request logs, which may include IP address, browser
+    type and the page requested. These are retained by the provider for
+    security and operational purposes.
+  </p>
+
+  <h3>Maps</h3>
+  <p>
+    The map on the contact page does not load until you click to load it. If
+    you choose to load it, Google receives a request from your browser and its
+    own privacy policy applies from that point. If you never click, no request
+    is made.
+  </p>
+
+  <h2>Confidentiality and privilege</h2>
+  <p>
+    <strong>The enquiry form is not a secure channel.</strong> Please do not
+    send confidential, sensitive or privileged material through it, or by
+    email, before we have confirmed an engagement. Information sent to us
+    before an advocate–client relationship exists may not attract privilege.
+  </p>
+  <p>
+    Once we act for you, everything you tell us is governed by our
+    professional duty of confidentiality, which is considerably stricter than
+    anything described on this page and continues after the matter ends.
+  </p>
+
+  <h2>Retention</h2>
+  <p>
+    Enquiries that do not become matters are retained only for as long as
+    needed to deal with them and to run conflict checks. Client files are
+    retained for the period required by our professional and statutory
+    obligations.
+  </p>
+
+  <h2>Your choices</h2>
+  <p>
+    You may ask us what information we hold about you, ask us to correct it,
+    or ask us to delete an enquiry that has not become a matter. Write to
+    <a href={`mailto:${firm.email}`}>{firm.email}</a> and we will respond.
+    Requests relating to an active or former client file are subject to our
+    professional record-keeping obligations.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    If this notice changes, the revised version will be published on this page
+    with a new date below.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    {firm.legalName}, {firm.address.line1}, {firm.address.line2},
+    {firm.address.city} {firm.address.postalCode}.
+    <br />
+    <a href={`mailto:${firm.email}`}>{firm.email}</a> ·
+    <a href={`tel:${firm.phoneHref}`}>{firm.phone}</a>
+  </p>
+</Legal>

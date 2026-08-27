@@ -1,0 +1,143 @@
+---
+/**
+ * PAGE HERO — the masthead for every page except the home page.
+ *
+ * Deliberately not full-height: an inner page should deliver its
+ * content, not make the visitor scroll past a second poster.
+ */
+import SplitText from './SplitText.astro';
+import Monogram from './Monogram.astro';
+
+interface Props {
+  eyebrow: string;
+  lines: string[];
+  lead?: string;
+  index?: string;
+  breadcrumbs?: { label: string; href?: string }[];
+}
+
+const { eyebrow, lines, lead, index, breadcrumbs = [] } = Astro.props;
+---
+
+<section class="page-hero on-ink">
+  <Monogram tone="current" class="page-hero__watermark" />
+  <span class="page-hero__glow" aria-hidden="true"></span>
+
+  <div class="container page-hero__inner">
+    {breadcrumbs.length > 0 && (
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          {breadcrumbs.map((crumb) => (
+            <li>
+              {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : <span aria-current="page">{crumb.label}</span>}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <div class="page-hero__head">
+      <p class="eyebrow" data-reveal>
+        {index && <span class="page-hero__index">{index}</span>}
+        {eyebrow}
+      </p>
+      <SplitText as="h1" class="page-hero__title" lines={lines} />
+      {lead && (
+        <p class="lead page-hero__lead" data-reveal style="--reveal-delay: 300ms">
+          {lead}
+        </p>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    background: var(--ink);
+    color: var(--text-on-ink);
+    padding-top: calc(var(--header-h) + clamp(3.5rem, 9vh, 7rem));
+    padding-bottom: clamp(3.5rem, 8vh, 6.5rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  :global(.page-hero__watermark) {
+    position: absolute;
+    right: -7%;
+    bottom: -46%;
+    width: min(50vw, 560px);
+    height: auto;
+    color: var(--text-on-ink);
+    opacity: 0.045;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .page-hero__glow {
+    position: absolute;
+    top: -40%;
+    right: -6%;
+    width: 62%;
+    height: 130%;
+    background: radial-gradient(
+      circle at 60% 50%,
+      rgb(42 159 214 / 0.15),
+      transparent 62%
+    );
+    filter: blur(30px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .page-hero__inner { position: relative; }
+
+  /* ---- Breadcrumbs --------------------------------------- */
+  .crumbs { margin-bottom: clamp(2rem, 5vh, 3.5rem); }
+
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-on-ink-faint);
+  }
+
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 0.55rem;
+    color: var(--accent);
+  }
+
+  .crumbs a { transition: color var(--dur) var(--ease); }
+  .crumbs a:hover { color: var(--accent); }
+  .crumbs [aria-current] { color: var(--text-on-ink-dim); }
+
+  /* ---- Head ---------------------------------------------- */
+  .page-hero__head { max-width: 46rem; }
+
+  .page-hero .eyebrow { margin-bottom: var(--sp-md); }
+
+  .page-hero__index {
+    /* No opacity dimming — at this size it dropped the numeral
+       to 3.97:1, below AA. */
+    color: var(--accent);
+    margin-right: 0.35rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .page-hero__title {
+    font-size: clamp(2.5rem, 1.2rem + 4.6vw, 5.4rem);
+    color: var(--white);
+  }
+
+  .page-hero__lead {
+    margin-top: var(--sp-md);
+    max-width: 54ch;
+  }
+</style>

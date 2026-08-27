@@ -1,0 +1,242 @@
+---
+/**
+ * BAR COUNCIL OF INDIA DISCLAIMER GATE
+ *
+ * Rule 36 of the Bar Council of India Rules prohibits advocates
+ * from advertising or soliciting work. Every serious Indian law
+ * firm therefore gates its website behind an acknowledgement
+ * that the visitor sought the information of their own accord.
+ *
+ * The gate is rendered hidden and revealed by script only when
+ * no prior acknowledgement is stored, so the page content sits
+ * in the document either way — crawlers and assistive
+ * technology are never shown an empty page.
+ */
+import Monogram from './Monogram.astro';
+import { firm } from '../data/site';
+---
+
+<div class="gate" data-gate hidden>
+  <div
+    class="gate__panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="gate-title"
+    aria-describedby="gate-body"
+  >
+    <Monogram tone="metal" class="gate__mark" />
+
+    <p class="eyebrow eyebrow--bare gate__eyebrow">Disclaimer</p>
+    <h2 class="gate__title" id="gate-title">
+      Please read before you proceed
+    </h2>
+
+    <div class="gate__body" id="gate-body">
+      <p>
+        As per the rules of the Bar Council of India, an advocate may not
+        solicit work or advertise. By clicking &ldquo;I Agree&rdquo; below,
+        you acknowledge and confirm of your own accord that:
+      </p>
+      <ul>
+        <li>
+          There has been no advertisement, personal communication, solicitation,
+          invitation or inducement of any sort whatsoever from
+          {firm.legalName} or any of its members to solicit any work
+          through this website;
+        </li>
+        <li>
+          You wish to gain more information about the firm for your own
+          information and use;
+        </li>
+        <li>
+          The information about the firm is provided to you only on your
+          specific request, and any information obtained or material
+          downloaded from this website is entirely at your own volition;
+        </li>
+        <li>
+          No information on this website is to be construed as legal advice,
+          and the firm is not liable for any consequence of any action taken
+          by you relying on the material or information provided here. In
+          cases where you require legal assistance, you must seek independent
+          legal advice.
+        </li>
+      </ul>
+    </div>
+
+    <div class="gate__actions">
+      <button type="button" class="btn gate__agree" data-gate-accept>
+        I Agree
+      </button>
+      <a class="btn btn--ghost" href="https://www.google.com" rel="noopener">
+        Decline
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const KEY = 'anv:disclaimer-accepted';
+  const gate = document.querySelector('[data-gate]') as HTMLElement | null;
+
+  if (gate) {
+    let accepted = false;
+    try {
+      accepted = localStorage.getItem(KEY) === '1';
+    } catch {
+      /* Storage blocked (private mode, embedded browser). Showing
+         the gate is the safe fallback — it is never the reverse. */
+    }
+
+    if (!accepted) {
+      const panel = gate.querySelector('.gate__panel') as HTMLElement;
+      const focusables = () =>
+        Array.from(
+          panel.querySelectorAll<HTMLElement>('button, [href]')
+        ).filter((el) => !el.hasAttribute('disabled'));
+
+      const lastFocused = document.activeElement as HTMLElement | null;
+
+      gate.hidden = false;
+      document.body.classList.add('is-locked');
+      requestAnimationFrame(() => gate.classList.add('is-open'));
+      focusables()[0]?.focus({ preventScroll: true });
+
+      /* A gate, not a dismissible dialog: Escape must not close
+         it, so the trap only cycles Tab. */
+      const onKey = (e: KeyboardEvent) => {
+        if (e.key !== 'Tab') return;
+        const items = focusables();
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      };
+
+      document.addEventListener('keydown', onKey);
+
+      gate.querySelector('[data-gate-accept]')?.addEventListener('click', () => {
+        try {
+          localStorage.setItem(KEY, '1');
+        } catch {
+          /* Acknowledgement simply won't persist; proceed anyway. */
+        }
+        gate.classList.remove('is-open');
+        document.body.classList.remove('is-locked');
+        document.removeEventListener('keydown', onKey);
+        setTimeout(() => {
+          gate.hidden = true;
+        }, 460);
+        lastFocused?.focus?.({ preventScroll: true });
+      });
+    }
+  }
+</script>
+
+<style>
+  .gate {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-gate);
+    display: grid;
+    place-items: center;
+    padding: var(--sp-md);
+    background: rgb(6 14 25 / 0.86);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 460ms var(--ease);
+    overflow-y: auto;
+  }
+
+  .gate[hidden] { display: none; }
+  .gate.is-open { opacity: 1; }
+
+  .gate__panel {
+    position: relative;
+    width: min(680px, 100%);
+    max-height: min(88vh, 780px);
+    overflow-y: auto;
+    background: var(--ink);
+    border: 1px solid var(--rule-metal);
+    padding: clamp(1.75rem, 1rem + 3vw, 3.25rem);
+    box-shadow: var(--shadow-ink);
+    transform: translate3d(0, 18px, 0) scale(0.985);
+    transition: transform 620ms var(--ease);
+  }
+
+  .gate.is-open .gate__panel {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  .gate__panel :global(.gate__mark) {
+    width: 46px;
+    height: 40px;
+    margin-bottom: var(--sp-md);
+  }
+
+  .gate__eyebrow { margin-bottom: 0.85rem; }
+
+  .gate__title {
+    font-size: var(--fs-h3);
+    color: var(--text-on-ink);
+    margin-bottom: var(--sp-md);
+  }
+
+  .gate__body {
+    font-size: var(--fs-small);
+    line-height: 1.78;
+    color: var(--text-on-ink-dim);
+  }
+
+  .gate__body p { margin-bottom: 1rem; }
+
+  .gate__body ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding-left: 1.15rem;
+  }
+
+  .gate__body li {
+    position: relative;
+    list-style: none;
+  }
+
+  /* Champagne tick instead of a bullet — the same marker used
+     for scope lists elsewhere, so the gate feels native. */
+  .gate__body li::before {
+    content: '';
+    position: absolute;
+    left: -1.15rem;
+    top: 0.72em;
+    width: 6px;
+    height: 1px;
+    background: var(--champagne);
+  }
+
+  .gate__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-sm);
+    margin-top: var(--sp-lg);
+    padding-top: var(--sp-lg);
+    border-top: 1px solid var(--rule-on-ink-soft);
+  }
+
+  .gate__agree { flex: 1 1 auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gate,
+    .gate__panel {
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

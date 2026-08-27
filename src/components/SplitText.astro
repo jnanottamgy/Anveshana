@@ -1,0 +1,47 @@
+---
+/**
+ * SPLIT TEXT — masked line-by-line headline reveal.
+ *
+ * Lines are supplied explicitly rather than measured at runtime.
+ * That is a deliberate choice: where a display headline breaks
+ * is a typographic decision, not something to leave to the
+ * browser, and it avoids the layout-thrash and flash-of-unstyled
+ * text that runtime splitting causes.
+ *
+ * Each line may contain inline HTML (e.g. <em class="accent-italic">).
+ * If a line wraps on a narrow viewport it still animates cleanly,
+ * because the mask grows with it.
+ */
+interface Props {
+  lines: string[];
+  as?: string;
+  class?: string;
+  /* Milliseconds between each line entering. */
+  stagger?: number;
+  id?: string;
+}
+
+const {
+  lines,
+  as: Tag = 'h2',
+  class: className = '',
+  stagger = 105,
+  id,
+} = Astro.props;
+---
+
+<Tag class:list={['split', className]} data-split={stagger} data-reveal="fade" id={id}>
+  {lines.map((line) => (
+    <span class="split-line">
+      <span class="split-line__inner" set:html={line} />
+    </span>
+  ))}
+</Tag>
+
+<style>
+  .split {
+    /* The mask padding in motion.css bleeds outward; keep the
+       element's own box tight so spacing stays predictable. */
+    display: block;
+  }
+</style>

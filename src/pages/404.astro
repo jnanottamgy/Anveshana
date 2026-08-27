@@ -1,0 +1,134 @@
+---
+import Base from '../layouts/Base.astro';
+import Monogram from '../components/Monogram.astro';
+import SplitText from '../components/SplitText.astro';
+import { practiceAreas } from '../data/site';
+---
+
+<Base
+  title="Page not found"
+  description="The page you were looking for could not be found on the Anveshana Advocates & Consultants website."
+>
+  <section class="nf on-ink">
+    <Monogram tone="current" class="nf__watermark" />
+
+    <div class="container nf__inner">
+      <p class="eyebrow" data-reveal>Error 404</p>
+      <SplitText
+        as="h1"
+        class="nf__title"
+        lines={['This page could not', 'be <em class="accent-italic">found.</em>']}
+      />
+      <p class="lead nf__lead" data-reveal style="--reveal-delay: 260ms">
+        The address may have changed, or the page may never have existed. The
+        pages below cover most of what people come here looking for.
+      </p>
+
+      <div class="nf__actions" data-reveal style="--reveal-delay: 340ms">
+        <a class="btn" href="/" data-magnetic="0.22">
+          Return home
+          <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="link-underline" href="/contact/">
+          Contact the firm
+          <span class="btn__arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+
+      <!-- Not a <nav>: the footer already exposes a landmark
+           labelled "Practice areas", and two identically-named
+           landmarks are indistinguishable to a screen reader. -->
+      <div class="nf__links" data-reveal style="--reveal-delay: 420ms">
+        <h2 class="nf__links-label">Practice areas</h2>
+        <ul>
+          {practiceAreas.map((area) => (
+            <li>
+              <a href={`/practice-areas/${area.slug}/`}>
+                <span class="index-num">{area.index}</span>
+                {area.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    position: relative;
+    min-height: 78svh;
+    display: flex;
+    align-items: center;
+    background: var(--ink);
+    color: var(--text-on-ink);
+    padding-top: calc(var(--header-h) + var(--sp-2xl));
+    padding-bottom: var(--sp-3xl);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  :global(.nf__watermark) {
+    position: absolute;
+    right: -8%;
+    bottom: -34%;
+    width: min(56vw, 640px);
+    height: auto;
+    color: var(--text-on-ink);
+    opacity: 0.045;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .nf__inner { max-width: 46rem; }
+  .nf .eyebrow { margin-bottom: var(--sp-md); }
+
+  .nf__title {
+    font-size: clamp(2.4rem, 1.2rem + 4.2vw, 4.8rem);
+    color: var(--white);
+  }
+
+  .nf__lead { margin-top: var(--sp-md); }
+
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-md) var(--sp-lg);
+    margin-top: var(--sp-lg);
+  }
+
+  .nf__links {
+    margin-top: var(--sp-2xl);
+    padding-top: var(--sp-md);
+    border-top: 1px solid var(--rule-on-ink);
+  }
+
+  .nf__links-label {
+    font-family: var(--font-sans);
+    font-size: var(--fs-eyebrow);
+    font-weight: 500;
+    letter-spacing: var(--ls-eyebrow);
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--sp-md);
+  }
+
+  .nf__links ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 0.7rem var(--sp-lg);
+  }
+
+  .nf__links a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    font-size: var(--fs-small);
+    color: var(--text-on-ink-dim);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .nf__links a:hover { color: var(--accent); }
+</style>

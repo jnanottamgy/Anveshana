@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import PracticeIndex from '../../components/PracticeIndex.astro';
+import CTABand from '../../components/CTABand.astro';
+import { firm, practiceAreas } from '../../data/site';
+
+const description =
+  'The practice areas of Anveshana Advocates & Consultants, Bengaluru — criminal law, civil and property, family law, employment and labour, business and mercantile, and cyber law.';
+
+const schema = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${firm.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'Practice Areas', item: `${firm.url}/practice-areas/` },
+    ],
+  },
+  {
+    '@type': 'ItemList',
+    name: 'Practice Areas',
+    itemListElement: practiceAreas.map((area, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: area.title,
+      url: `${firm.url}/practice-areas/${area.slug}/`,
+    })),
+  },
+];
+---
+
+<Base title="Practice Areas" description={description} schema={schema}>
+  <PageHero
+    eyebrow="Practice Areas"
+    lines={['Where we', 'can <em class="accent-italic">help.</em>']}
+    lead="Six areas of practice, litigation-led and handled by the advocate you brief. Where a matter falls outside them, we will say so and point you to counsel who can help."
+    breadcrumbs={[{ label: 'Practice Areas' }]}
+  />
+  <PracticeIndex heading={false} />
+  <CTABand
+    eyebrow="Not sure where your matter fits?"
+    lines={['Describe it', 'in <em class="accent-italic">plain words.</em>']}
+    body="You do not need to know the legal category. Tell us what happened and we will tell you which area it falls under, and whether it is worth pursuing."
+  />
+</Base>

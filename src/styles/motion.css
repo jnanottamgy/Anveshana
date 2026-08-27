@@ -1,0 +1,335 @@
+/* ============================================================
+   ANVESHANA — MOTION
+   ------------------------------------------------------------
+   The declarative half of the motion system. JavaScript only
+   ever adds or removes a state class; every transition and
+   keyframe lives here, so motion can be reasoned about (and
+   disabled) in one place.
+
+   Rules this system holds to:
+     · Nothing bounces. Expo-out only.
+     · Nothing moves more than ~28px.
+     · Nothing animates that the user did not scroll to.
+     · Everything yields to prefers-reduced-motion.
+   ============================================================ */
+
+/* ---- Scroll reveal -------------------------------------- */
+/* Elements start hidden ONLY once JS has confirmed it is
+   running — .motion-ready is set on <html> by the engine. This
+   guarantees content is visible if JS fails to load. */
+.motion-ready [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-y, 22px), 0);
+  transition:
+    opacity var(--dur-reveal) var(--ease) var(--reveal-delay, 0ms),
+    transform var(--dur-reveal) var(--ease) var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.motion-ready [data-reveal='fade'] {
+  --reveal-y: 0px;
+}
+
+.motion-ready [data-reveal='scale'] {
+  --reveal-y: 0px;
+  transform: translate3d(0, 0, 0) scale(0.965);
+}
+
+/* A vertical wipe — used for images and plates. */
+.motion-ready [data-reveal='wipe'] {
+  --reveal-y: 0px;
+  clip-path: inset(0 0 100% 0);
+  opacity: 1;
+  transition: clip-path var(--dur-reveal) var(--ease) var(--reveal-delay, 0ms);
+}
+
+.motion-ready [data-reveal].is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  clip-path: inset(0 0 0 0);
+  will-change: auto;
+}
+
+/* ---- Split-text line reveal ----------------------------- */
+/* Each line sits in an overflow-hidden mask and rises into it.
+   This is the single most "designed" motion on the site, so it
+   is reserved for display headlines. */
+.split-line {
+  display: block;
+  overflow: hidden;
+  /* Cormorant's italic descenders (the "q" of "inquiry", the "p"
+     of "happened") overrun the line box, so the mask is padded
+     to avoid clipping them mid-glyph. */
+  padding-block: 0.2em;
+}
+
+/* The padding is cancelled only BETWEEN lines, never at the
+   outer edges — that keeps the line rhythm exact while leaving
+   real descender clearance above and below the block, so the
+   copy that follows a headline can never be collided into. */
+.split-line + .split-line {
+  margin-top: -0.4em;
+}
+
+.split-line__inner {
+  display: block;
+  transform: translate3d(0, 110%, 0);
+  transition: transform var(--dur-reveal) var(--ease) var(--line-delay, 0ms);
+  will-change: transform;
+}
+
+.is-revealed .split-line__inner,
+.split-line.is-revealed .split-line__inner {
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* ---- Hairline draw -------------------------------------- */
+.motion-ready [data-draw-rule] {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease) var(--reveal-delay, 0ms);
+}
+
+.motion-ready [data-draw-rule].is-revealed {
+  transform: scaleX(1);
+}
+
+/* ---- 3D depth scene ------------------------------------- */
+/* Layers translate on Z at different rates under the pointer.
+   Real perspective, no library, no WebGL — reads as expensive
+   because the parallax is genuinely dimensional rather than a
+   flat 2D offset. */
+[data-depth-scene] {
+  perspective: var(--persp);
+  transform-style: preserve-3d;
+}
+
+[data-depth] {
+  transform: translate3d(
+    calc(var(--px, 0) * var(--depth, 10) * 1px),
+    calc(var(--py, 0) * var(--depth, 10) * 1px),
+    0
+  );
+  transition: transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+
+/* ---- Card tilt ------------------------------------------ */
+[data-tilt] {
+  transform-style: preserve-3d;
+  transition: transform 600ms var(--ease);
+}
+
+[data-tilt].is-tilting {
+  transition: transform 120ms linear;
+}
+
+/* ---- Magnetic ------------------------------------------- */
+[data-magnetic] {
+  transition: transform 620ms var(--ease);
+}
+
+[data-magnetic].is-magnetised {
+  transition: transform 180ms var(--ease-out);
+}
+
+/* ---- Marquee -------------------------------------------- */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  flex: none;
+  gap: var(--marquee-gap, 3rem);
+  padding-right: var(--marquee-gap, 3rem);
+  align-items: center;
+  min-width: max-content;
+  animation: marquee var(--marquee-dur, 46s) linear infinite;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  to { transform: translate3d(-100%, 0, 0); }
+}
+
+/* ---- Entry curtain -------------------------------------- */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-curtain);
+  display: grid;
+  place-items: center;
+  background: var(--obsidian);
+  pointer-events: none;
+}
+
+.curtain__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  transition: opacity 420ms var(--ease);
+}
+
+/* Two panels part vertically — a stage curtain rather than a
+   fade, which is what makes the entry feel like an occasion. */
+.curtain__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: var(--obsidian);
+  transition: transform var(--dur-curtain) var(--ease);
+}
+
+.curtain__panel--top { top: 0; }
+.curtain__panel--bottom { bottom: 0; }
+
+.curtain.is-lifting .curtain__inner { opacity: 0; }
+.curtain.is-lifting .curtain__panel--top { transform: translate3d(0, -100%, 0); }
+.curtain.is-lifting .curtain__panel--bottom { transform: translate3d(0, 100%, 0); }
+
+.curtain.is-done {
+  display: none;
+}
+
+.curtain__wordmark {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--text-on-ink-faint);
+  margin-right: -0.42em;
+  opacity: 0;
+  animation: curtain-word 700ms var(--ease) 620ms forwards;
+}
+
+@keyframes curtain-word {
+  to { opacity: 1; }
+}
+
+/* ---- Page transition ------------------------------------ */
+/* An ink wipe that covers the viewport before navigation
+   commits, so pages hand off instead of blinking. */
+.wipe {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-curtain);
+  background: var(--obsidian);
+  transform: translate3d(0, 100%, 0);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.wipe.is-covering {
+  transform: translate3d(0, 0, 0);
+  transition: transform 520ms var(--ease-io);
+}
+
+.wipe.is-clearing {
+  transform: translate3d(0, -100%, 0);
+  transition: transform 520ms var(--ease-io);
+}
+
+/* ---- Custom cursor -------------------------------------- */
+/* Desktop pointers only. Never replaces the system cursor on
+   touch, and never on a coarse pointer. */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-cursor);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms var(--ease);
+}
+
+.cursor.is-active { opacity: 1; }
+
+.cursor__ring {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid var(--champagne);
+  border-radius: 50%;
+  transition:
+    width 420ms var(--ease),
+    height 420ms var(--ease),
+    margin 420ms var(--ease),
+    background-color 420ms var(--ease),
+    border-color 420ms var(--ease),
+    opacity 300ms var(--ease);
+}
+
+.cursor__dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 50%;
+  background: var(--champagne);
+  transition: opacity 300ms var(--ease), transform 300ms var(--ease);
+}
+
+/* Over a link or control the ring opens up and the dot retreats. */
+.cursor.is-hovering .cursor__ring {
+  width: 62px;
+  height: 62px;
+  margin: -31px 0 0 -31px;
+  background: rgb(198 166 100 / 0.1);
+}
+
+.cursor.is-hovering .cursor__dot {
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+/* ---- Counters ------------------------------------------- */
+[data-count] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Scroll cue ----------------------------------------- */
+.scroll-cue__line {
+  display: block;
+  width: 1px;
+  height: 56px;
+  background: linear-gradient(180deg, var(--champagne), transparent);
+  transform-origin: top;
+  animation: cue 2600ms var(--ease-io) infinite;
+}
+
+@keyframes cue {
+  0%   { transform: scaleY(0); opacity: 0; }
+  35%  { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; transform-origin: bottom; }
+}
+
+/* ---- Reduced motion ------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .motion-ready [data-reveal],
+  .motion-ready [data-draw-rule] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+
+  .split-line__inner { transform: none !important; }
+  [data-depth] { transform: none !important; }
+
+  .marquee__track { animation: none; }
+  .scroll-cue__line { animation: none; opacity: 0.6; }
+  .curtain { display: none; }
+  .wipe { display: none; }
+  .cursor { display: none; }
+}

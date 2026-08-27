@@ -1,0 +1,288 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SplitText from '../components/SplitText.astro';
+import CTABand from '../components/CTABand.astro';
+import { firm, commitments, forums, process } from '../data/site';
+
+const description =
+  'Anveshana Advocates & Consultants is a litigation-led law firm in Seshadripuram, Bengaluru. Deliberately small, so the advocate you brief is the advocate who appears.';
+
+const schema = [
+  {
+    '@type': 'AboutPage',
+    '@id': `${firm.url}/about/#webpage`,
+    url: `${firm.url}/about/`,
+    name: `The Firm — ${firm.legalName}`,
+    description,
+    about: { '@id': `${firm.url}/#organisation` },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${firm.url}/` },
+      { '@type': 'ListItem', position: 2, name: 'The Firm', item: `${firm.url}/about/` },
+    ],
+  },
+];
+---
+
+<Base title="The Firm" description={description} schema={schema}>
+  <PageHero
+    eyebrow="The Firm"
+    lines={['The name is', 'the <em class="accent-italic">method.</em>']}
+    lead="Anveshana — अन्वेषण — is Sanskrit for inquiry: the act of searching something out until you understand it. We chose it because it describes how we work before it describes who we are."
+    breadcrumbs={[{ label: 'The Firm' }]}
+  />
+
+  <!-- The name / philosophy -->
+  <section class="story section on-bone" aria-labelledby="story-title">
+    <div class="container story__grid">
+      <div>
+        <p class="eyebrow" data-reveal>Why it matters</p>
+        <SplitText
+          as="h2"
+          id="story-title"
+          class="story__title"
+          lines={['Examine first.', 'Argue <em class="accent-italic">second.</em>']}
+        />
+      </div>
+
+      <div class="story__copy prose" data-reveal style="--reveal-delay: 160ms">
+        <p>
+          Most matters are lost long before a hearing — in a document nobody
+          read closely, a deadline nobody diarised, or a version of events
+          nobody tested before it was filed. The work that decides a case is
+          almost always done at the beginning, quietly, and out of court.
+        </p>
+        <p>
+          So we start by establishing what actually happened, and what can be
+          proved. Only then do we decide what to argue. It is slower in the
+          first week and considerably faster in the second year.
+        </p>
+        <p>
+          <strong>We have stayed deliberately small.</strong> A larger firm
+          would let us take more matters; it would also mean the person you
+          met at the consultation is not the person who argues your case. We
+          would rather decline work than make that trade.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commitments -->
+  <section class="values section on-ink" aria-labelledby="values-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>What you can expect</p>
+        <h2 class="section-head__title values__title" id="values-title" data-reveal
+            style="--reveal-delay: 80ms">
+          Three commitments we make to every client.
+        </h2>
+      </div>
+
+      <ol class="values__list" data-reveal-group="120">
+        {commitments.map((item) => (
+          <li class="value" data-reveal>
+            <span class="index-num">{item.index}</span>
+            <h3 class="value__title">{item.title}</h3>
+            <p class="value__body">{item.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="method section on-bone" aria-labelledby="method-title">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow" data-reveal>How we work</p>
+          <h2 class="section-head__title method__title" id="method-title" data-reveal
+              style="--reveal-delay: 80ms">
+            Four stages, every matter.
+          </h2>
+        </div>
+        <p class="lead" data-reveal style="--reveal-delay: 160ms">
+          Whether it is a bail application moved tomorrow or a commercial
+          arbitration running for a year, the sequence does not change.
+        </p>
+      </div>
+
+      <ol class="method__list" data-reveal-group="90">
+        {process.map((step) => (
+          <li class="method__step" data-reveal>
+            <span class="index-num">{step.index}</span>
+            <h3 class="method__step-title">{step.title}</h3>
+            <p class="method__step-body">{step.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Forums -->
+  <section class="courts section section--tight on-ink" aria-labelledby="courts-title">
+    <div class="container courts__inner">
+      <div>
+        <p class="eyebrow" data-reveal>Courts &amp; forums</p>
+        <h2 class="courts__title" id="courts-title" data-reveal style="--reveal-delay: 80ms">
+          Where we appear
+        </h2>
+      </div>
+      <ul class="courts__list" data-reveal-group="55">
+        {forums.map((forum) => (
+          <li class="courts__item" data-reveal>{forum}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CTABand />
+</Base>
+
+<style>
+  /* ---- Story --------------------------------------------- */
+  .story { background: var(--bone); color: var(--text-on-bone); }
+
+  .story__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-lg);
+  }
+
+  @media (min-width: 900px) {
+    .story__grid {
+      grid-template-columns: 1fr 1.1fr;
+      gap: var(--sp-2xl);
+      align-items: start;
+    }
+  }
+
+  .story .eyebrow { margin-bottom: var(--sp-md); }
+
+  .story__title {
+    font-size: var(--fs-h2);
+    color: var(--text-on-bone);
+  }
+
+  .story__copy p { font-size: var(--fs-lead); line-height: 1.7; }
+
+  /* ---- Values -------------------------------------------- */
+  .values { background: var(--ink); color: var(--text-on-ink); }
+  .values__title { color: var(--white); }
+
+  .values__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-lg);
+    border-top: 1px solid var(--rule-on-ink);
+    padding-top: var(--sp-xl);
+  }
+
+  @media (min-width: 820px) {
+    .values__list { grid-template-columns: repeat(3, 1fr); gap: var(--sp-xl); }
+  }
+
+  .value { display: flex; flex-direction: column; gap: 0.85rem; }
+
+  .value__title {
+    font-size: var(--fs-h4);
+    font-weight: 400;
+    color: var(--text-on-ink);
+  }
+
+  .value__body {
+    font-size: var(--fs-small);
+    line-height: 1.75;
+    color: var(--text-on-ink-dim);
+  }
+
+  /* ---- Method -------------------------------------------- */
+  .method { background: var(--bone); color: var(--text-on-bone); }
+  .method__title { color: var(--text-on-bone); }
+  .method .eyebrow { margin-bottom: var(--sp-md); }
+
+  .method__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-top: 1px solid var(--rule-on-bone);
+  }
+
+  @media (min-width: 760px) {
+    .method__list {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: var(--sp-xl);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .method__list { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .method__step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding-block: var(--sp-lg);
+    border-bottom: 1px solid var(--rule-on-bone-soft);
+  }
+
+  .method__step-title {
+    font-size: var(--fs-h5);
+    font-weight: 500;
+    font-family: var(--font-display);
+    color: var(--text-on-bone);
+  }
+
+  .method__step-body {
+    font-size: var(--fs-small);
+    line-height: 1.72;
+    color: var(--text-on-bone-dim);
+  }
+
+  /* ---- Courts -------------------------------------------- */
+  .courts { background: var(--ink); color: var(--text-on-ink); }
+
+  .courts__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-lg);
+  }
+
+  @media (min-width: 900px) {
+    .courts__inner {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: var(--sp-2xl);
+      align-items: start;
+    }
+  }
+
+  .courts .eyebrow { margin-bottom: var(--sp-md); }
+
+  .courts__title {
+    font-size: var(--fs-h3);
+    color: var(--white);
+  }
+
+  .courts__list {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--rule-on-ink);
+  }
+
+  @media (min-width: 620px) {
+    .courts__list { grid-template-columns: repeat(2, 1fr); column-gap: var(--sp-xl); }
+  }
+
+  .courts__item {
+    padding-block: 0.9rem;
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+    letter-spacing: 0.02em;
+    color: var(--text-on-ink-dim);
+    border-bottom: 1px solid var(--rule-on-ink-soft);
+  }
+</style>

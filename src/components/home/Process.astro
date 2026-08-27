@@ -1,0 +1,117 @@
+---
+/**
+ * HOW WE WORK
+ *
+ * The heading pins while the steps scroll past it. Built with
+ * position: sticky rather than a scroll-jacking library, so it
+ * degrades to a plain stacked layout on narrow viewports and
+ * costs nothing in JavaScript.
+ */
+import SplitText from '../SplitText.astro';
+import { process } from '../../data/site';
+---
+
+<section class="process section on-bone" aria-labelledby="process-title">
+  <div class="container process__inner">
+    <div class="process__sticky">
+      <p class="eyebrow" data-reveal>How we work</p>
+      <SplitText
+        as="h2"
+        id="process-title"
+        class="process__title"
+        lines={['Method', 'before', '<em class="accent-italic">motion.</em>']}
+      />
+      <p class="process__note" data-reveal style="--reveal-delay: 200ms">
+        Four stages, applied to every matter we accept — whether it is a bail
+        application moved tomorrow or a commercial arbitration running for a
+        year.
+      </p>
+    </div>
+
+    <ol class="process__steps">
+      {process.map((step) => (
+        <li class="step" data-reveal>
+          <span class="step__index index-num">{step.index}</span>
+          <div class="step__body">
+            <h3 class="step__title">{step.title}</h3>
+            <p class="step__text">{step.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process {
+    background: var(--bone);
+    color: var(--text-on-bone);
+  }
+
+  .process__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sp-2xl);
+  }
+
+  @media (min-width: 960px) {
+    .process__inner {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: var(--sp-3xl);
+      align-items: start;
+    }
+
+    .process__sticky {
+      position: sticky;
+      /* Clears the condensed header with room to breathe. */
+      top: calc(var(--header-h-scrolled) + 4rem);
+    }
+  }
+
+  .process__sticky .eyebrow { margin-bottom: var(--sp-md); }
+
+  .process__title {
+    font-size: var(--fs-h2);
+    color: var(--text-on-bone);
+    margin-bottom: var(--sp-md);
+  }
+
+  .process__note {
+    font-size: var(--fs-small);
+    line-height: 1.75;
+    color: var(--text-on-bone-dim);
+    max-width: 40ch;
+  }
+
+  /* ---- Steps --------------------------------------------- */
+  .process__steps {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--sp-md);
+    padding-block: clamp(2rem, 4vw, 3.25rem);
+    border-bottom: 1px solid var(--rule-on-bone-soft);
+  }
+
+  .step:first-child { padding-top: 0; }
+  .step:last-child { border-bottom: 0; padding-bottom: 0; }
+
+  .step__index { padding-top: 0.5em; }
+
+  .step__title {
+    font-size: var(--fs-h3);
+    font-weight: 300;
+    color: var(--text-on-bone);
+    margin-bottom: 0.7rem;
+  }
+
+  .step__text {
+    line-height: 1.78;
+    color: var(--text-on-bone-dim);
+    max-width: 54ch;
+  }
+</style>
