@@ -57,19 +57,41 @@ export const firm = {
 } as const;
 
 /* ------------------------------------------------------------
-   CONTACT FORM ENDPOINT
+   WHATSAPP — the firm's enquiry channel
    ------------------------------------------------------------
-   The site is fully static, so the enquiry form needs somewhere
-   to POST. Paste a form-handler URL here (Formspree, Web3Forms,
-   Basin — any of them take a JSON POST) and the form starts
-   delivering to the firm's inbox. See HANDOFF.md for the
-   two-minute setup.
+   Every "request a consultation" action on the site opens a
+   WhatsApp conversation with the chambers rather than a contact
+   form. On a phone that opens the WhatsApp app; on a desktop it
+   opens WhatsApp Web (or the desktop app, if installed).
 
-   Left empty, the form still works: it validates, then hands the
-   enquiry to the visitor's mail client pre-addressed and
-   pre-filled, so no enquiry is ever silently lost.
+   `number` must be digits only, with the country code and no
+   plus sign or spaces — that is the format wa.me requires.
    ------------------------------------------------------------ */
-export const formEndpoint = '';
+export const whatsapp = {
+  number: '919964140121',
+
+  /* The message the visitor sees already typed into the chat.
+     They can edit or delete it before sending — it exists to
+     save them writing the opening line, not to speak for them. */
+  defaultMessage:
+    'Hello, I would like to request a consultation with Anveshana Advocates & Consultants.',
+} as const;
+
+/**
+ * Builds a wa.me link, optionally with the message pre-filled.
+ * Pass a practice area (or any context) to open the chat with a
+ * more specific opening line.
+ */
+export function whatsappUrl(message: string = whatsapp.defaultMessage): string {
+  return `https://wa.me/${whatsapp.number}?text=${encodeURIComponent(message)}`;
+}
+
+/** Opening line for an enquiry about a named practice area. */
+export function whatsappForArea(area: string): string {
+  return whatsappUrl(
+    `Hello, I would like to request a consultation with Anveshana Advocates & Consultants regarding a ${area} matter.`
+  );
+}
 
 /* ------------------------------------------------------------
    NAVIGATION

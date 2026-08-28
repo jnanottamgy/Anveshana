@@ -1,10 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import { firm, practiceAreas, formEndpoint } from '../data/site';
+import WhatsAppAction from '../components/WhatsAppAction.astro';
+import { firm } from '../data/site';
 
 const description =
-  'Contact Anveshana Advocates & Consultants — Kumarapark East, Crescent Road, Seshadripuram, Bengaluru 560001. Call +91 99641 40121 or request a consultation.';
+  'Contact Anveshana Advocates & Consultants — Kumarapark East, Crescent Road, Seshadripuram, Bengaluru 560001. Message the chambers on WhatsApp or call +91 99641 40121.';
 
 const schema = [
   {
@@ -25,97 +26,71 @@ const schema = [
 ];
 
 const mapSrc = `https://maps.google.com/maps?q=${firm.geo.lat},${firm.geo.lng}&z=16&output=embed`;
+
+/* What to put in the first message. Enquiries that arrive with
+   these four things can be assessed immediately instead of
+   turning into three rounds of questions. */
+const brief = [
+  'What has happened, in a few lines.',
+  'When it happened, and whether any date or deadline is already fixed.',
+  'Whether any notice, complaint or court paper has been received.',
+  'What you would like the outcome to be.',
+];
 ---
 
 <Base title="Contact" description={description} schema={schema}>
   <PageHero
     eyebrow="Contact"
     lines={['Tell us what', 'has <em class="accent-italic">happened.</em>']}
-    lead="The first conversation costs you nothing but the time it takes. Write to us below, or call the chambers directly."
+    lead="The first conversation costs you nothing but the time it takes. Message the chambers on WhatsApp, or call directly."
     breadcrumbs={[{ label: 'Contact' }]}
   />
 
   <section class="contact section on-bone">
     <div class="container contact__grid">
-      <!-- ---- Enquiry form ---- -->
-      <div class="contact__form-col">
-        <h2 class="eyebrow" data-reveal>Send an enquiry</h2>
+      <!-- ---- The enquiry channel ---- -->
+      <div class="reach">
+        <h2 class="eyebrow" data-reveal>Message the chambers</h2>
 
-        <form
-          class="form"
-          id="enquiry"
-          data-form
-          data-endpoint={formEndpoint}
-          data-mailto={firm.email}
-          novalidate
-          data-reveal
-          style="--reveal-delay: 90ms"
-        >
-          <div class="form__row">
-            <div class="field">
-              <label class="field__label" for="name">Your name</label>
-              <input class="field__input" type="text" id="name" name="name"
-                     autocomplete="name" required />
-              <p class="field__error" data-error-for="name"></p>
-            </div>
+        <p class="reach__lead" data-reveal style="--reveal-delay: 70ms">
+          WhatsApp is the fastest way to reach us. Messages are read by the
+          advocates themselves, not by an assistant, and are usually answered
+          the same working day.
+        </p>
 
-            <div class="field">
-              <label class="field__label" for="phone">Phone</label>
-              <input class="field__input" type="tel" id="phone" name="phone"
-                     autocomplete="tel" inputmode="tel" required />
-              <p class="field__error" data-error-for="phone"></p>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="field__label" for="email">Email</label>
-            <input class="field__input" type="email" id="email" name="email"
-                   autocomplete="email" required />
-            <p class="field__error" data-error-for="email"></p>
-          </div>
-
-          <div class="field">
-            <label class="field__label" for="matter">Nature of the matter</label>
-            <div class="field__select-wrap">
-              <select class="field__input field__select" id="matter" name="matter" required>
-                <option value="" selected disabled>Please select</option>
-                {practiceAreas.map((area) => (
-                  <option value={area.title}>{area.title}</option>
-                ))}
-                <option value="Not sure">I am not sure</option>
-              </select>
-              <span class="field__chevron" aria-hidden="true"></span>
-            </div>
-            <p class="field__error" data-error-for="matter"></p>
-          </div>
-
-          <div class="field">
-            <label class="field__label" for="message">What has happened?</label>
-            <textarea class="field__input field__textarea" id="message" name="message"
-                      rows="6" required
-                      placeholder="A few lines is enough. Please do not include confidential documents at this stage."></textarea>
-            <p class="field__error" data-error-for="message"></p>
-          </div>
-
-          <!-- Honeypot: invisible to people, irresistible to bots. -->
-          <div class="form__trap" aria-hidden="true">
-            <label for="company">Company (leave blank)</label>
-            <input type="text" id="company" name="company" tabindex="-1" autocomplete="off" />
-          </div>
-
-          <p class="form__notice">
-            Sending an enquiry does not create an advocate–client relationship,
-            and this form is not a secure channel. Please do not send
-            confidential or privileged material until we have spoken.
+        <div class="reach__action" data-reveal style="--reveal-delay: 140ms">
+          <WhatsAppAction block />
+          <p class="reach__hint">
+            Opens WhatsApp on your phone, or WhatsApp Web on a computer.
           </p>
+        </div>
 
-          <button class="btn btn--block form__submit" type="submit">
-            <span data-submit-label>Send enquiry</span>
-            <span class="btn__arrow" aria-hidden="true">&rarr;</span>
-          </button>
+        <div class="reach__brief" data-reveal style="--reveal-delay: 210ms">
+          <h3 class="reach__brief-label">Worth including in the first message</h3>
+          <ol class="brief">
+            {brief.map((item, i) => (
+              <li class="brief__item">
+                <span class="index-num">{String(i + 1).padStart(2, '0')}</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
 
-          <p class="form__status" data-form-status role="status" aria-live="polite"></p>
-        </form>
+        <div class="reach__alt" data-reveal style="--reveal-delay: 280ms">
+          <h3 class="reach__brief-label">Prefer not to use WhatsApp?</h3>
+          <p class="reach__alt-copy">
+            Call the chambers on
+            <a href={`tel:${firm.phoneHref}`}>{firm.phone}</a>, or write to
+            <a href={`mailto:${firm.email}`}>{firm.email}</a>.
+          </p>
+        </div>
+
+        <p class="reach__notice" data-reveal style="--reveal-delay: 340ms">
+          Sending a message does not by itself create an advocate–client
+          relationship. Please do not send confidential or privileged material
+          until we have spoken and confirmed that we are able to act for you.
+        </p>
       </div>
 
       <!-- ---- Details ---- -->
@@ -166,129 +141,6 @@ const mapSrc = `https://maps.google.com/maps?q=${firm.geo.lat},${firm.geo.lng}&z
 </Base>
 
 <script>
-  /* ---- Enquiry form -------------------------------------- */
-  const form = document.querySelector<HTMLFormElement>('[data-form]');
-
-  if (form) {
-    const status = form.querySelector<HTMLElement>('[data-form-status]');
-    const submit = form.querySelector<HTMLButtonElement>('.form__submit');
-    const label = form.querySelector<HTMLElement>('[data-submit-label]');
-    const endpoint = form.dataset.endpoint || '';
-    const mailto = form.dataset.mailto || '';
-
-    const RULES: Record<string, (v: string) => string> = {
-      name: (v) => (v.trim().length < 2 ? 'Please tell us your name.' : ''),
-      phone: (v) =>
-        /^[\d\s+()-]{8,20}$/.test(v.trim()) ? '' : 'Please enter a phone number we can reach you on.',
-      email: (v) =>
-        /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? '' : 'Please enter a valid email address.',
-      matter: (v) => (v ? '' : 'Please choose the nature of the matter.'),
-      message: (v) =>
-        v.trim().length < 20 ? 'Please give us a little more detail — a few lines is enough.' : '',
-    };
-
-    const showError = (name: string, msg: string) => {
-      const field = form.querySelector<HTMLElement>(`[name="${name}"]`);
-      const slot = form.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
-      if (slot) slot.textContent = msg;
-      if (field) {
-        field.classList.toggle('is-invalid', Boolean(msg));
-        field.setAttribute('aria-invalid', msg ? 'true' : 'false');
-      }
-    };
-
-    const validate = () => {
-      let firstBad: string | null = null;
-      for (const [name, rule] of Object.entries(RULES)) {
-        const el = form.querySelector<HTMLInputElement>(`[name="${name}"]`);
-        const msg = rule(el?.value ?? '');
-        showError(name, msg);
-        if (msg && !firstBad) firstBad = name;
-      }
-      return firstBad;
-    };
-
-    /* Clear a field's error as soon as it becomes valid, rather
-       than making the visitor resubmit to find out. */
-    Object.keys(RULES).forEach((name) => {
-      form.querySelector(`[name="${name}"]`)?.addEventListener('input', (e) => {
-        const el = e.target as HTMLInputElement;
-        if (el.classList.contains('is-invalid') && !RULES[name](el.value)) showError(name, '');
-      });
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!status || !submit || !label) return;
-
-      const bad = validate();
-      if (bad) {
-        status.textContent = 'Please check the highlighted fields.';
-        status.className = 'form__status is-error';
-        form.querySelector<HTMLElement>(`[name="${bad}"]`)?.focus();
-        return;
-      }
-
-      const data = new FormData(form);
-      /* Honeypot tripped — pretend success and drop it. */
-      if (data.get('company')) {
-        status.textContent = 'Thank you. We will be in touch shortly.';
-        status.className = 'form__status is-ok';
-        form.reset();
-        return;
-      }
-
-      const payload = Object.fromEntries(data.entries());
-      delete (payload as Record<string, unknown>).company;
-
-      if (!endpoint) {
-        /* No handler configured yet. Rather than lose the
-           enquiry, hand it to the visitor's mail client fully
-           composed. See HANDOFF.md to wire up a real endpoint. */
-        const body = [
-          `Name: ${payload.name}`,
-          `Phone: ${payload.phone}`,
-          `Email: ${payload.email}`,
-          `Nature of matter: ${payload.matter}`,
-          '',
-          String(payload.message),
-        ].join('\n');
-        window.location.href =
-          `mailto:${mailto}?subject=${encodeURIComponent(`Website enquiry — ${payload.matter}`)}` +
-          `&body=${encodeURIComponent(body)}`;
-        status.textContent = 'Opening your email app to send this enquiry…';
-        status.className = 'form__status is-ok';
-        return;
-      }
-
-      submit.disabled = true;
-      label.textContent = 'Sending…';
-      status.textContent = '';
-      status.className = 'form__status';
-
-      try {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error(String(res.status));
-        form.reset();
-        status.textContent =
-          'Thank you. Your enquiry has reached the chambers and we will respond shortly.';
-        status.className = 'form__status is-ok';
-      } catch {
-        status.innerHTML =
-          `We could not send that just now. Please call <a href="tel:${'+919964140121'}">+91 99641 40121</a> ` +
-          `or email <a href="mailto:${mailto}">${mailto}</a>.`;
-        status.className = 'form__status is-error';
-      } finally {
-        submit.disabled = false;
-        label.textContent = 'Send enquiry';
-      }
-    });
-  }
-
   /* ---- Click-to-load map --------------------------------- */
   const map = document.querySelector<HTMLElement>('[data-map]');
   map?.querySelector('[data-map-load]')?.addEventListener('click', () => {
@@ -313,129 +165,92 @@ const mapSrc = `https://maps.google.com/maps?q=${firm.geo.lat},${firm.geo.lng}&z
 
   @media (min-width: 980px) {
     .contact__grid {
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.1fr 0.9fr;
       gap: var(--sp-3xl);
       align-items: start;
     }
   }
 
-  .contact .eyebrow { margin-bottom: var(--sp-lg); }
+  .contact .eyebrow { margin-bottom: var(--sp-md); }
 
-  /* ---- Form ---------------------------------------------- */
-  .form { display: flex; flex-direction: column; gap: var(--sp-md); }
-
-  .form__row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--sp-md);
+  /* ---- Reach --------------------------------------------- */
+  .reach__lead {
+    font-size: var(--fs-lead);
+    line-height: 1.7;
+    font-weight: 300;
+    color: var(--text-on-bone-dim);
+    max-width: 46ch;
+    margin-bottom: var(--sp-lg);
   }
 
-  @media (min-width: 560px) {
-    .form__row { grid-template-columns: repeat(2, 1fr); }
+  .reach__action {
+    padding-bottom: var(--sp-lg);
+    border-bottom: 1px solid var(--rule-on-bone-soft);
   }
 
-  .field { display: flex; flex-direction: column; gap: 0.45rem; }
+  .reach__hint {
+    margin-top: 0.75rem;
+    font-size: var(--fs-micro);
+    letter-spacing: 0.02em;
+    color: var(--text-on-bone-faint);
+    text-align: center;
+  }
 
-  .field__label {
+  .reach__brief,
+  .reach__alt {
+    padding-block: var(--sp-lg);
+    border-bottom: 1px solid var(--rule-on-bone-soft);
+  }
+
+  .reach__brief-label {
     font-family: var(--font-sans);
-    font-size: 0.7rem;
+    font-size: var(--fs-eyebrow);
     font-weight: 500;
-    letter-spacing: 0.16em;
+    letter-spacing: var(--ls-eyebrow);
     text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--sp-md);
+  }
+
+  .brief {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .brief__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: baseline;
+    font-size: var(--fs-small);
+    line-height: 1.7;
     color: var(--text-on-bone-dim);
   }
 
-  /* Underline-only inputs: a boxed form would fight the
-     hairline language used everywhere else on the site. */
-  .field__input {
-    width: 100%;
-    padding: 0.85rem 0.1rem;
-    font-size: 1rem;
-    color: var(--text-on-bone);
-    background: transparent;
-    border-bottom: 1px solid var(--rule-on-bone);
-    border-radius: 0;
-    transition: border-color var(--dur) var(--ease);
-  }
-
-  .field__input::placeholder { color: var(--text-on-bone-faint); }
-
-  .field__input:hover { border-bottom-color: var(--text-on-bone-faint); }
-
-  .field__input:focus {
-    outline: none;
-    border-bottom-color: var(--accent);
-  }
-
-  .field__input:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 4px;
-  }
-
-  .field__input.is-invalid { border-bottom-color: #b4452f; }
-
-  .field__textarea { resize: vertical; min-height: 8rem; line-height: 1.7; }
-
-  .field__select-wrap { position: relative; }
-
-  .field__select {
-    appearance: none;
-    cursor: pointer;
-    padding-right: 2rem;
-  }
-
-  .field__select:invalid { color: var(--text-on-bone-faint); }
-
-  .field__chevron {
-    position: absolute;
-    right: 0.35rem;
-    top: 50%;
-    width: 8px;
-    height: 8px;
-    margin-top: -6px;
-    border-right: 1px solid var(--accent);
-    border-bottom: 1px solid var(--accent);
-    transform: rotate(45deg);
-    pointer-events: none;
-  }
-
-  .field__error {
-    font-size: 0.78rem;
-    color: #b4452f;
-    min-height: 1em;
-  }
-
-  .field__error:empty { min-height: 0; }
-
-  /* Off-screen rather than display:none — bots that skip hidden
-     fields still fill this one. */
-  .form__trap {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-  }
-
-  .form__notice {
-    font-size: var(--fs-micro);
-    line-height: 1.7;
-    color: var(--text-on-bone-faint);
-    padding-top: var(--sp-2xs);
-  }
-
-  .form__submit { margin-top: var(--sp-2xs); }
-  .form__submit:disabled { opacity: 0.6; cursor: wait; }
-
-  .form__status {
+  .reach__alt-copy {
     font-size: var(--fs-small);
-    line-height: 1.6;
+    line-height: 1.8;
+    color: var(--text-on-bone-dim);
   }
 
-  .form__status:empty { display: none; }
-  .form__status.is-ok { color: #2f6f4f; }
-  .form__status.is-error { color: #b4452f; }
-  .form__status a { text-decoration: underline; text-underline-offset: 3px; }
+  .reach__alt-copy a {
+    color: var(--text-on-bone);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--accent);
+    overflow-wrap: anywhere;
+  }
+
+  .reach__alt-copy a:hover { color: var(--accent); }
+
+  .reach__notice {
+    padding-top: var(--sp-lg);
+    font-size: var(--fs-micro);
+    line-height: 1.75;
+    color: var(--text-on-bone-faint);
+    max-width: 56ch;
+  }
 
   /* ---- Details ------------------------------------------- */
   .contact__details {

@@ -7,18 +7,22 @@
  */
 import SplitText from './SplitText.astro';
 import Monogram from './Monogram.astro';
+import WhatsAppAction from './WhatsAppAction.astro';
 import { firm } from '../data/site';
 
 interface Props {
   eyebrow?: string;
   lines?: string[];
   body?: string;
+  /** Pre-filled WhatsApp opening line, for page-specific context. */
+  whatsappMessage?: string;
 }
 
 const {
   eyebrow = 'Speak to us',
   lines = ['Tell us what', 'has <em class="accent-italic">happened.</em>'],
-  body = 'The first conversation costs you nothing but the time it takes. We will tell you plainly whether you have a matter worth pursuing, and what it will realistically take.',
+  body = 'The first conversation costs you nothing but the time it takes. Message the chambers on WhatsApp and we will tell you plainly whether you have a matter worth pursuing, and what it will realistically take.',
+  whatsappMessage,
 } = Astro.props;
 ---
 
@@ -33,10 +37,7 @@ const {
     </div>
 
     <div class="cta__actions" data-reveal style="--reveal-delay: 280ms">
-      <a class="btn cta__btn" href="/contact/" data-magnetic="0.22">
-        Request a consultation
-        <span class="btn__arrow" aria-hidden="true">&rarr;</span>
-      </a>
+      <WhatsAppAction message={whatsappMessage} class="cta__btn" />
 
       <dl class="cta__direct">
         <div>

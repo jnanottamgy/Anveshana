@@ -17,7 +17,7 @@ until each is confirmed.** Every one of them is marked `VERIFY` in
 | 2 | **Akash Shetty's role and practice areas** | `people` | He is named as a partner on the strength of a client testimonial on the old site. Confirm his actual title and areas — or remove the entry. |
 | 3 | **Consultation hours** | `firm.hours` | Currently a sensible assumption, not a fact. These also feed the Google structured data, so a wrong value misleads searchers. |
 | 4 | **Courts and forums list** | `forums` | Standard for a Bengaluru litigation practice, but it is a claim about where the firm appears. Confirm or trim it. |
-| 5 | **Contact form endpoint** | `formEndpoint` | Until this is set, enquiries open in the visitor's email app rather than arriving in an inbox. Two-minute fix — see §4. |
+| 5 | **The WhatsApp number** | `whatsapp.number` | Every consultation button on the site opens a chat with this number. Confirm it is the one the firm actually monitors — see §4. |
 | 6 | **A professional photoshoot** | see §6 | The only remaining design gap. |
 | 7 | **Bar Council review of the copy** | whole site | See §7. Have an advocate at the firm read the site once with Rule 36 in mind. |
 
@@ -43,7 +43,7 @@ The six practice areas. Each one automatically becomes:
 - a row on `/practice-areas/`,
 - **its own page** at `/practice-areas/<slug>/`,
 - an entry in the footer,
-- an option in the contact form's "nature of the matter" dropdown,
+- a WhatsApp enquiry that opens already naming that area,
 - and its own Google structured data, including the FAQ.
 
 To add a seventh area, copy an existing block and change the fields. To remove
@@ -98,27 +98,62 @@ the server's 404 handler at `/404.html`.
 
 ---
 
-## 4. Making the contact form deliver
+## 4. Enquiries — how they reach the firm
 
-The site is static, so the enquiry form needs a form-handling service. Any of
-these work and all have a free tier:
-[Formspree](https://formspree.io), [Web3Forms](https://web3forms.com),
-[Basin](https://usebasin.com).
+**There is no contact form and no consultation page.** Every
+"request a consultation" button on the site opens a WhatsApp conversation
+with the chambers directly. On a phone that opens the WhatsApp app; on a
+desktop it opens WhatsApp Web, or the desktop app if one is installed.
 
-1. Sign up and create a form; point it at the firm's email address.
-2. Copy the endpoint URL it gives you.
-3. Paste it into `src/data/site.ts`:
-   ```ts
-   export const formEndpoint = 'https://formspree.io/f/xxxxxxxx';
-   ```
-4. Rebuild and deploy. Send a test enquiry and confirm it arrives.
+This is deliberate. For a Bengaluru practice, WhatsApp is where clients
+already are: nothing to type into a form, nothing to check an inbox for, no
+form-handling subscription to maintain, and no spam. It also removes the
+single most common failure mode of a law firm website — enquiries landing in
+a form service nobody remembers to check.
 
-**Until this is set**, the form still works — it validates the entry and then
-opens the visitor's email application with everything filled in. No enquiry is
-silently lost, but it is a clumsier experience, so do set it up.
+### Changing the number
 
-The form already carries a hidden honeypot field that silently discards the
-bulk of automated spam.
+In `src/data/site.ts`:
+
+```ts
+export const whatsapp = {
+  number: '919964140121',   // digits only, country code, no + and no spaces
+  defaultMessage: 'Hello, I would like to request a consultation…',
+};
+```
+
+The format matters: `wa.me` requires the country code with no plus sign and
+no spaces. `+91 99641 40121` becomes `919964140121`.
+
+### The pre-filled message
+
+Each chat opens with an opening line already typed. The visitor can edit or
+delete it before sending — it exists to save them writing the first sentence.
+
+**Practice-area pages go further:** the chat opens already naming the area,
+so someone arriving from the criminal law page starts with *"…regarding a
+criminal law matter."* The firm therefore knows what the enquiry concerns
+before reading a word. That is handled automatically in
+`src/pages/practice-areas/[slug].astro` — nothing to configure.
+
+### Where the buttons are
+
+Header · mobile menu · homepage hero · the closing band on every page ·
+the contact page · the footer · the 404 page. All of them are the one
+component, `src/components/WhatsAppAction.astro`, so changing it once changes
+every button on the site.
+
+The contact page remains — it carries the address, hours, map and directions,
+which is what earns the firm local search visibility — but its enquiry
+mechanism is WhatsApp, with phone and email offered for anyone who would
+rather not use it.
+
+### Worth doing
+
+Set up a **WhatsApp Business** account on that number (free). It gives the
+firm a business profile, saved quick replies, labels for organising enquiries,
+and automated away-messages outside consultation hours. The link on the site
+works identically either way.
 
 ---
 
@@ -253,7 +288,9 @@ Measured on the built site, not estimated:
 2. **Google Business Profile** — make sure the name, address, phone and hours
    match `site.ts` exactly. For a local firm this matters more for search
    visibility than anything on the website itself.
-3. **Test the enquiry form** from a phone on mobile data, not just a desktop.
+3. **Test the WhatsApp buttons** from a real phone on mobile data, and once
+   from a desktop browser, to confirm both the app and WhatsApp Web open with
+   the message pre-filled.
 4. **Re-check the domain** — both `anveshanaconsultants.in` and the `www.`
    version should resolve, one redirecting to the other.
 
@@ -268,6 +305,10 @@ Recorded honestly, so the next person is not surprised:
   `curtain` block in `Base.astro` if the firm would rather not have it.
 - **The custom cursor** appears only on desktop with a mouse. It is off on
   touch devices and for anyone using reduced motion.
+- **Enquiries arrive in WhatsApp, not an inbox.** That is the point, but it
+  does mean there is no written record on the firm's own systems until
+  somebody moves one there. WhatsApp Business labels are the cheapest way to
+  keep that organised.
 - **No CMS.** Content is edited by changing one text file and redeploying.
   This keeps hosting free and the site fast, but it does mean a non-technical
   edit needs either a developer or a few minutes learning GitHub's web editor.

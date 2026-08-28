@@ -1,6 +1,6 @@
 ---
 import Monogram from './Monogram.astro';
-import { firm, nav, practiceAreas } from '../data/site';
+import { firm, nav, practiceAreas, whatsappUrl } from '../data/site';
 
 const year = new Date().getFullYear();
 ---
@@ -53,6 +53,14 @@ const year = new Date().getFullYear();
             {firm.address.line1}<br />
             {firm.address.line2}<br />
             {firm.address.city} {firm.address.postalCode}
+          </a>
+          <a
+            class="footer__link-strong"
+            href={whatsappUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Message on WhatsApp
           </a>
           <a class="footer__link-strong" href={`tel:${firm.phoneHref}`}>{firm.phone}</a>
           <a class="footer__link-strong" href={`mailto:${firm.email}`}>{firm.email}</a>

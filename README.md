@@ -80,8 +80,11 @@ The audit and screenshot scripts need a preview server running
 ## What this site does not do
 
 No analytics, no tracking pixels, no advertising cookies, no third-party
-fonts, and no external requests on page load. The map on the contact page is
-the only third-party embed, and it does not load until a visitor clicks it.
+fonts, and no external requests on page load. There is no contact form —
+every "request a consultation" button opens WhatsApp directly, so there is no
+form service to maintain and no enquiry inbox to forget to check. The map on
+the contact page is the only third-party embed, and it does not load until a
+visitor clicks it.
 
 This is deliberate — it keeps the site fast, keeps visitor data out of other
 companies' hands, and keeps the privacy notice short and true.

@@ -139,7 +139,11 @@ const schema = [
     </div>
   </section>
 
-  <CTABand />
+  <!-- The WhatsApp chat opens already naming this practice area,
+       so the visitor does not have to explain twice. -->
+  <CTABand
+    whatsappMessage={`Hello, I would like to request a consultation with Anveshana Advocates & Consultants regarding a ${area.title.toLowerCase()} matter.`}
+  />
 </Base>
 
 <style>

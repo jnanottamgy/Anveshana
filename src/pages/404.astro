@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Monogram from '../components/Monogram.astro';
 import SplitText from '../components/SplitText.astro';
+import WhatsAppAction from '../components/WhatsAppAction.astro';
 import { practiceAreas } from '../data/site';
 ---
 
@@ -29,10 +30,7 @@ import { practiceAreas } from '../data/site';
           Return home
           <span class="btn__arrow" aria-hidden="true">&rarr;</span>
         </a>
-        <a class="link-underline" href="/contact/">
-          Contact the firm
-          <span class="btn__arrow" aria-hidden="true">&rarr;</span>
-        </a>
+        <WhatsAppAction variant="link" label="Message the chambers" />
       </div>
 
       <!-- Not a <nav>: the footer already exposes a landmark
