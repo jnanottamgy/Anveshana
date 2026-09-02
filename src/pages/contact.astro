@@ -315,8 +315,8 @@ const brief = [
     position: relative;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    background: linear-gradient(155deg, var(--ink-2), var(--obsidian));
-    border: 1px solid var(--rule-on-bone);
+    background: linear-gradient(155deg, var(--plate-from), var(--plate-to));
+    border: 1px solid var(--plate-rule);
   }
 
   .map__trigger {
@@ -327,18 +327,18 @@ const brief = [
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    color: var(--text-on-ink);
+    color: var(--plate-fg);
     transition: background-color var(--dur) var(--ease);
   }
 
-  .map__trigger:hover { background: rgb(198 166 100 / 0.08); }
+  .map__trigger:hover { background: var(--tint-accent-soft); }
 
   .map__pin {
     width: 12px;
     height: 12px;
     border-radius: 50%;
     background: var(--champagne);
-    box-shadow: 0 0 0 6px rgb(198 166 100 / 0.18);
+    box-shadow: 0 0 0 6px var(--tint-accent-ring);
     margin-bottom: 0.5rem;
   }
 
@@ -352,7 +352,7 @@ const brief = [
 
   .map__note {
     font-size: var(--fs-micro);
-    color: var(--text-on-ink-faint);
+    color: var(--plate-fg-dim);
   }
 
   .map :global(.map__frame) {

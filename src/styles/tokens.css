@@ -7,9 +7,20 @@
    dot is #438DCB. That cyan is demoted to a live accent; the
    system is anchored in ink and metal so the brand reads as
    senior counsel rather than software startup.
+
+   THEMING
+   The site ships two themes. Dark is the brand default and is
+   defined here on :root; light is defined in one block near the
+   bottom under [data-theme='light'].
+
+   Components never hard-code a colour. They read a token, and
+   the token resolves per theme — which is why the light theme
+   is one block rather than a parallel stylesheet.
    ============================================================ */
 
 :root {
+  color-scheme: dark;
+
   /* ---- Core surfaces ------------------------------------- */
   --ink: #0a1626;          /* dominant dark surface, midnight navy */
   --ink-2: #0e1d31;        /* raised dark surface */
@@ -19,18 +30,26 @@
   --bone: #f4f1ea;         /* warm paper — never pure white */
   --bone-2: #ece7dc;       /* recessed paper */
   --bone-3: #ded7c8;       /* paper hairline */
-  --white: #fffdf9;        /* warm white, for type on ink */
+
+  /* Raised paper: a card lifted off the bone surface. Separate
+     from --white, which is a TEXT token and inverts by theme. */
+  --paper-raised: #fffdf9;
 
   /* ---- Metal & accent ------------------------------------ */
   --champagne: #c6a664;    /* primary metallic accent, for ink surfaces */
   --champagne-lo: #a8894b; /* pressed / darker metal */
   --champagne-hi: #e2c88f; /* highlight along a metal edge */
 
-  /* Bronze: the same metal, darkened for use as TEXT on the
-     bone surfaces. Champagne on bone measures 2.06:1 — nowhere
-     near legible — so light sections swap to this via --accent
-     below. 5.06:1 on bone, 4.63:1 on bone-2. */
-  --bronze: #7e6230;
+  /* Bronze: the same metal, darkened for use as TEXT on light
+     surfaces. Champagne on bone measures 2.06:1 — nowhere near
+     legible — so light surfaces swap to this via --accent.
+     5.03:1 on the lightest theme's deepest surface. */
+  --bronze: #7c602f;
+
+  /* Text sitting ON a metal fill (buttons, selection). Fixed in
+     both themes: the fill is champagne either way, so the text
+     on it must stay dark or it disappears in light mode. */
+  --on-metal: #0b1420;
 
   --azure: #2a9fd6;        /* the logo blue, used live and sparingly */
   --azure-deep: #1b7fb8;
@@ -40,7 +59,9 @@
 
   /* ---- Text ---------------------------------------------- */
   /* Every value below clears WCAG AA (4.5:1) against every
-     surface it is used on — verified, not estimated. */
+     surface it is used on, in BOTH themes — verified, not
+     estimated. See scripts/a11y.mjs. */
+  --text-on-ink-strong: #fffdf9; /* display headings on ink */
   --text-on-ink: #f1ede4;
   --text-on-ink-dim: #a9b4c2;
   --text-on-ink-faint: #77869a;  /* 4.90 on ink, 5.22 on obsidian */
@@ -51,11 +72,13 @@
 
   --slate: #7c8a9c;
 
+  /* Deprecated alias, kept so nothing breaks. Prefer
+     --text-on-ink-strong (text) or --paper-raised (surface). */
+  --white: var(--text-on-ink-strong);
+
   /* The metallic accent, resolved per surface. Components use
      var(--accent) for accented TEXT and read the correct metal
-     automatically from the .on-ink / .on-bone context. Solid
-     champagne fills (buttons) keep using --champagne directly,
-     since dark text on gold is already high contrast. */
+     automatically from the .on-ink / .on-bone context. */
   --accent: var(--champagne);
 
   /* ---- Rules & borders ----------------------------------- */
@@ -64,6 +87,53 @@
   --rule-on-bone: rgb(16 27 40 / 0.14);
   --rule-on-bone-soft: rgb(16 27 40 / 0.07);
   --rule-metal: rgb(198 166 100 / 0.42);
+
+  /* ---- Atmosphere ----------------------------------------
+     The light, grain and gradient layers. Tokenised because
+     every one of them has to invert for the light theme —
+     a glow tuned for a navy field is a smudge on parchment. */
+  --glow-hero-1: rgb(42 159 214 / 0.18);
+  --glow-hero-2: rgb(42 159 214 / 0.07);
+  --glow-page: rgb(42 159 214 / 0.15);
+
+  --shaft-a-1: rgb(198 166 100 / 0.11);
+  --shaft-a-2: rgb(198 166 100 / 0.02);
+  --shaft-b: rgb(241 237 228 / 0.07);
+
+  --grid-line: rgb(241 237 228 / 0.045);
+  --vignette: rgb(6 14 25 / 0.55);
+  --hero-foot-fade: rgb(6 14 25 / 0.4);
+
+  --header-bg: rgb(10 22 38 / 0.86);
+  --overlay-bg: rgb(6 14 25 / 0.86);
+
+  --sweep-1: rgb(198 166 100 / 0.13);
+  --sweep-2: rgb(198 166 100 / 0.02);
+
+  --tint-accent-soft: rgb(198 166 100 / 0.08);
+  --tint-accent-ring: rgb(198 166 100 / 0.18);
+  --cursor-tint: rgb(198 166 100 / 0.1);
+  /* Opaque body for the gavel. Without it the mark is champagne
+     on champagne the moment it crosses a button and disappears. */
+  --cursor-fill: rgb(6 14 25 / 0.92);
+
+  --watermark-op: 0.05;
+  --watermark-op-soft: 0.032;
+
+  --grain-op: 0.042;
+  --grain-blend: overlay;
+
+  /* ---- Portrait plate ------------------------------------
+     Fixed in both themes. The plate stands in for a photograph,
+     and a photograph does not turn beige when the page does —
+     keeping it dark makes the People page read as intentional
+     in light mode rather than washed out. */
+  --plate-from: #0e1d31;
+  --plate-to: #060e19;
+  --plate-fg: #f1ede4;
+  --plate-fg-dim: #98a5b4;
+  --plate-rule: rgb(241 237 228 / 0.14);
+  --plate-glow: rgb(42 159 214 / 0.22);
 
   /* ---- Typography ---------------------------------------- */
   --font-display: 'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif;
@@ -156,8 +226,95 @@
   --radius-pill: 999px;
 }
 
-/* The site is dark-first by identity, not by user preference.
-   These are the two surface contexts every component reads. */
+/* ============================================================
+   LIGHT THEME
+   ------------------------------------------------------------
+   Only the values that must invert. Everything structural —
+   type scale, spacing, motion, elevation — is shared, so the
+   two themes can never drift apart in layout, only in colour.
+
+   The surfaces stay warm rather than white: the dark theme's
+   character comes from ink and parchment, and a light theme
+   built on #fff would read as a different firm.
+   ============================================================ */
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* Surfaces. --ink is the tinted band, --bone the paper.
+     Their relationship is preserved: --ink sections are still
+     the "heavier" ones, they are simply no longer dark. */
+  --ink: #f1ede2;
+  --ink-2: #eae5d8;
+  --ink-3: #ddd6c4;
+  --obsidian: #e9e4d7;
+
+  --bone: #fbf9f5;
+  --bone-2: #f4f1e9;
+  --bone-3: #e5dfd0;
+
+  --paper-raised: #ffffff;
+
+  /* Both surfaces are light now, so both take the bronze. */
+  --bronze: #7c602f;
+  --accent: var(--bronze);
+
+  /* Text inverts. Verified against the deepest light surface
+     (--obsidian, #e9e4d7): faint 4.62, bronze 4.63, dim 5.83. */
+  --text-on-ink-strong: #0b1420;
+  --text-on-ink: #16212e;
+  --text-on-ink-dim: #4a5764;
+  --text-on-ink-faint: #5a6673;
+
+  --text-on-bone: #101b28;
+  --text-on-bone-dim: #4a5764;
+  --text-on-bone-faint: #5a6673;
+
+  /* Hairlines go dark on every surface. */
+  --rule-on-ink: rgb(16 27 40 / 0.13);
+  --rule-on-ink-soft: rgb(16 27 40 / 0.07);
+  --rule-on-bone: rgb(16 27 40 / 0.13);
+  --rule-on-bone-soft: rgb(16 27 40 / 0.07);
+  --rule-metal: rgb(124 96 47 / 0.42);
+
+  /* Atmosphere. Every glow drops in strength — the same alpha
+     that reads as light on navy reads as dirt on parchment. */
+  --glow-hero-1: rgb(42 159 214 / 0.11);
+  --glow-hero-2: rgb(42 159 214 / 0.05);
+  --glow-page: rgb(42 159 214 / 0.1);
+
+  --shaft-a-1: rgb(124 96 47 / 0.07);
+  --shaft-a-2: rgb(124 96 47 / 0.02);
+  --shaft-b: rgb(16 27 40 / 0.035);
+
+  --grid-line: rgb(16 27 40 / 0.05);
+  --vignette: rgb(120 108 84 / 0.16);
+  --hero-foot-fade: rgb(120 108 84 / 0.1);
+
+  --header-bg: rgb(251 249 245 / 0.86);
+  --overlay-bg: rgb(233 228 215 / 0.9);
+
+  --sweep-1: rgb(124 96 47 / 0.1);
+  --sweep-2: rgb(124 96 47 / 0.02);
+
+  --tint-accent-soft: rgb(124 96 47 / 0.08);
+  --tint-accent-ring: rgb(124 96 47 / 0.16);
+  --cursor-tint: rgb(124 96 47 / 0.12);
+  --cursor-fill: rgb(251 249 245 / 0.94);
+
+  /* A dark mark on light paper needs slightly more presence
+     than a light mark on dark. */
+  --watermark-op: 0.07;
+  --watermark-op-soft: 0.05;
+
+  /* Overlay grain lightens a dark field; on paper it has to
+     multiply or it does nothing at all. */
+  --grain-op: 0.032;
+  --grain-blend: multiply;
+
+  --shadow-ink: 0 24px 70px rgb(60 50 32 / 0.18);
+}
+
+/* The two surface contexts every component reads. */
 .on-ink {
   --fg: var(--text-on-ink);
   --fg-dim: var(--text-on-ink-dim);
@@ -175,5 +332,11 @@
   --bg: var(--bone);
   --rule: var(--rule-on-bone);
   --rule-soft: var(--rule-on-bone-soft);
+  --accent: var(--bronze);
+}
+
+/* In the light theme both surfaces are light, so the ink
+   context takes the bronze too. */
+[data-theme='light'] .on-ink {
   --accent: var(--bronze);
 }

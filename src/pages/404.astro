@@ -74,7 +74,7 @@ import { practiceAreas } from '../data/site';
     width: min(56vw, 640px);
     height: auto;
     color: var(--text-on-ink);
-    opacity: 0.045;
+    opacity: var(--watermark-op);
     z-index: -1;
     pointer-events: none;
   }
@@ -84,7 +84,7 @@ import { practiceAreas } from '../data/site';
 
   .nf__title {
     font-size: clamp(2.4rem, 1.2rem + 4.2vw, 4.8rem);
-    color: var(--white);
+    color: var(--text-on-ink-strong);
   }
 
   .nf__lead { margin-top: var(--sp-md); }

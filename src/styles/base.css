@@ -73,7 +73,7 @@ ol {
 
 ::selection {
   background: var(--champagne);
-  color: var(--obsidian);
+  color: var(--on-metal);
 }
 
 /* ---- Focus ---------------------------------------------- */
@@ -90,7 +90,7 @@ ol {
   z-index: calc(var(--z-gate) + 10);
   padding: 0.75rem 1.25rem;
   background: var(--champagne);
-  color: var(--obsidian);
+  color: var(--on-metal);
   font-family: var(--font-sans);
   font-size: var(--fs-small);
   font-weight: 500;
@@ -281,7 +281,7 @@ h6 {
 
 /* ---- Buttons -------------------------------------------- */
 .btn {
-  --btn-fg: var(--obsidian);
+  --btn-fg: var(--on-metal);
   --btn-bg: var(--champagne);
   position: relative;
   display: inline-flex;
@@ -358,7 +358,7 @@ h6 {
 
 .btn--metal-outline:hover,
 .btn--metal-outline:focus-visible {
-  --btn-fg: var(--obsidian);
+  --btn-fg: var(--on-metal);
   border-color: var(--accent);
 }
 
@@ -416,8 +416,10 @@ h6 {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  opacity: 0.042;
-  mix-blend-mode: overlay;
+  opacity: var(--grain-op);
+  /* Overlay lightens a dark field; on paper it does nothing at
+     all, so the light theme switches this to multiply. */
+  mix-blend-mode: var(--grain-blend);
   background-image: var(--grain-url);
   background-size: 220px 220px;
 }

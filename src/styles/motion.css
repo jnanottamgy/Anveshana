@@ -240,9 +240,11 @@
   transition: transform 520ms var(--ease-io);
 }
 
-/* ---- Custom cursor -------------------------------------- */
-/* Desktop pointers only. Never replaces the system cursor on
-   touch, and never on a coarse pointer. */
+/* ---- Gavel cursor --------------------------------------- */
+/* Replaces the system pointer with a gavel that swings.
+   Fine pointers only: never on touch, never on a coarse
+   pointer, and never when reduced motion is requested — in all
+   three cases the native cursor is left alone. */
 .cursor {
   position: fixed;
   top: 0;
@@ -250,48 +252,119 @@
   z-index: var(--z-cursor);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 300ms var(--ease);
+  transition: opacity 320ms var(--ease);
+  /* Angles about the grip. Less negative = more upright, so
+     the lift raises the head and the strike swings it past
+     vertical and down to the right. */
+  --gavel-rest: -34deg;
+  --gavel-lift: -6deg;
 }
 
 .cursor.is-active { opacity: 1; }
 
+/* The native cursor is hidden only once the gavel is actually
+   running, so a JS failure or an unsupported browser still
+   leaves the visitor with a pointer. */
+html.has-gavel,
+html.has-gavel * {
+  cursor: none !important;
+}
+
+/* Halo. Sits behind the gavel and opens on interactive
+   elements — the gavel alone reads as decoration, the halo is
+   what says "this is clickable". */
 .cursor__ring {
   position: absolute;
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  border: 1px solid var(--champagne);
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border: 1px solid var(--accent);
   border-radius: 50%;
-  transition:
-    width 420ms var(--ease),
-    height 420ms var(--ease),
-    margin 420ms var(--ease),
-    background-color 420ms var(--ease),
-    border-color 420ms var(--ease),
-    opacity 300ms var(--ease);
-}
-
-.cursor__dot {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  margin: -2px 0 0 -2px;
-  border-radius: 50%;
-  background: var(--champagne);
-  transition: opacity 300ms var(--ease), transform 300ms var(--ease);
-}
-
-/* Over a link or control the ring opens up and the dot retreats. */
-.cursor.is-hovering .cursor__ring {
-  width: 62px;
-  height: 62px;
-  margin: -31px 0 0 -31px;
-  background: rgb(198 166 100 / 0.1);
-}
-
-.cursor.is-hovering .cursor__dot {
   opacity: 0;
-  transform: scale(0.4);
+  transform: scale(0.6);
+  transition:
+    width 460ms var(--ease),
+    height 460ms var(--ease),
+    margin 460ms var(--ease),
+    opacity 340ms var(--ease),
+    transform 460ms var(--ease),
+    background-color 460ms var(--ease);
+}
+
+.cursor.is-hovering .cursor__ring {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  opacity: 0.5;
+  transform: scale(1);
+  background: var(--cursor-tint);
+}
+
+/* The gavel itself. */
+.cursor__gavel {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  /* Offsets the mark so the head sits over the pointer rather
+     than the middle of the handle. */
+  /* Offsets the box so that at the resting angle the head of
+     the gavel — not the middle of the handle — sits on the
+     pointer. Derived from the pivot geometry: the head centre
+     is (4.3, 10.6) inside the box once rotated to rest. */
+  margin: -10px 0 0 -4px;
+  color: var(--accent);
+  /* Pivot at the grip, so it swings the way a hand would hold
+     it rather than spinning about its middle. */
+  transform-origin: 50% 88%;
+  transform: rotate(var(--gavel-rest));
+  transition: transform 620ms var(--ease);
+}
+
+.cursor__gavel svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* Keeps the mark legible over both ink and paper. */
+  filter: drop-shadow(0 1px 2px rgb(6 14 25 / 0.35));
+}
+
+/* Raised, ready to strike. */
+.cursor.is-hovering .cursor__gavel {
+  transform: rotate(var(--gavel-lift));
+}
+
+/* The strike. Fires on press, from wherever the gavel happens
+   to be, and overrides the transition for its duration. */
+.cursor.is-striking .cursor__gavel {
+  animation: gavel-strike 460ms cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+@keyframes gavel-strike {
+  0%   { transform: rotate(var(--gavel-lift)); }
+  30%  { transform: rotate(42deg); }
+  44%  { transform: rotate(30deg); }
+  100% { transform: rotate(var(--gavel-rest)); }
+}
+
+/* Impact ring, thrown off at the moment of the strike. */
+.cursor__impact {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cursor.is-striking .cursor__impact {
+  animation: gavel-impact 520ms var(--ease) 120ms;
+}
+
+@keyframes gavel-impact {
+  0%   { opacity: 0.75; transform: scale(0.4); }
+  100% { opacity: 0; transform: scale(3.4); }
 }
 
 /* ---- Counters ------------------------------------------- */

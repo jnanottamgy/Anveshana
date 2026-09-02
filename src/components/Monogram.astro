@@ -75,7 +75,7 @@ const DOT = { cx: 846.7, cy: 711.3, r: 153.3 };
       tone === 'brand'
         ? `url(#${uid}-a)`
         : tone === 'metal'
-          ? 'var(--champagne)'
+          ? 'var(--accent)'
           : 'currentColor'
     }
   />
@@ -114,7 +114,7 @@ const DOT = { cx: 846.7, cy: 711.3, r: 153.3 };
      it. Path length is set generously; the dash offset only has
      to exceed the true length for the effect to read. */
   .monogram--draw .monogram__mark {
-    stroke: var(--champagne);
+    stroke: var(--accent);
     stroke-width: 6;
     stroke-dasharray: 3600;
     stroke-dashoffset: 3600;

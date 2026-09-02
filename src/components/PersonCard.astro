@@ -73,8 +73,8 @@ const Wrapper = href ? 'a' : 'div';
     place-items: center;
     overflow: hidden;
     background:
-      linear-gradient(155deg, var(--ink-2), var(--obsidian));
-    border: 1px solid var(--rule-on-ink);
+      linear-gradient(155deg, var(--plate-from), var(--plate-to));
+    border: 1px solid var(--plate-rule);
     isolation: isolate;
   }
 
@@ -99,7 +99,7 @@ const Wrapper = href ? 'a' : 'div';
     font-size: clamp(3.5rem, 8vw, 6rem);
     font-weight: 300;
     letter-spacing: 0.02em;
-    color: var(--text-on-ink);
+    color: var(--plate-fg);
     opacity: 0.22;
     transition: opacity var(--dur-slow) var(--ease), color var(--dur-slow) var(--ease);
   }
@@ -115,7 +115,7 @@ const Wrapper = href ? 'a' : 'div';
     z-index: -1;
     background: radial-gradient(
       circle at 50% 108%,
-      rgb(42 159 214 / 0.22),
+      var(--plate-glow),
       transparent 62%
     );
   }

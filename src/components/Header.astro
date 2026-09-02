@@ -1,6 +1,7 @@
 ---
 import Logotype from './Logotype.astro';
 import WhatsAppAction from './WhatsAppAction.astro';
+import ThemeToggle from './ThemeToggle.astro';
 import { nav, firm } from '../data/site';
 
 const path = Astro.url.pathname;
@@ -31,6 +32,8 @@ const isActive = (href: string) =>
     </nav>
 
     <div class="header__actions">
+      <ThemeToggle class="header__theme" />
+
       <a class="header__phone" href={`tel:${firm.phoneHref}`}>
         <span class="header__phone-label">Direct</span>
         <span class="header__phone-number">{firm.phone}</span>
@@ -74,6 +77,11 @@ const isActive = (href: string) =>
     </nav>
 
     <div class="menu__foot">
+      <div class="menu__theme">
+        <span class="menu__theme-label">Appearance</span>
+        <ThemeToggle />
+      </div>
+
       <WhatsAppAction variant="solid" block magnetic={false} class="menu__cta" />
       <a class="menu__contact" href={`tel:${firm.phoneHref}`}>{firm.phone}</a>
       <a class="menu__contact" href={`mailto:${firm.email}`}>{firm.email}</a>
@@ -107,7 +115,7 @@ const isActive = (href: string) =>
      against a moving background. */
   .header.is-scrolled {
     height: var(--header-h-scrolled);
-    background: rgb(10 22 38 / 0.86);
+    background: var(--header-bg);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border-bottom-color: var(--rule-on-ink-soft);
@@ -189,6 +197,10 @@ const isActive = (href: string) =>
     gap: var(--sp-md);
     flex: none;
   }
+
+  /* :global — passed into ThemeToggle, so it carries that
+     component's scope id rather than this one's. */
+  :global(.header__theme) { order: -1; }
 
   .header__phone {
     display: none;
@@ -341,6 +353,25 @@ const isActive = (href: string) =>
   .menu.is-open .menu__foot { opacity: 1; }
 
   :global(.menu__cta) { margin-bottom: var(--sp-sm); }
+
+  .menu__theme {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-md);
+    padding-bottom: var(--sp-md);
+    margin-bottom: var(--sp-sm);
+    border-bottom: 1px solid var(--rule-on-ink-soft);
+  }
+
+  .menu__theme-label {
+    font-family: var(--font-sans);
+    font-size: var(--fs-eyebrow);
+    font-weight: 500;
+    letter-spacing: var(--ls-eyebrow);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
 
   .menu__contact {
     font-family: var(--font-sans);

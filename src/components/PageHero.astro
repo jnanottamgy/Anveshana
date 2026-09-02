@@ -70,7 +70,7 @@ const { eyebrow, lines, lead, index, breadcrumbs = [] } = Astro.props;
     width: min(50vw, 560px);
     height: auto;
     color: var(--text-on-ink);
-    opacity: 0.045;
+    opacity: var(--watermark-op);
     z-index: -1;
     pointer-events: none;
   }
@@ -83,7 +83,7 @@ const { eyebrow, lines, lead, index, breadcrumbs = [] } = Astro.props;
     height: 130%;
     background: radial-gradient(
       circle at 60% 50%,
-      rgb(42 159 214 / 0.15),
+      var(--glow-page),
       transparent 62%
     );
     filter: blur(30px);
@@ -133,7 +133,7 @@ const { eyebrow, lines, lead, index, breadcrumbs = [] } = Astro.props;
 
   .page-hero__title {
     font-size: clamp(2.5rem, 1.2rem + 4.6vw, 5.4rem);
-    color: var(--white);
+    color: var(--text-on-ink-strong);
   }
 
   .page-hero__lead {

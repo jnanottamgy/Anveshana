@@ -137,8 +137,8 @@ const initialsOf = (name: string) =>
     place-items: center;
     overflow: hidden;
     isolation: isolate;
-    background: linear-gradient(155deg, var(--ink-2), var(--obsidian));
-    border: 1px solid var(--rule-on-bone);
+    background: linear-gradient(155deg, var(--plate-from), var(--plate-to));
+    border: 1px solid var(--plate-rule);
   }
 
   .profile__photo {
@@ -152,7 +152,7 @@ const initialsOf = (name: string) =>
     font-family: var(--font-display);
     font-size: clamp(4rem, 9vw, 7rem);
     font-weight: 300;
-    color: var(--white);
+    color: var(--plate-fg);
     opacity: 0.24;
   }
 
@@ -160,7 +160,7 @@ const initialsOf = (name: string) =>
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: radial-gradient(circle at 50% 108%, rgb(42 159 214 / 0.24), transparent 62%);
+    background: radial-gradient(circle at 50% 108%, var(--plate-glow), transparent 62%);
   }
 
   .profile__body { padding-top: 0.25rem; }

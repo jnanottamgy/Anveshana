@@ -79,7 +79,7 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
         </div>
         <div class="hero__fact hero__fact--wide">
           <dt>Practice</dt>
-          <dd>Criminal · Civil &amp; Property · Family · Employment · Commercial · Cyber</dd>
+          <dd>Criminal · Civil &amp; Property · Company · Employment · Corporate · Cyber</dd>
         </div>
       </dl>
 
@@ -124,8 +124,8 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
     height: 92%;
     background: radial-gradient(
       circle at 60% 40%,
-      rgb(42 159 214 / 0.18) 0%,
-      rgb(42 159 214 / 0.07) 34%,
+      var(--glow-hero-1) 0%,
+      var(--glow-hero-2) 34%,
       transparent 66%
     );
     filter: blur(28px);
@@ -146,8 +146,8 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
     rotate: 14deg;
     background: linear-gradient(
       180deg,
-      rgb(198 166 100 / 0.11),
-      rgb(198 166 100 / 0.02) 58%,
+      var(--shaft-a-1),
+      var(--shaft-a-2) 58%,
       transparent
     );
   }
@@ -158,7 +158,7 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
     rotate: 11deg;
     background: linear-gradient(
       180deg,
-      rgb(241 237 228 / 0.07),
+      var(--shaft-b),
       transparent 62%
     );
   }
@@ -172,7 +172,7 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
     bottom: -18%;
     width: min(62vw, 720px);
     color: var(--text-on-ink);
-    opacity: 0.05;
+    opacity: var(--watermark-op);
   }
 
   /* :global is required — the <svg> is rendered by Monogram, so
@@ -190,7 +190,7 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
     inset: 0;
     background-image: repeating-linear-gradient(
       90deg,
-      rgb(241 237 228 / 0.045) 0 1px,
+      var(--grid-line) 0 1px,
       transparent 1px calc(100% / 12)
     );
     mask-image: linear-gradient(180deg, transparent, #000 22%, #000 68%, transparent);
@@ -202,7 +202,7 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
     background: radial-gradient(
       ellipse 120% 80% at 50% 42%,
       transparent 30%,
-      rgb(6 14 25 / 0.55) 100%
+      var(--vignette) 100%
     );
   }
 
@@ -228,7 +228,7 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
        full display size push the calls to action below the fold
        on a 900px-tall viewport. */
     font-size: clamp(2.55rem, 1.1rem + 5vw, 5.9rem);
-    color: var(--white);
+    color: var(--text-on-ink-strong);
     /* Generous, because the italic "inquiry." ends on a deep
        Cormorant descender that would otherwise sit in the lead. */
     margin-bottom: clamp(1.9rem, 3.5vh, 2.9rem);
@@ -266,7 +266,7 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
     z-index: 1;
     padding-block: var(--sp-md);
     border-top: 1px solid var(--rule-on-ink-soft);
-    background: linear-gradient(180deg, transparent, rgb(6 14 25 / 0.4));
+    background: linear-gradient(180deg, transparent, var(--hero-foot-fade));
   }
 
   .hero__foot-inner {

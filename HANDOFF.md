@@ -13,8 +13,8 @@ until each is confirmed.** Every one of them is marked `VERIFY` in
 
 | # | Item | Where | Why it matters |
 |---|------|-------|----------------|
-| 1 | **Biographies** for Anish Acharya and Akash Shetty | `people` in `site.ts` | The bios are professionally written drafts. Names and the criminal-law designation come from the existing website and its testimonials; **nothing else is confirmed**. Replace with real text. |
-| 2 | **Akash Shetty's role and practice areas** | `people` | He is named as a partner on the strength of a client testimonial on the old site. Confirm his actual title and areas — or remove the entry. |
+| 1 | **Biographies** for all three advocates | `people` in `site.ts` | Every bio is a professionally written draft built from the practice areas the firm supplied. **None of it is confirmed.** Replace with real text. |
+| 2 | **Spelling of Deepika Mahesh's name** | `people` | Supplied as "deepike mahesh"; rendered as **Deepika Mahesh**. Confirm the correct spelling — a misspelt partner name on a launch site is the worst kind of small error. |
 | 3 | **Consultation hours** | `firm.hours` | Currently a sensible assumption, not a fact. These also feed the Google structured data, so a wrong value misleads searchers. |
 | 4 | **Courts and forums list** | `forums` | Standard for a Bengaluru litigation practice, but it is a claim about where the firm appears. Confirm or trim it. |
 | 5 | **The WhatsApp number** | `whatsapp.number` | Every consultation button on the site opens a chat with this number. Confirm it is the one the firm actually monitors — see §4. |
@@ -67,10 +67,25 @@ initials plate is replaced by the portrait automatically — no other change is
 needed. Portraits look best at 4:5 (e.g. 1200 × 1500).
 
 ### `testimonials`
-Reproduced verbatim from the existing site. See §7 before adding more.
+Reproduced verbatim from the existing site — **less one**. The previous
+website carried a testimonial praising an advocate who has since left the
+firm. It has been removed rather than reworded: a testimonial crediting
+someone a client can no longer instruct misleads them about who they would
+actually be working with. See §7 before adding more.
 
 ### `commitments`, `process`, `forums`
 The three promises, the four-stage method, and the courts list.
+
+### A gap worth deciding on
+Deepika Mahesh's profile lists **intellectual property** and **taxation**,
+and Nirankush Kenjige's lists **TMT**. TMT is covered inside Corporate
+Advisory, but IP and taxation currently have **no practice-area page**, which
+means the site does not rank for "trade mark lawyer Bengaluru" or similar.
+
+That was left deliberately rather than invented: adding two full practice
+pages means writing scope lists and FAQs for work only the firm can describe
+accurately. If the firm wants those areas represented, they are two new
+blocks in `practiceAreas` — say the word and they can be written properly.
 
 ---
 
@@ -173,8 +188,36 @@ the brand reads as senior counsel rather than software startup.
 | `--obsidian` | `#060e19` | Deepest layer, footer |
 | `--bone` | `#f4f1ea` | Warm paper — deliberately not pure white |
 | `--champagne` | `#c6a664` | Metal accent, on dark surfaces |
-| `--bronze` | `#7e6230` | The same metal, for text on light surfaces |
+| `--bronze` | `#7c602f` | The same metal, for text on light surfaces |
 | `--azure` | `#2a9fd6` | The logo blue, used live and sparingly |
+
+### Light and dark
+The site ships **two themes**, switched by the control in the header (and in
+the mobile menu). Dark is the brand default; the choice is remembered in the
+visitor's browser.
+
+Both themes live in `tokens.css`. Dark is defined on `:root`; light is a
+single `[data-theme='light']` block that overrides only what must invert —
+surfaces, text, hairlines and the atmospheric layers (glows, grain, vignette).
+Everything structural is shared, so the two themes cannot drift apart in
+layout, only in colour.
+
+Two things are deliberately **not** themed:
+- **The portrait plates** on the People page stay dark in both themes. A
+  photograph does not turn beige when the page does, and keeping them dark
+  makes that page read as intentional in light mode rather than washed out.
+- **Buttons** keep the champagne fill with dark text in both themes.
+
+**A theme's colours are never hard-coded in a component.** If you add a new
+colour, add a token — otherwise it will look correct in one theme and wrong
+in the other. The accessibility script audits both themes, so a mistake here
+shows up immediately.
+
+To make the site follow the visitor's system setting instead of defaulting to
+dark, add a `prefers-color-scheme` check to the inline script at the top of
+`src/layouts/Base.astro`. It is deliberately absent: the dark theme is the
+firm's identity, and a client opening the link on a light-mode laptop should
+see the design as designed.
 
 **Why two metals:** champagne on bone measures 2.06:1, far below the legal
 minimum for readable text. Sections tagged `.on-bone` automatically swap
@@ -303,8 +346,13 @@ Recorded honestly, so the next person is not surprised:
 - **The opening curtain animation** shows once per browsing session and adds
   about 1.8 seconds on a first visit. It is an aesthetic choice; delete the
   `curtain` block in `Base.astro` if the firm would rather not have it.
-- **The custom cursor** appears only on desktop with a mouse. It is off on
-  touch devices and for anyone using reduced motion.
+- **The gavel cursor** replaces the system pointer on desktop, and hides the
+  native cursor while it is running. It is off on touch, off on coarse
+  pointers, and off for anyone who has asked for reduced motion — in all
+  three cases the ordinary pointer is left alone. Some visitors rely on their
+  operating system's cursor settings, so if the firm would rather not replace
+  it at all, delete the `.cursor` block from `Base.astro` and everything else
+  keeps working.
 - **Enquiries arrive in WhatsApp, not an inbox.** That is the point, but it
   does mean there is no written record on the firm's own systems until
   somebody moves one there. WhatsApp Business labels are the cheapest way to

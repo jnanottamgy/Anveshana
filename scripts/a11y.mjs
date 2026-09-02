@@ -29,12 +29,22 @@ for (const vp of [{ n: 'desktop', w: 1440, h: 900 }, { n: 'mobile', w: 390, h: 8
     });
     await page.waitForTimeout(1200);
     await page.addScriptTag({ content: axeSource });
-    const res = await page.evaluate(async () =>
-      await window.axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa','best-practice'] } })
-    );
-    if (res.violations.length) {
+
+    // Audit both themes: the light theme is a different palette
+    // on the same markup, so it needs its own contrast pass.
+    for (const theme of ['dark', 'light']) {
+      await page.evaluate((t) => {
+        if (t === 'light') document.documentElement.dataset.theme = 'light';
+        else delete document.documentElement.dataset.theme;
+      }, theme);
+      await page.waitForTimeout(500);
+
+      const res = await page.evaluate(async () =>
+        await window.axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa','best-practice'] } })
+      );
+      if (res.violations.length) {
       totalViolations += res.violations.length;
-      console.log(`\n### ${route} [${vp.n}] — ${res.violations.length} violation type(s)`);
+      console.log(`\n### ${route} [${vp.n}/${theme}] — ${res.violations.length} violation type(s)`);
       for (const v of res.violations) {
         console.log(`  [${v.impact}] ${v.id}: ${v.help}`);
         v.nodes.slice(0, 3).forEach(n => {
@@ -42,6 +52,7 @@ for (const vp of [{ n: 'desktop', w: 1440, h: 900 }, { n: 'mobile', w: 390, h: 8
           if (n.any?.[0]?.message) console.log(`        → ${n.any[0].message}`);
         });
         if (v.nodes.length > 3) console.log(`      … +${v.nodes.length - 3} more`);
+      }
       }
     }
   }

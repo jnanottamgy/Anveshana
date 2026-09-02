@@ -39,7 +39,7 @@ export const firm = {
 
   phone: '+91 99641 40121',
   phoneHref: '+919964140121',
-  email: 'adv.anishacharya@gmail.com',
+  email: 'contact@anveshanaconsultants.in',
 
   /* VERIFY — confirm actual consultation hours with the firm. */
   hours: [
@@ -206,39 +206,39 @@ export const practiceAreas: PracticeArea[] = [
   },
 
   {
-    slug: 'family-law',
+    slug: 'company-law',
     index: '03',
-    title: 'Family Law',
-    shortTitle: 'Family',
+    title: 'Company Law',
+    shortTitle: 'Company',
     summary:
-      'Matters where the law is only half the problem — handled with discretion and steadiness.',
+      'Incorporation, compliance, and the disputes that arise inside a company rather than outside it.',
     body: [
-      'Family matters demand a different temperament from commercial ones. The other side is someone you once trusted, the facts are painful to recount, and the outcome shapes the lives of children who had no part in the dispute. Aggression is often the least effective strategy available.',
-      'We advise and represent in divorce and judicial separation, restitution of conjugal rights, child custody and guardianship, adoption, maintenance, and proceedings under the Protection of Women from Domestic Violence Act and the dowry provisions. We act for wives and husbands alike, and we say so plainly.',
-      'Confidentiality here is not a policy line — it is the whole basis of the relationship. Nothing you tell us leaves the room.',
+      'Most company law problems are not dramatic. They are a register that was never updated, a board resolution passed without the notice the articles required, a shareholder who has been quietly excluded from decisions for two years, or a filing that lapsed and has since attracted a penalty larger than the fee that would have prevented it.',
+      'We advise on incorporation and structuring, ongoing compliance under the Companies Act, board and shareholder governance, and the drafting of articles and shareholder arrangements that hold when relationships fail. On the contentious side we appear in proceedings before the National Company Law Tribunal, including oppression and mismanagement petitions and disputes between shareholders and directors.',
+      'We also advise directors personally. Directors carry duties and exposure that are frequently discovered only when something has already gone wrong, and an hour spent on that question early is worth a great deal later.',
     ],
     scope: [
-      { name: 'Divorce & Separation', note: 'Contested and mutual consent, across personal laws.' },
-      { name: 'Child Custody', note: 'Custody, guardianship and visitation arrangements.' },
-      { name: 'Maintenance', note: 'Interim and permanent maintenance, and enforcement.' },
-      { name: 'Domestic Violence', note: 'Protection, residence and compensation orders.' },
-      { name: 'Dowry Harassment', note: 'Complaints and defence under Section 498A.' },
-      { name: 'Adoption & Guardianship', note: 'Petitions and compliance under the relevant statutes.' },
+      { name: 'Incorporation & Structuring', note: 'Company formation, LLPs, and choosing the right vehicle.' },
+      { name: 'Corporate Compliance', note: 'Companies Act filings, registers, resolutions and annual obligations.' },
+      { name: 'Shareholder Arrangements', note: 'Articles, shareholder agreements, transfers and exits.' },
+      { name: 'NCLT Proceedings', note: 'Representation before the National Company Law Tribunal.' },
+      { name: 'Oppression & Mismanagement', note: 'Petitions for minority shareholders and defence of them.' },
+      { name: "Directors' Duties", note: 'Advice on duties, disqualification and personal exposure.' },
     ],
     metaDescription:
-      'Family law advocates in Bengaluru. Divorce, child custody, maintenance, domestic violence, dowry harassment and adoption matters, handled with discretion.',
+      'Company law advocates in Bengaluru. Incorporation and structuring, Companies Act compliance, shareholder agreements, NCLT proceedings, oppression and mismanagement.',
     faqs: [
       {
-        q: 'Is a mutual consent divorce faster?',
-        a: 'Substantially. A mutual consent petition is ordinarily concluded in a fraction of the time a contested matter takes, and it spares both parties years of hearings. Where any prospect of agreement exists, we will explore it first — including on custody and maintenance, which are usually the real obstacles.',
+        q: 'We are two founders starting out. What should we put in place first?',
+        a: 'A shareholders’ agreement, before there is anything to argue about. It should deal with what happens if one of you leaves, how shares vest, who decides what, and how a deadlock is broken. Founders who record this in month one almost never litigate; founders who postpone it frequently do.',
       },
       {
-        q: 'How is child custody decided?',
-        a: 'The court’s governing consideration is the welfare of the child, not the preference or the fault of either parent. Age, schooling, stability, the child’s own wishes where old enough, and each parent’s circumstances all weigh. We prepare custody matters with that single test in mind.',
+        q: 'A shareholder is being excluded from the running of the company. Is there a remedy?',
+        a: 'Yes. Conduct that is oppressive to a shareholder, or prejudicial to the company’s interests, can be challenged before the National Company Law Tribunal, and the Tribunal has wide powers to set matters right. The strength of such a petition depends heavily on the contemporaneous record, so preserve the notices, minutes and correspondence.',
       },
       {
-        q: 'Do you act for men in domestic violence and 498A matters?',
-        a: 'Yes. We appear both for complainants seeking protection and for those defending allegations, and we approach each with the same rigour. We will tell you at the outset what the evidence realistically supports.',
+        q: 'We have missed statutory filings. How serious is that?',
+        a: 'Serious but usually retrievable. Late filings attract additional fees and, if left long enough, can expose directors to disqualification. The position is almost always better if you regularise it voluntarily than if the Registrar raises it first — so bring it to us rather than waiting.',
       },
     ],
   },
@@ -282,27 +282,27 @@ export const practiceAreas: PracticeArea[] = [
   },
 
   {
-    slug: 'business-mercantile',
+    slug: 'corporate-advisory',
     index: '05',
-    title: 'Business & Mercantile',
-    shortTitle: 'Business',
+    title: 'Corporate Advisory',
+    shortTitle: 'Corporate',
     summary:
-      'Commercial agreements drafted to hold, and commercial disputes resolved without theatre.',
+      'Commercial agreements drafted to hold, and transactions closed without late surprises.',
     body: [
-      'Commercial clients want two things from a law firm: agreements that survive contact with a dispute, and a dispute strategy that accounts for cost and time as seriously as it accounts for the merits. Both are matters of judgement rather than volume.',
-      'We draft and negotiate commercial contracts, licensing and distribution arrangements, shareholder and founder documentation, and advise on mergers and acquisitions. On the contentious side, we act in arbitration and mediation, and in commercial litigation where a negotiated resolution is not available.',
+      'Commercial clients want two things from a law firm: agreements that survive contact with a dispute, and a transaction strategy that accounts for cost and time as seriously as it accounts for the merits. Both are matters of judgement rather than volume.',
+      'We draft and negotiate commercial contracts, licensing and distribution arrangements, and technology, media and telecommunications agreements; we advise on mergers, acquisitions and joint ventures, and run the due diligence behind them. Where a matter turns contentious we act in arbitration and mediation, and in commercial litigation when a negotiated resolution is not available.',
       'We are candid about proportion. Where the cost of pursuing a claim will exceed what it recovers, we will say so at the first meeting rather than the fifth.',
     ],
     scope: [
       { name: 'Commercial Contracts', note: 'Drafting, review and negotiation across sectors.' },
-      { name: 'Arbitration', note: 'Domestic arbitration, from notice through to enforcement.' },
-      { name: 'Mediation & Settlement', note: 'Structured negotiation and settlement documentation.' },
-      { name: 'Licensing', note: 'Technology, brand and distribution arrangements.' },
       { name: 'Mergers & Acquisitions', note: 'Due diligence, transaction documents and closing.' },
-      { name: 'Shareholder Matters', note: 'Founder agreements, disputes and exit arrangements.' },
+      { name: 'Technology, Media & Telecom', note: 'SaaS, platform, content and telecom arrangements.' },
+      { name: 'Licensing & Distribution', note: 'Technology, brand and channel arrangements.' },
+      { name: 'Arbitration', note: 'Domestic arbitration, from notice through to enforcement.' },
+      { name: 'Joint Ventures', note: 'Structuring, documentation and exit mechanics.' },
     ],
     metaDescription:
-      'Business and commercial law advocates in Bengaluru. Commercial contracts, arbitration and mediation, licensing, mergers and acquisitions, shareholder disputes.',
+      'Corporate advisory lawyers in Bengaluru. Commercial contracts, mergers and acquisitions, technology media and telecom agreements, licensing, arbitration and joint ventures.',
     faqs: [
       {
         q: 'Is arbitration actually faster than going to court?',
@@ -313,8 +313,8 @@ export const practiceAreas: PracticeArea[] = [
         a: 'Yes, and it is by a wide margin the most cost-effective legal work you will ever commission. A morning spent on a draft agreement routinely prevents a dispute that would take two years to resolve.',
       },
       {
-        q: 'Do you advise startups and founders?',
-        a: 'We do — on founder and shareholder agreements, employment and contractor documentation, commercial contracts, and the disputes that arise when an early arrangement was never properly recorded.',
+        q: 'Do you advise technology and media businesses?',
+        a: 'We do. Platform and SaaS terms, content and licensing arrangements, data and privacy obligations, and telecom-sector agreements are a regular part of the practice — as are the commercial disputes that arise out of them.',
       },
     ],
   },
@@ -388,24 +388,37 @@ export const people: Person[] = [
     name: 'Anish Acharya',
     honorific: 'Advocate',
     role: 'Founder & Principal Advocate',
-    focus: ['Criminal Law', 'Civil & Property', 'Family Law'],
+    focus: ['Criminal Law', 'Civil & Property'],
     bio: [
       'Anish Acharya founded Anveshana to practise law the way he believed it ought to be practised: with prompt communication, candid advice, and complete discretion about a client’s affairs.',
-      'His practice is litigation-led, with a particular concentration in criminal defence — bail and anticipatory bail, quashing, cheque dishonour and trial work — alongside civil and family matters. Clients describe his central strength as the ability to reduce a complicated set of facts to the two or three questions a court will actually decide.',
+      'His practice is litigation-led, with a particular concentration in criminal defence — bail and anticipatory bail, quashing, cheque dishonour and trial work — alongside civil and property disputes. Clients describe his central strength as the ability to reduce a complicated set of facts to the two or three questions a court will actually decide.',
       'He appears regularly before the courts and tribunals of Bengaluru.',
     ],
-    email: 'adv.anishacharya@gmail.com',
     verify: true,
   },
   {
-    slug: 'akash-shetty',
-    name: 'Akash Shetty',
+    slug: 'nirankush-kenjige',
+    name: 'Nirankush Kenjige',
     honorific: 'Advocate',
     role: 'Partner',
-    focus: ['Business & Mercantile', 'Employment & Labour', 'Cyber Law'],
+    focus: ['Business Law', 'TMT Law', 'Corporate Agreements'],
     bio: [
-      'Akash Shetty advises the firm’s commercial clients on contracts, arbitration and employment matters, and acts in cyber and technology disputes.',
-      'His approach is preventive where it can be: a substantial part of his work involves reviewing agreements and internal processes before they are tested, on the view that the cheapest dispute is the one that never arises. Where matters do become contentious, he acts in arbitration, mediation and commercial litigation.',
+      'Nirankush Kenjige leads the firm’s business and technology practice, advising companies on the agreements that govern how they trade, license and grow.',
+      'His work spans commercial and corporate agreements, joint ventures and transactions, and technology, media and telecommunications arrangements — platform and SaaS terms, content and licensing, and the data obligations that now sit underneath most of them. He is regularly asked to review documentation a business has been operating on for years without examining.',
+      'His approach is preventive where it can be, on the view that the cheapest dispute is the one that never arises. Where a matter does turn contentious, he acts in arbitration and commercial proceedings.',
+    ],
+    verify: true,
+  },
+  {
+    slug: 'deepika-mahesh',
+    name: 'Deepika Mahesh',
+    honorific: 'Advocate',
+    role: 'Partner',
+    focus: ['Intellectual Property', 'Company Law', 'Taxation'],
+    bio: [
+      'Deepika Mahesh advises on intellectual property, company law and taxation — the three areas where a business is most often let down by paperwork it did not know it needed.',
+      'Her intellectual property practice covers trade mark and copyright protection, registration and enforcement, and the licensing of brand and creative assets. On the corporate side she advises on incorporation and structuring, Companies Act compliance, shareholder arrangements and proceedings before the National Company Law Tribunal.',
+      'She also advises on direct and indirect tax questions as they arise out of transactions and disputes, which in practice is where most tax problems are made or avoided.',
     ],
     verify: true,
   },
@@ -423,12 +436,11 @@ export const testimonials = [
     name: 'Gautham Rao',
     location: 'Sydney',
   },
-  {
-    quote:
-      'Mr. Akash Shetty and his partner were very efficient, knowledgeable, experienced, quick and highly dedicated professionals. I highly recommend them for anyone looking for legal representations.',
-    name: 'Pratheeka S L',
-    location: 'Bengaluru',
-  },
+  /* NOTE: a fifth testimonial from the previous website named an
+     advocate who has since left the firm. It has been removed
+     rather than reworded — a testimonial that credits someone no
+     longer at the firm misleads the reader about who they would
+     actually be instructing. */
   {
     quote:
       'I have been seeking legal advice from Advocate Anish Acharya for a few years now. His recommendations on the best course of action for any situation has been impeccable.',
@@ -516,7 +528,7 @@ export const forums = [
   'High Court of Karnataka',
   'City Civil & Sessions Court, Bengaluru',
   'Courts of the Magistrates, Bengaluru',
-  'Family Court, Bengaluru',
+  'National Company Law Tribunal, Bengaluru',
   'Labour & Industrial Tribunals',
   'Consumer Disputes Redressal Commissions',
   'Motor Accident Claims Tribunal',

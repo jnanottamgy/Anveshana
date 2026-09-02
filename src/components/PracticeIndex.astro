@@ -64,7 +64,7 @@ const { heading = true } = Astro.props;
     color: var(--text-on-ink);
   }
 
-  .practice__title { color: var(--white); }
+  .practice__title { color: var(--text-on-ink-strong); }
 
   .practice__list {
     border-top: 1px solid var(--rule-on-ink);
@@ -93,8 +93,8 @@ const { heading = true } = Astro.props;
     z-index: -1;
     background: linear-gradient(
       90deg,
-      rgb(198 166 100 / 0.13),
-      rgb(198 166 100 / 0.02) 55%,
+      var(--sweep-1),
+      var(--sweep-2) 55%,
       transparent
     );
     transform: scaleX(0);

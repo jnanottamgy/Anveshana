@@ -336,21 +336,48 @@ function initCursor() {
   if (!cursor) return;
 
   const ring = cursor.querySelector('.cursor__ring');
-  const dot = cursor.querySelector('.cursor__dot');
+  const gavel = cursor.querySelector('.cursor__gavel');
+  const impact = cursor.querySelector('.cursor__impact');
+  if (!ring || !gavel || !impact) return;
+
+  /* Only now is the native pointer hidden. If anything above
+     returned early, the visitor keeps their system cursor. */
+  document.documentElement.classList.add('has-gavel');
 
   let mx = window.innerWidth / 2;
   let my = window.innerHeight / 2;
+  let gx = mx;
+  let gy = my;
   let rx = mx;
   let ry = my;
   let raf = 0;
 
+  const INTERACTIVE = 'a, button, summary, [data-cursor-hover], input, textarea, select';
+
   const tick = () => {
-    /* The dot tracks exactly; the ring trails. That small lag
-       is the whole effect — a rigid ring feels like a bug. */
-    rx += (mx - rx) * 0.17;
-    ry += (my - ry) * 0.17;
-    ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-    dot.style.transform = `translate3d(${mx}px, ${my}px, 0)`;
+    /* Two different lags. The gavel is heavy and trails a
+       little; the halo trails further still. Matching speeds
+       would make the whole thing read as one rigid sprite. */
+    gx += (mx - gx) * 0.22;
+    gy += (my - gy) * 0.22;
+    rx += (mx - rx) * 0.14;
+    ry += (my - ry) * 0.14;
+
+    /* Snap once the remaining distance is sub-pixel, so the
+       trail always lands exactly on the pointer rather than
+       creeping toward it forever. */
+    if (Math.abs(mx - gx) < 0.4 && Math.abs(my - gy) < 0.4) { gx = mx; gy = my; }
+    if (Math.abs(mx - rx) < 0.4 && Math.abs(my - ry) < 0.4) { rx = mx; ry = my; }
+
+    gavel.style.translate = `${gx}px ${gy}px`;
+    ring.style.translate = `${rx}px ${ry}px`;
+    impact.style.translate = `${mx}px ${my}px`;
+
+    /* Runs continuously while the cursor is on screen. An
+       earlier version stopped once "settled" and could be left
+       stranded mid-trail when the pointer arrived in a single
+       jump and then stopped — which is exactly what happens
+       when someone moves to a button and holds still. */
     raf = requestAnimationFrame(tick);
   };
 
@@ -363,20 +390,68 @@ function initCursor() {
   }, { passive: true });
 
   document.addEventListener('pointerover', (e) => {
-    const t = e.target;
-    if (t && t.closest && t.closest('a, button, [data-cursor-hover], input, textarea, select')) {
-      cursor.classList.add('is-hovering');
-    }
+    if (e.target?.closest?.(INTERACTIVE)) cursor.classList.add('is-hovering');
   }, { passive: true });
 
   document.addEventListener('pointerout', (e) => {
-    const t = e.target;
-    if (t && t.closest && t.closest('a, button, [data-cursor-hover], input, textarea, select')) {
-      cursor.classList.remove('is-hovering');
-    }
+    if (e.target?.closest?.(INTERACTIVE)) cursor.classList.remove('is-hovering');
   }, { passive: true });
 
-  document.addEventListener('pointerleave', () => cursor.classList.remove('is-active'));
+  /* The strike. Restarting the class on every press means rapid
+     clicks each get their own swing rather than the first one
+     swallowing the rest. */
+  let strikeTimer = 0;
+  document.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    cursor.classList.remove('is-striking');
+    void cursor.offsetWidth; // force reflow so the animation replays
+    cursor.classList.add('is-striking');
+    clearTimeout(strikeTimer);
+    strikeTimer = setTimeout(() => cursor.classList.remove('is-striking'), 660);
+  }, { passive: true });
+
+  /* Leaving the window stops the loop as well as hiding the
+     cursor — no reason to burn frames on an off-screen mark. */
+  document.addEventListener('pointerleave', () => {
+    cursor.classList.remove('is-active');
+    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+  });
+}
+
+/* ------------------------------------------------------------
+   13. THEME
+   The stored theme is already applied by the inline script in
+   <head>; this only wires up the switches and keeps them, and
+   the browser chrome colour, in step.
+   ------------------------------------------------------------ */
+function initTheme() {
+  const toggles = document.querySelectorAll('[data-theme-toggle]');
+  if (!toggles.length) return;
+
+  const meta = document.querySelector('[data-theme-color]');
+  const root = document.documentElement;
+
+  const sync = (theme) => {
+    toggles.forEach((el) => el.setAttribute('aria-checked', String(theme === 'light')));
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#f1ede2' : '#0a1626');
+  };
+
+  sync(root.dataset.theme === 'light' ? 'light' : 'dark');
+
+  toggles.forEach((el) => {
+    el.addEventListener('click', () => {
+      const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+      if (next === 'light') root.dataset.theme = 'light';
+      else delete root.dataset.theme;
+
+      try {
+        localStorage.setItem('anv:theme', next);
+      } catch {
+        /* storage blocked — the choice simply won't persist */
+      }
+      sync(next);
+    });
+  });
 }
 
 /* ------------------------------------------------------------
@@ -512,6 +587,7 @@ function boot() {
   initCounters();
   initHeader();
   initMenu();
+  initTheme();
   initCursor();
   initPageTransition();
   initMarquee();
