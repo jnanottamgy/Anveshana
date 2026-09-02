@@ -106,10 +106,10 @@ export const nav = [
 /* ------------------------------------------------------------
    PRACTICE AREAS
    ------------------------------------------------------------
-   The six areas below are taken from the firm's existing site.
-   Each one becomes its own page at /practice-areas/<slug>/ —
-   these pages are what rank for searches like "criminal lawyer
-   in Bengaluru" or "cheque bounce advocate Bangalore".
+   Each of the eight areas below becomes its own page at
+   /practice-areas/<slug>/ — these pages are what rank for
+   searches like "criminal lawyer in Bengaluru", "trade mark
+   attorney Bangalore" or "cheque bounce advocate".
    ------------------------------------------------------------ */
 
 export type PracticeArea = {
@@ -166,7 +166,6 @@ export const practiceAreas: PracticeArea[] = [
       },
     ],
   },
-
   {
     slug: 'civil-property',
     index: '02',
@@ -204,7 +203,6 @@ export const practiceAreas: PracticeArea[] = [
       },
     ],
   },
-
   {
     slug: 'company-law',
     index: '03',
@@ -242,48 +240,9 @@ export const practiceAreas: PracticeArea[] = [
       },
     ],
   },
-
-  {
-    slug: 'employment-labour',
-    index: '04',
-    title: 'Employment & Labour',
-    shortTitle: 'Employment',
-    summary:
-      'For employees who have been wronged, and employers who would rather not be.',
-    body: [
-      'Bengaluru’s employment disputes have their own character: senior professionals exited without process, salaries and equity withheld at termination, maternity benefits quietly denied, and workplace harassment complaints handled badly enough to create a second dispute on top of the first.',
-      'We act on both sides. For individuals, we pursue illegal termination, unpaid salary and dues, denial of statutory benefits, and harassment complaints. For employers, we advise on lawful exit process, employment documentation, internal committee procedure under the POSH Act, and defence of claims.',
-      'Most employment disputes are decided by paperwork that already exists. The appointment letter, the exit correspondence and the internal record usually determine the outcome — which is why we ask for them first.',
-    ],
-    scope: [
-      { name: 'Illegal Termination', note: 'Challenge to wrongful dismissal and forced resignation.' },
-      { name: 'Salary & Dues', note: 'Recovery of unpaid wages, severance and withheld benefits.' },
-      { name: 'Maternity Benefits', note: 'Enforcement of entitlements under the Maternity Benefit Act.' },
-      { name: 'Workplace Harassment', note: 'POSH complaints, committee procedure and appeals.' },
-      { name: 'Employment Documentation', note: 'Contracts, policies, non-competes and exit papers.' },
-      { name: 'Employer Advisory', note: 'Lawful process design and defence of employee claims.' },
-    ],
-    metaDescription:
-      'Employment and labour law advocates in Bengaluru. Illegal termination, unpaid salary and dues, maternity benefits, POSH and workplace harassment matters.',
-    faqs: [
-      {
-        q: 'I was asked to resign. Is that a termination?',
-        a: 'Very often, yes. A resignation obtained under pressure can be challenged as a termination in substance, but the strength of that challenge depends heavily on the contemporaneous record — what was said, in writing, and when. Preserve every message and email and speak to us before you sign anything.',
-      },
-      {
-        q: 'My employer is withholding my final settlement. What can I do?',
-        a: 'Withholding earned salary and dues is generally not lawful, whatever the reason offered. A properly framed legal notice resolves a significant proportion of these matters without proceedings. Where it does not, recovery can be pursued before the appropriate authority.',
-      },
-      {
-        q: 'We are an employer facing a POSH complaint. What should we do first?',
-        a: 'Follow the statutory process precisely and document it. The most common and most expensive employer error is procedural — a defective committee, a missed timeline, or an inquiry that does not meet the requirements of natural justice. We advise on the process while the inquiry is live, not after it has gone wrong.',
-      },
-    ],
-  },
-
   {
     slug: 'corporate-advisory',
-    index: '05',
+    index: '04',
     title: 'Corporate Advisory',
     shortTitle: 'Corporate',
     summary:
@@ -318,10 +277,120 @@ export const practiceAreas: PracticeArea[] = [
       },
     ],
   },
-
+  {
+    slug: 'intellectual-property',
+    index: '05',
+    title: 'Intellectual Property',
+    shortTitle: 'IP',
+    summary:
+      'Trade marks, copyright, and the brand a business is usually protecting a year too late.',
+    body: [
+      'Most businesses arrive at intellectual property at the wrong moment — after someone else has registered the name they have been trading under for three years, or after a former contractor has walked off with artwork they thought they had bought. Protection is inexpensive in advance and expensive in arrears.',
+      'We advise on trade mark clearance, filing and prosecution before the Trade Marks Registry, on copyright protection and assignment, and on the licensing of brand and creative assets. We also act in opposition, rectification and infringement proceedings, and in passing-off actions.',
+      'A large part of this work is unglamorous and decisive: establishing that the business actually owns what it believes it owns. Contractor agreements that never assigned copyright, and marks registered in a founder’s personal name, are the two gaps we find most often.',
+    ],
+    scope: [
+      { name: 'Trade Mark Registration', note: 'Clearance searches, filing and prosecution before the Registry.' },
+      { name: 'Opposition & Rectification', note: 'Contesting and defending marks already on the register.' },
+      { name: 'Copyright', note: 'Protection, assignment and enforcement of creative works.' },
+      { name: 'Infringement & Passing Off', note: 'Civil action, injunctions and damages.' },
+      { name: 'Licensing & Assignment', note: 'Brand, content and technology licensing.' },
+      { name: 'IP Due Diligence', note: 'Confirming ownership ahead of a transaction or a raise.' },
+    ],
+    metaDescription:
+      'Intellectual property lawyers in Bengaluru. Trade mark registration and opposition, copyright, infringement and passing off, licensing and IP due diligence.',
+    faqs: [
+      {
+        q: 'We have traded under our brand name for years. Do we still need to register it?',
+        a: 'Yes. Unregistered use gives you rights in passing off, but they are slower and costlier to enforce than a registration, and they will not stop someone else registering the same mark and putting you on the back foot. Registration is the cheapest insurance available in this area of law.',
+      },
+      {
+        q: 'A contractor designed our logo. Who owns it?',
+        a: 'Very often the contractor, not you. Copyright in a commissioned work does not pass simply because you paid for it — it needs a written assignment. This is the most common ownership gap we see, and it usually surfaces during due diligence, at the worst possible moment.',
+      },
+      {
+        q: 'Someone is using a name close to ours. What can we do?',
+        a: 'Depending on whether either mark is registered, the options run from a cease-and-desist notice, through opposition or rectification before the Registry, to an infringement or passing-off suit with an application for injunction. Act promptly: delay weakens both the claim and any interim relief.',
+      },
+    ],
+  },
+  {
+    slug: 'taxation',
+    index: '06',
+    title: 'Taxation',
+    shortTitle: 'Tax',
+    summary:
+      'Direct and indirect tax, advised while it is still a choice rather than a demand.',
+    body: [
+      'Tax problems are rarely created in an assessment. They are created in a transaction structured without anyone asking the question, an invoice raised under the wrong head, or a classification adopted years ago and never revisited. By the time a notice arrives, most of the useful choices have already been made.',
+      'We advise on the direct and indirect tax consequences of transactions and business structures, on GST classification, registration and input credit questions, and on the tax terms buried in commercial agreements. On the contentious side we respond to notices and act in assessment and appellate proceedings before the appropriate authorities and tribunals.',
+      'We are candid about proportion here as elsewhere: where a disputed amount will cost more to contest than to pay, we will tell you so.',
+    ],
+    scope: [
+      { name: 'Transaction Structuring', note: 'Tax consequences considered before the documents are signed.' },
+      { name: 'GST Advisory', note: 'Classification, registration, input credit and compliance.' },
+      { name: 'Notices & Assessments', note: 'Replies, representation and assessment proceedings.' },
+      { name: 'Appeals', note: 'Appellate proceedings before the appropriate tribunals.' },
+      { name: 'Contract Tax Terms', note: 'Withholding, indirect tax and indemnity clauses.' },
+      { name: 'Tax Due Diligence', note: 'Exposure review ahead of a transaction.' },
+    ],
+    metaDescription:
+      'Taxation lawyers in Bengaluru. GST advisory and classification, transaction structuring, replies to tax notices, assessments and appeals before the tribunals.',
+    faqs: [
+      {
+        q: 'We have received a notice. How urgently should we respond?',
+        a: 'Immediately, and never by ignoring it. Most notices carry a limited window, and a reply filed late — or filed badly — narrows what can be argued afterwards. Bring us the notice and the underlying papers together: the answer usually turns on the second more than the first.',
+      },
+      {
+        q: 'Is this a question for our chartered accountant or for a lawyer?',
+        a: 'Frequently both, and they are not substitutes for one another. Returns, accounts and routine compliance sit with your accountant. Structuring a transaction, reading the tax clauses of a contract, and contesting a demand are legal questions. We work alongside a client’s accountant rather than around them.',
+      },
+      {
+        q: 'Can tax be dealt with after the deal is signed?',
+        a: 'It can be dealt with; it usually cannot be fixed. The structure of a transaction largely determines its tax treatment, and once the documents are executed the options narrow sharply. An hour before signing is worth considerably more than a month afterwards.',
+      },
+    ],
+  },
+  {
+    slug: 'employment-labour',
+    index: '07',
+    title: 'Employment & Labour',
+    shortTitle: 'Employment',
+    summary:
+      'For employees who have been wronged, and employers who would rather not be.',
+    body: [
+      'Bengaluru’s employment disputes have their own character: senior professionals exited without process, salaries and equity withheld at termination, maternity benefits quietly denied, and workplace harassment complaints handled badly enough to create a second dispute on top of the first.',
+      'We act on both sides. For individuals, we pursue illegal termination, unpaid salary and dues, denial of statutory benefits, and harassment complaints. For employers, we advise on lawful exit process, employment documentation, internal committee procedure under the POSH Act, and defence of claims.',
+      'Most employment disputes are decided by paperwork that already exists. The appointment letter, the exit correspondence and the internal record usually determine the outcome — which is why we ask for them first.',
+    ],
+    scope: [
+      { name: 'Illegal Termination', note: 'Challenge to wrongful dismissal and forced resignation.' },
+      { name: 'Salary & Dues', note: 'Recovery of unpaid wages, severance and withheld benefits.' },
+      { name: 'Maternity Benefits', note: 'Enforcement of entitlements under the Maternity Benefit Act.' },
+      { name: 'Workplace Harassment', note: 'POSH complaints, committee procedure and appeals.' },
+      { name: 'Employment Documentation', note: 'Contracts, policies, non-competes and exit papers.' },
+      { name: 'Employer Advisory', note: 'Lawful process design and defence of employee claims.' },
+    ],
+    metaDescription:
+      'Employment and labour law advocates in Bengaluru. Illegal termination, unpaid salary and dues, maternity benefits, POSH and workplace harassment matters.',
+    faqs: [
+      {
+        q: 'I was asked to resign. Is that a termination?',
+        a: 'Very often, yes. A resignation obtained under pressure can be challenged as a termination in substance, but the strength of that challenge depends heavily on the contemporaneous record — what was said, in writing, and when. Preserve every message and email and speak to us before you sign anything.',
+      },
+      {
+        q: 'My employer is withholding my final settlement. What can I do?',
+        a: 'Withholding earned salary and dues is generally not lawful, whatever the reason offered. A properly framed legal notice resolves a significant proportion of these matters without proceedings. Where it does not, recovery can be pursued before the appropriate authority.',
+      },
+      {
+        q: 'We are an employer facing a POSH complaint. What should we do first?',
+        a: 'Follow the statutory process precisely and document it. The most common and most expensive employer error is procedural — a defective committee, a missed timeline, or an inquiry that does not meet the requirements of natural justice. We advise on the process while the inquiry is live, not after it has gone wrong.',
+      },
+    ],
+  },
   {
     slug: 'cyber-law',
-    index: '06',
+    index: '08',
     title: 'Cyber Law',
     shortTitle: 'Cyber',
     summary:

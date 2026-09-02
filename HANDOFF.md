@@ -38,7 +38,7 @@ The main menu. Add or remove an entry and both the desktop menu and the
 mobile menu update.
 
 ### `practiceAreas`
-The six practice areas. Each one automatically becomes:
+The eight practice areas. Each one automatically becomes:
 - a row on the homepage index,
 - a row on `/practice-areas/`,
 - **its own page** at `/practice-areas/<slug>/`,
@@ -46,8 +46,10 @@ The six practice areas. Each one automatically becomes:
 - a WhatsApp enquiry that opens already naming that area,
 - and its own Google structured data, including the FAQ.
 
-To add a seventh area, copy an existing block and change the fields. To remove
-one, delete its block. Nothing else needs touching.
+To add a ninth area, copy an existing block and change the fields. To remove
+one, delete its block. The order of the array is the order they appear in
+everywhere, and `index` is only the numeral shown beside each — renumber them
+if you reorder. Nothing else needs touching.
 
 Each area has:
 - `summary` — one line, shown on index rows
@@ -76,16 +78,18 @@ actually be working with. See §7 before adding more.
 ### `commitments`, `process`, `forums`
 The three promises, the four-stage method, and the courts list.
 
-### A gap worth deciding on
-Deepika Mahesh's profile lists **intellectual property** and **taxation**,
-and Nirankush Kenjige's lists **TMT**. TMT is covered inside Corporate
-Advisory, but IP and taxation currently have **no practice-area page**, which
-means the site does not rank for "trade mark lawyer Bengaluru" or similar.
+### The two newest areas
+**Intellectual Property** and **Taxation** were added so that the practice
+list matches what the People page claims — Deepika Mahesh leads both, and
+without pages for them the site could not rank for searches like "trade mark
+attorney Bengaluru". Nirankush Kenjige's TMT work is covered inside Corporate
+Advisory rather than given a page of its own.
 
-That was left deliberately rather than invented: adding two full practice
-pages means writing scope lists and FAQs for work only the firm can describe
-accurately. If the firm wants those areas represented, they are two new
-blocks in `practiceAreas` — say the word and they can be written properly.
+Both are drafts written from the areas the firm supplied, and both carry the
+same caveat as the biographies: **read the scope lists and FAQs and correct
+anything the firm does not actually do.** The tax FAQ in particular draws a
+line between what a chartered accountant handles and what a lawyer handles —
+confirm the firm is happy with where that line sits.
 
 ---
 
