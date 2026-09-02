@@ -9,7 +9,8 @@
  *
  * tone:
  *   brand   — the sampled logo gradient (#1092CA → #3AA7DD)
- *   metal   — champagne, for use on ink surfaces
+ *   metal   — the surface's accent metal (champagne on ink,
+ *              bronze on paper), so it stays legible in both themes
  *   current — inherits currentColor, for one-colour contexts
  *
  * draw: renders as an animated outline that strokes itself in,
@@ -88,7 +89,7 @@ const DOT = { cx: 846.7, cy: 711.3, r: 153.3 };
       tone === 'brand'
         ? `url(#${uid}-d)`
         : tone === 'metal'
-          ? 'var(--champagne)'
+          ? 'var(--accent)'
           : 'currentColor'
     }
   />
