@@ -434,9 +434,14 @@ export const practiceAreas: PracticeArea[] = [
    drafts. Names and the criminal-law designation come from the
    firm's existing website and testimonials. Everything else
    (education, enrolment, years, focus) MUST be confirmed and
-   corrected by the firm before launch. Add a `photo` path once
-   portraits are shot; the layout renders a typographic monogram
-   plate until then.
+   corrected by the firm before launch.
+
+   PORTRAITS — to add one: put the file in src/portraits/<slug>.jpg,
+   run `npm run portraits`, then set photo: '/portraits/<slug>'
+   below. Note the path carries NO width and NO file extension;
+   the component appends those. Until a portrait exists the
+   layout renders a typographic plate of the same proportion, so
+   a part-photographed team still reads as a set.
    ------------------------------------------------------------ */
 
 export type Person = {
@@ -471,6 +476,10 @@ export const people: Person[] = [
     honorific: 'Advocate',
     role: 'Partner',
     focus: ['Business Law', 'TMT Law', 'Corporate Agreements'],
+    /* Base path only — the component appends the width and the
+       format. See scripts/make-portraits.mjs to add the other
+       two portraits. */
+    photo: '/portraits/nirankush-kenjige',
     bio: [
       'Nirankush Kenjige leads the firm’s business and technology practice, advising companies on the agreements that govern how they trade, license and grow.',
       'His work spans commercial and corporate agreements, joint ventures and transactions, and technology, media and telecommunications arrangements — platform and SaaS terms, content and licensing, and the data obligations that now sit underneath most of them. He is regularly asked to review documentation a business has been operating on for years without examining.',

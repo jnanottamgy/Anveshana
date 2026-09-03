@@ -1,0 +1,242 @@
+---
+/**
+ * PORTRAIT PLATE
+ *
+ * One implementation of the portrait, used by both the People
+ * page and the home-page card. It previously lived twice, and
+ * the two copies had already drifted apart — the card returned
+ * colour on hover while the People page was permanently grey,
+ * so the same photograph looked like two different photographs
+ * depending on where you saw it.
+ *
+ * THE MIXED-STATE PROBLEM
+ * Only one of the three advocates has been photographed. A row
+ * of one portrait beside two empty boxes reads as unfinished,
+ * which is worse than having no photographs at all. So the
+ * photograph and the typographic plate are built to share a
+ * silhouette: identical 4:5 proportion, identical hairline,
+ * identical dark ink field, identical mount and veil, identical
+ * hover. The row reads as a set, and each new portrait replaces
+ * a plate without disturbing the composition.
+ *
+ * ADDING A PORTRAIT
+ * See scripts/make-portraits.mjs. In short: drop the file in
+ * src/portraits/<slug>.jpg, run `npm run portraits`, then set
+ * `photo: '/portraits/<slug>'` on that person in data/site.ts.
+ */
+import Monogram from './Monogram.astro';
+import type { Person } from '../data/site';
+
+interface Props {
+  person: Person;
+  /**
+   * 'profile' is the large plate on the People page, 'card' the
+   * smaller one in a grid. Controls the responsive sizes hint
+   * and the initials scale — nothing else, so the two can never
+   * drift apart again.
+   */
+  variant?: 'profile' | 'card';
+  /** Skip lazy-loading for the first portrait above the fold. */
+  eager?: boolean;
+}
+
+const { person, variant = 'card', eager = false } = Astro.props;
+
+/* MUST match WIDTHS in scripts/make-portraits.mjs. scripts/
+   sweep.mjs asserts every file referenced here exists on disk,
+   so a mismatch fails the sweep rather than shipping a broken
+   image. */
+const WIDTHS = [360, 480, 640, 960];
+
+/* The rendered plate is ~420px on the People page and 260–340px
+   in the card grid, so a 1x screen takes the 480 and a 2x screen
+   the 960. */
+const SIZES =
+  variant === 'profile'
+    ? '(min-width: 880px) 420px, 92vw'
+    : '(min-width: 720px) 340px, (min-width: 460px) 46vw, 88vw';
+
+const srcset = (ext: string) =>
+  WIDTHS.map((w) => `${person.photo}-${w}.${ext} ${w}w`).join(', ');
+
+const initials = person.name
+  .split(' ')
+  .map((part) => part[0])
+  .join('');
+
+const alt = `${person.honorific} ${person.name}, ${person.role} at Anveshana Advocates & Consultants`;
+---
+
+<div class:list={['portrait', `portrait--${variant}`, person.photo && 'portrait--shot']}>
+  {person.photo ? (
+    <picture>
+      <source type="image/avif" srcset={srcset('avif')} sizes={SIZES} />
+      <source type="image/webp" srcset={srcset('webp')} sizes={SIZES} />
+      <img
+        class="portrait__img"
+        src={`${person.photo}-640.webp`}
+        alt={alt}
+        width="960"
+        height="1200"
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : undefined}
+        decoding="async"
+      />
+    </picture>
+  ) : (
+    <>
+      <span class="portrait__initials" aria-hidden="true">{initials}</span>
+      <span class="portrait__mark" aria-hidden="true">
+        <Monogram tone="current" />
+      </span>
+      <span class="portrait__glow" aria-hidden="true"></span>
+    </>
+  )}
+
+  <span class="portrait__veil" aria-hidden="true"></span>
+  <span class="portrait__mount" aria-hidden="true"></span>
+</div>
+
+<style>
+  .portrait {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(155deg, var(--plate-from), var(--plate-to));
+    border: 1px solid var(--plate-rule);
+    box-shadow: var(--shadow-plate);
+  }
+
+  /* ---- The photograph ------------------------------------ */
+  .portrait__img {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Warm near-monochrome rather than flat greyscale. Two
+       reasons, one aesthetic and one practical:
+       — this frame's whole quality is its warm practical lights
+         against cool glass, and grayscale(1) throws that away;
+       — the three advocates will be photographed on three
+         different days under three different lights, and a
+         shared warm treatment is what will make them look like
+         one set instead of three snapshots. */
+    filter: grayscale(0.62) sepia(0.09) contrast(1.06) brightness(1.02);
+    transform: scale(1.001); /* pre-promote, so hover doesn't re-raster */
+    transition:
+      filter var(--dur-slow) var(--ease),
+      transform var(--dur-slow) var(--ease);
+  }
+
+  /* Full colour returns on approach. A restrained editorial
+     device, and the reason the treatment above is allowed to be
+     assertive: nothing is hidden, only held back. */
+  .portrait:hover .portrait__img,
+  .portrait:focus-within .portrait__img {
+    filter: grayscale(0) sepia(0) contrast(1.02) brightness(1);
+    transform: scale(1.035);
+  }
+
+  /* ---- The typographic plate ----------------------------- */
+  .portrait__initials {
+    grid-area: 1 / 1;
+    align-self: center;
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: var(--plate-fg);
+    opacity: 0.22;
+    transition:
+      opacity var(--dur-slow) var(--ease),
+      color var(--dur-slow) var(--ease);
+  }
+
+  .portrait--card .portrait__initials { font-size: clamp(3.5rem, 8vw, 6rem); }
+  .portrait--profile .portrait__initials { font-size: clamp(4rem, 9vw, 7rem); }
+
+  .portrait:hover .portrait__initials {
+    opacity: 0.4;
+    color: var(--accent);
+  }
+
+  /* The mark, low in the plate — this is a brand plate standing
+     in for a photograph, so it may carry the mark. Deliberately
+     NOT applied over a real portrait: a monogram stamped across
+     someone's face is the visual language of a stock library
+     watermark, which is the opposite of the intended effect. */
+  .portrait__mark {
+    position: absolute;
+    right: 6.5%;
+    bottom: 5.5%;
+    width: 15%;
+    color: var(--plate-fg);
+    opacity: 0.14;
+    transition: opacity var(--dur-slow) var(--ease);
+  }
+
+  /* :global — the <svg> is rendered by Monogram and carries that
+     component's scope id, not this one's. */
+  .portrait__mark :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .portrait:hover .portrait__mark { opacity: 0.26; }
+
+  .portrait__glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      circle at 50% 108%,
+      var(--plate-glow),
+      transparent 62%
+    );
+  }
+
+  /* ---- Shared finish ------------------------------------- */
+  /* Dissolves the foot of the plate into its own ink so the
+     portrait sits into the page rather than stopping at a line.
+     On the plate it also grounds the initials. */
+  .portrait__veil {
+    position: absolute;
+    inset: 0;
+    background: var(--plate-veil);
+    pointer-events: none;
+  }
+
+  /* The mount: a hairline set in from the edge. */
+  .portrait__mount {
+    position: absolute;
+    inset: 0.7rem;
+    border: 1px solid var(--plate-mount);
+    pointer-events: none;
+    transition: border-color var(--dur-slow) var(--ease);
+  }
+
+  /* Over a photograph the same hairline stops reading as a mount
+     and starts reading as a scratch across the subject, so it is
+     dialled back to a whisper there. Still present, so the photo
+     and the plates keep a shared frame. */
+  .portrait--shot .portrait__mount { border-color: var(--plate-mount-soft); }
+
+  .portrait:hover .portrait__mount { border-color: var(--tint-accent-ring); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .portrait__img,
+    .portrait__initials,
+    .portrait__mark,
+    .portrait__mount {
+      transition: none;
+    }
+    .portrait:hover .portrait__img,
+    .portrait:focus-within .portrait__img {
+      transform: none;
+    }
+  }
+</style>

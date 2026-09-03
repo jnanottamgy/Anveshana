@@ -1,16 +1,12 @@
 ---
 /**
- * PERSON CARD
+ * PERSON CARD — the grid item on the home page.
  *
- * The firm has no usable portraits yet — the photograph on the
- * old site is 133×130px. Rather than reach for a stock headshot
- * (which on a law firm's People page is worse than none), the
- * card renders a typographic plate: the advocate's initials set
- * in the display serif over an ink field.
- *
- * Add `photo` to the person record in data/site.ts and the
- * plate is replaced by the portrait with no other change.
+ * The plate itself lives in Portrait.astro, which both this and
+ * the People page render, so a portrait looks identical wherever
+ * it appears.
  */
+import Portrait from './Portrait.astro';
 import type { Person } from '../data/site';
 
 interface Props {
@@ -20,32 +16,11 @@ interface Props {
 
 const { person, href } = Astro.props;
 
-const initials = person.name
-  .split(' ')
-  .map((part) => part[0])
-  .join('');
-
 const Wrapper = href ? 'a' : 'div';
 ---
 
 <Wrapper class="person" href={href} data-tilt="4">
-  <div class="person__plate">
-    {person.photo ? (
-      <img
-        class="person__photo"
-        src={person.photo}
-        alt={`${person.honorific} ${person.name}`}
-        loading="lazy"
-        width="640"
-        height="800"
-      />
-    ) : (
-      <>
-        <span class="person__initials" aria-hidden="true">{initials}</span>
-        <span class="person__plate-glow" aria-hidden="true"></span>
-      </>
-    )}
-  </div>
+  <Portrait person={person} variant="card" />
 
   <div class="person__body">
     <p class="person__role">{person.role}</p>
@@ -64,60 +39,6 @@ const Wrapper = href ? 'a' : 'div';
     display: flex;
     flex-direction: column;
     gap: var(--sp-md);
-  }
-
-  .person__plate {
-    position: relative;
-    aspect-ratio: 4 / 5;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    background:
-      linear-gradient(155deg, var(--plate-from), var(--plate-to));
-    border: 1px solid var(--plate-rule);
-    isolation: isolate;
-  }
-
-  .person__photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(1) contrast(1.04);
-    transition: filter var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
-  }
-
-  /* Colour returns on hover — a restrained, very common
-     editorial device that makes a grid of portraits feel
-     considered rather than catalogued. */
-  .person:hover .person__photo {
-    filter: grayscale(0) contrast(1);
-    transform: scale(1.03);
-  }
-
-  .person__initials {
-    font-family: var(--font-display);
-    font-size: clamp(3.5rem, 8vw, 6rem);
-    font-weight: 300;
-    letter-spacing: 0.02em;
-    color: var(--plate-fg);
-    opacity: 0.22;
-    transition: opacity var(--dur-slow) var(--ease), color var(--dur-slow) var(--ease);
-  }
-
-  .person:hover .person__initials {
-    opacity: 0.42;
-    color: var(--accent);
-  }
-
-  .person__plate-glow {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(
-      circle at 50% 108%,
-      var(--plate-glow),
-      transparent 62%
-    );
   }
 
   .person__body {

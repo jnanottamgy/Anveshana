@@ -139,6 +139,58 @@ async function checkLinks(page, route) {
 }
 
 /* ------------------------------------------------------------
+   2b. ASSETS — every srcset candidate actually exists
+   ------------------------------------------------------------
+   A <picture> whose sources 404 fails silently: the browser
+   falls through to the next candidate and, if they all miss,
+   shows nothing. It never reaches the console and it never
+   fails the build. Portrait widths are declared in two places
+   that have to agree (Portrait.astro and make-portraits.mjs),
+   so this asserts them against what is on disk.
+   ------------------------------------------------------------ */
+const assetCache = new Map();
+async function checkAssets(page, route) {
+  const urls = await page.evaluate(() => {
+    const out = new Set();
+    document.querySelectorAll('source[srcset], img[srcset]').forEach((el) => {
+      el.getAttribute('srcset')
+        .split(',')
+        .map((c) => c.trim().split(/\s+/)[0])
+        .filter(Boolean)
+        .forEach((u) => out.add(u));
+    });
+    document.querySelectorAll('img[src]').forEach((el) => {
+      const s = el.getAttribute('src');
+      if (s && !s.startsWith('data:')) out.add(s);
+    });
+    return [...out];
+  });
+
+  for (const url of urls) {
+    if (/^https?:/.test(url)) continue;
+    if (assetCache.has(url)) {
+      if (assetCache.get(url) !== 200) {
+        add(route, `missing image ${url} (${assetCache.get(url)})`);
+      }
+      continue;
+    }
+    const res = await page.request.get(BASE + url).catch(() => null);
+    const status = res ? res.status() : 0;
+    assetCache.set(url, status);
+    if (status !== 200) add(route, `missing image ${url} (${status})`);
+  }
+
+  /* An <img> that loaded but decoded to nothing — a truncated or
+     corrupt file, which a 200 will not catch. */
+  const broken = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('img'))
+      .filter((i) => i.complete && i.naturalWidth === 0)
+      .map((i) => i.currentSrc || i.src)
+  );
+  broken.forEach((u) => add(route, `image loaded but failed to decode: ${u}`));
+}
+
+/* ------------------------------------------------------------
    MAIN PASS
    ------------------------------------------------------------ */
 for (const vp of [
@@ -178,7 +230,10 @@ for (const vp of [
       await auditPage(page, `${route} ${vp.n}`, theme);
     }
 
-    if (vp.n === 'desktop') await checkLinks(page, route);
+    if (vp.n === 'desktop') {
+      await checkLinks(page, route);
+      await checkAssets(page, route);
+    }
     consoleErrors.forEach((e) => add(`${route} ${vp.n}`, e));
   }
   await ctx.close();

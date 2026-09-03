@@ -18,7 +18,7 @@ until each is confirmed.** Every one of them is marked `VERIFY` in
 | 3 | **Consultation hours** | `firm.hours` | Currently a sensible assumption, not a fact. These also feed the Google structured data, so a wrong value misleads searchers. |
 | 4 | **Courts and forums list** | `forums` | Standard for a Bengaluru litigation practice, but it is a claim about where the firm appears. Confirm or trim it. |
 | 5 | **The WhatsApp number** | `whatsapp.number` | Every consultation button on the site opens a chat with this number. Confirm it is the one the firm actually monitors — see §4. |
-| 6 | **A professional photoshoot** | see §6 | The only remaining design gap. |
+| 6 | **Portraits of Anish Acharya and Deepika Mahesh** | see §6 | Nirankush Kenjige is photographed. The other two render as typographic plates, which is deliberate and does not look broken — but two real portraits would finish the page. Match the brief in §6 so the three read as one set. |
 | 7 | **Bar Council review of the copy** | whole site | See §7. Have an advocate at the firm read the site once with Rule 36 in mind. |
 
 ---
@@ -250,29 +250,92 @@ sequence.
 
 ---
 
-## 6. Photography brief
+## 6. Portraits
 
-**This is the one outstanding gap in the site.** The design works without
-photographs — it leans on typography, the monogram and generated texture — but
-real photography would lift it further, and every slot is already built.
+### What is in place
 
-The existing images could not be reused: they are generic stock, and the desk
-photograph contains a framed certificate made out to *"Adam G. Zuwerink"* — a
-stranger's name, on a law firm's website. The old team photograph is
-133 × 130 pixels.
+**Nirankush Kenjige is photographed.** The frame is a good one and the site
+is built around its qualities: a dark suit against dark shelving, warm
+practical lights, glass to one side. It sits inside the existing palette
+without being corrected toward it.
 
-Worth commissioning, roughly half a day:
+Anish Acharya and Deepika Mahesh are **not yet photographed**, and the page
+is built so that this does not read as an omission. The photograph and the
+typographic plate share a silhouette — the same 4:5 proportion, the same
+hairline, the same dark ink field, the same mount, the same veil, the same
+hover — so a row of one portrait and two plates reads as a set rather than
+as two missing images. Each new portrait replaces a plate without disturbing
+the composition.
 
-1. **Portraits of each advocate** — 4:5 portrait, plain or softly defocused
-   background, natural light, unsmiling-but-warm rather than corporate-grin.
-   These drop straight into `people[].photo`.
-2. **The chambers** — the entrance, the consultation room, a shelf of
+### Adding the other two
+
+1. Put the file in `src/portraits/<slug>.jpg`, where `<slug>` matches the
+   person's `slug` in `src/data/site.ts` — so `anish-acharya.jpg` and
+   `deepika-mahesh.jpg`.
+2. Run `npm run portraits`.
+3. Add `photo: '/portraits/<slug>'` to that person's record in `site.ts`.
+   Note the path carries **no width and no file extension** — the component
+   appends those.
+
+That is the whole job. The crop, the formats, the sizes and the markup are
+all handled. `npm run sweep` then asserts that every file the page asks for
+actually exists, so a mistake fails the sweep instead of shipping an
+invisible broken image.
+
+### Brief for the remaining two
+
+Match the delivered frame, because the treatment is shared and a mismatch
+will show:
+
+- **4:5 portrait**, at least 960px on the short edge. 2400px is ideal —
+  the pipeline downsamples, it never upscales.
+- **Dark, uncluttered environment.** Office interior rather than a plain
+  studio backdrop; the depth in the background is what makes the delivered
+  frame look expensive.
+- **Warm practical lights in shot** if possible — a lamp, a downlight. The
+  site's accent is a warm metal and the photography treatment leans warm to
+  meet it.
+- **Standing, mid-body crop, generous headroom.** The pipeline crops from
+  the top of the frame by default, so leave room above the head and expect
+  the bottom of the frame to be trimmed.
+- **Composed, not grinning.** The delivered frame gets this right.
+
+Deliver as high-quality JPEG. If a frame needs a different crop anchor,
+set it in `ANCHOR` in `scripts/make-portraits.mjs` — `0` keeps the top of
+the frame, `1` the bottom, `0.5` centres.
+
+### The treatment, and how to change it
+
+Portraits render in a warm near-monochrome that returns to full colour on
+hover. This is one line in `src/components/Portrait.astro`:
+
+```css
+filter: grayscale(0.62) sepia(0.09) contrast(1.06) brightness(1.02);
+```
+
+It was chosen by rendering five candidates side by side against this
+photograph. Flat `grayscale(1)` — what the site used before a portrait
+existed — kills the warm lights and the green of the plant, which is most of
+what the frame has going for it. Full colour lets the blue-green glass fight
+the champagne accent. The value above sits between them, and it does real
+work beyond taste: the three advocates will be photographed on three
+different days under three different lights, and a shared treatment is what
+will make them look like one set rather than three snapshots. Raise the
+`grayscale` figure for a more austere page, lower it for a warmer one.
+
+### Still worth commissioning
+
+The old imagery could not be reused: it is generic stock, and the desk
+photograph contains a framed certificate made out to *"Adam G. Zuwerink"* —
+a stranger's name, on a law firm's website. The old team photograph is
+133 × 130 pixels. All of it is gone from the site.
+
+Beyond the two outstanding portraits, roughly half a day would cover:
+
+1. **The chambers** — the entrance, the consultation room, a shelf of
    reports. Details rather than wide shots.
-3. **Two or three texture shots** — a file, a pen on paper, light through a
+2. **Two or three texture shots** — a file, a pen on paper, light through a
    window. Used as section backgrounds.
-
-Shoot in landscape and portrait for each. Deliver as high-quality JPEG at
-2400px on the long edge; Astro compresses them at build time.
 
 ---
 
@@ -318,6 +381,7 @@ Run all four with `npm run preview` serving on port 4321:
 | Command | What it catches |
 | --- | --- |
 | `npm run build` | Type errors, broken imports, bad data references. |
+| `npm run portraits` | Rebuilds the portrait derivatives from `src/portraits/`. |
 | `node scripts/lint-scoped.mjs` | The Astro scoped-style trap (below). Fast, no browser. |
 | `node scripts/sweep.mjs` | Everything else — 16 routes × 2 viewports × 2 themes. |
 | `node scripts/a11y.mjs` | axe-core, every route, both themes. |
@@ -339,7 +403,10 @@ add a component that takes a `class` prop, run it.**
 duplicate `id`s, headings out of order, unlabelled controls, dead links,
 horizontal overflow, over-length page titles and meta descriptions, content
 whose reveal animation never fired, hard-coded colours that would break in
-one theme, and any element sitting under another where it should be clickable.
+one theme, any element sitting under another where it should be clickable,
+and any image the page asks for that is not actually on disk — a `<picture>`
+whose sources 404 shows nothing at all, silently, without reaching the
+console or failing the build.
 It then presses things: the mobile menu, the theme toggle, the disclaimer
 gate, and every button on every page in both themes.
 
@@ -364,8 +431,13 @@ gate, and every button on every page in both themes.
 - **Whole site.** 1.1 MB for all sixteen pages including fonts and icons —
   against roughly 5 MB of unoptimised photographs on the previous
   single-page site.
+- **The portrait.** 130 KB on disk across eight files; a browser downloads
+  one of them. 10.5 KB for the AVIF a 1x laptop takes, 23.8 KB for the 2x.
+  Checked at full size that the compression holds up on the face, which is
+  the only part of a portrait where it shows.
 - **Structured data.** `LegalService`, `WebSite`, `Service` (×8), `FAQPage`,
-  `Person` (×3), `BreadcrumbList`. Worth re-checking after launch with
+  `Person` (×3, now carrying `image` where a portrait exists),
+  `BreadcrumbList`. Worth re-checking after launch with
   Google's [Rich Results Test](https://search.google.com/test/rich-results).
 
 ---

@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "portraits": "node scripts/make-portraits.mjs",
     "lint": "node scripts/lint-scoped.mjs",
     "sweep": "node scripts/sweep.mjs",
     "a11y": "node scripts/a11y.mjs",

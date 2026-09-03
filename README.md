@@ -49,7 +49,8 @@ src/
     motion.css          ← every animation, in one place
     fonts.css           ← @font-face declarations
   scripts/motion.js     ← the animation engine (~2.5 KB gzipped)
-public/                 ← files served as-is: fonts, icons, robots.txt
+  portraits/            ← photographers' originals (source, not served)
+public/                 ← files served as-is: fonts, icons, portraits, robots.txt
 scripts/                ← development tooling (linter, sweep, audit, icons)
 ```
 
@@ -67,6 +68,7 @@ plus the list of items that must be verified before launch.
 ## Development tooling
 
 ```bash
+npm run portraits             # rebuild portrait derivatives from src/portraits/
 npm run lint                  # scoped-style linter — run this after any edit
 npm run build                 # type-check and build
 npm run sweep                 # full-site sweep: 16 routes x 2 sizes x 2 themes
@@ -83,6 +85,12 @@ into a child component lands on an element carrying the child's scope id, so
 the parent's style rule silently never matches. That bug shipped four times
 here before the linter existed. Run it after touching any component that
 takes a `class` prop.
+
+`npm run portraits` turns a photographer's delivery into the files the site
+serves: it crops to the 4:5 the layout uses, then writes AVIF and WebP at
+four widths. To add a portrait, drop the file in `src/portraits/<slug>.jpg`,
+run it, and set `photo: '/portraits/<slug>'` on that person in `site.ts` —
+see §6 of [HANDOFF.md](./HANDOFF.md).
 
 `sweep`, `a11y` and `scan` drive a real browser, so they need a preview
 server running (`npm run preview`) and Chromium available via Playwright.

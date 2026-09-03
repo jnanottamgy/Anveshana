@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import CTABand from '../components/CTABand.astro';
+import Portrait from '../components/Portrait.astro';
 import { firm, people } from '../data/site';
 
 const description =
@@ -15,6 +16,9 @@ const schema = [
     jobTitle: person.role,
     worksFor: { '@id': `${firm.url}/#organisation` },
     knowsAbout: person.focus,
+    /* Google shows a portrait against a Person result where one
+       is available, and this is the only place it can find it. */
+    ...(person.photo ? { image: `${firm.url}${person.photo}-960.webp` } : {}),
     ...(person.email ? { email: person.email } : {}),
   })),
   {
@@ -26,8 +30,6 @@ const schema = [
   },
 ];
 
-const initialsOf = (name: string) =>
-  name.split(' ').map((part) => part[0]).join('');
 ---
 
 <Base title="People" description={description} schema={schema}>
@@ -43,25 +45,7 @@ const initialsOf = (name: string) =>
       {people.map((person, i) => (
         <article class="profile" id={person.slug}>
           <div class="profile__plate-wrap" data-reveal="wipe">
-            <div class="profile__plate">
-              {person.photo ? (
-                <img
-                  class="profile__photo"
-                  src={person.photo}
-                  alt={`${person.honorific} ${person.name}`}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  width="640"
-                  height="800"
-                />
-              ) : (
-                <>
-                  <span class="profile__initials" aria-hidden="true">
-                    {initialsOf(person.name)}
-                  </span>
-                  <span class="profile__glow" aria-hidden="true"></span>
-                </>
-              )}
-            </div>
+            <Portrait person={person} variant="profile" eager={i === 0} />
           </div>
 
           <div class="profile__body">
@@ -130,38 +114,15 @@ const initialsOf = (name: string) =>
     }
   }
 
-  .profile__plate {
-    position: relative;
-    aspect-ratio: 4 / 5;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    isolation: isolate;
-    background: linear-gradient(155deg, var(--plate-from), var(--plate-to));
-    border: 1px solid var(--plate-rule);
-  }
+  /* The plate itself is Portrait.astro — only its placement in
+     this layout belongs here.
 
-  .profile__photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(1) contrast(1.04);
-  }
-
-  .profile__initials {
-    font-family: var(--font-display);
-    font-size: clamp(4rem, 9vw, 7rem);
-    font-weight: 300;
-    color: var(--plate-fg);
-    opacity: 0.24;
-  }
-
-  .profile__glow {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(circle at 50% 108%, var(--plate-glow), transparent 62%);
-  }
+     NB: deliberately not sticky. Measured, the plate has 46px of
+     travel against the biography at 1440px and 300px+ below
+     1024px, so a sticky portrait would sit dead still on the
+     commonest desktop width and slide a long way on a laptop.
+     An effect that only works at some widths reads as a bug at
+     the others. */
 
   .profile__body { padding-top: 0.25rem; }
   .profile .eyebrow { margin-bottom: var(--sp-sm); }

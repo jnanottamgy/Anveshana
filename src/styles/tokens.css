@@ -135,6 +135,23 @@
   --plate-rule: rgb(241 237 228 / 0.14);
   --plate-glow: rgb(42 159 214 / 0.22);
 
+  /* A hairline set in from the edge, like the mount inside a
+     picture frame. Barely visible over a dark photograph, which
+     is the point — it reads as craft rather than decoration. */
+  --plate-mount: rgb(241 237 228 / 0.1);
+  --plate-mount-soft: rgb(241 237 228 / 0.055);
+
+  /* The portrait dissolves downward into the plate's own ink
+     instead of stopping at a hard edge. Written as one token
+     rather than interpolating from `transparent`, which fades
+     through grey and dirties the shadows. */
+  --plate-veil: linear-gradient(
+    180deg,
+    rgb(6 14 25 / 0) 44%,
+    rgb(6 14 25 / 0.5) 78%,
+    rgb(6 14 25 / 0.86) 100%
+  );
+
   /* ---- Typography ---------------------------------------- */
   --font-display: 'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif;
   --font-sans: 'Jost', 'Futura', 'Century Gothic', ui-sans-serif, system-ui, sans-serif;
@@ -208,6 +225,10 @@
   --shadow-md: 0 4px 12px rgb(6 14 25 / 0.08), 0 14px 34px rgb(6 14 25 / 0.07);
   --shadow-lg: 0 10px 26px rgb(6 14 25 / 0.11), 0 34px 76px rgb(6 14 25 / 0.13);
   --shadow-ink: 0 24px 70px rgb(2 7 14 / 0.55);
+
+  /* Lifts the plate off the bone ground so it reads as lit
+     rather than pasted on. */
+  --shadow-plate: 0 2px 6px rgb(6 14 25 / 0.1), 0 20px 48px rgb(6 14 25 / 0.22);
 
   /* ---- Depth (3D) ---------------------------------------- */
   --persp: 1200px;
@@ -317,6 +338,7 @@
   --grain-blend: multiply;
 
   --shadow-ink: 0 24px 70px rgb(60 50 32 / 0.18);
+  --shadow-plate: 0 2px 6px rgb(60 50 32 / 0.08), 0 20px 48px rgb(60 50 32 / 0.16);
 }
 
 /* The two surface contexts every component reads. */
