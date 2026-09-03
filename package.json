@@ -2,14 +2,18 @@
   "name": "anveshana",
   "version": "1.0.0",
   "private": true,
-  "description": "Anveshana Advocates & Consultants — official website",
+  "description": "Anveshana Advocates & Consultants \u2014 official website",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "node scripts/lint-scoped.mjs",
+    "sweep": "node scripts/sweep.mjs",
+    "a11y": "node scripts/a11y.mjs",
+    "check": "npm run lint && npm run build"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

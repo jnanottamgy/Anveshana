@@ -5,11 +5,18 @@
  * Dark is the brand default. This switches to the light theme
  * and remembers the choice.
  *
+ * The knob is a SOLID metal disc that slides under whichever
+ * icon is active, and that icon flips to the dark on-metal
+ * colour so it reads as printed on the disc. An earlier version
+ * used a translucent knob floating over the icons, which at
+ * 26px simply read as a smudge — two overlapping shapes at
+ * similar values never resolve into one legible control.
+ *
  * role="switch" rather than a checkbox: it is a binary on/off
- * control that takes effect immediately, which is exactly what
- * the switch role describes. The accessible name stays constant
- * ("Light mode") while aria-checked carries the state — renaming
- * a control as it is pressed is disorienting on a screen reader.
+ * control that takes effect immediately. The accessible name
+ * stays constant ("Light mode") while aria-checked carries the
+ * state — renaming a control as it is pressed is disorienting
+ * on a screen reader.
  *
  * The no-flash script lives in Base.astro's <head>; it must run
  * before first paint, which a component script cannot.
@@ -29,26 +36,30 @@ const { class: className = '' } = Astro.props;
   aria-label="Light mode"
 >
   <span class="theme-toggle__track" aria-hidden="true">
-    <!-- Moon -->
-    <svg class="theme-toggle__icon theme-toggle__icon--dark" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"
-        stroke="currentColor"
-        stroke-width="1.4"
-        stroke-linejoin="round"
-      />
-    </svg>
-
-    <!-- Sun -->
-    <svg class="theme-toggle__icon theme-toggle__icon--light" viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.4" />
-      <g stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-        <path d="M12 2.6v2.2M12 19.2v2.2M4.2 12H2M22 12h-2.2" />
-        <path d="M6.3 6.3 4.8 4.8M19.2 19.2l-1.5-1.5M17.7 6.3l1.5-1.5M4.8 19.2l1.5-1.5" />
-      </g>
-    </svg>
-
     <span class="theme-toggle__knob"></span>
+
+    <span class="theme-toggle__slot">
+      <!-- Moon -->
+      <svg class="theme-toggle__icon" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M20.2 14.8A8.6 8.6 0 0 1 9.2 3.8a8.6 8.6 0 1 0 11 11Z"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </span>
+
+    <span class="theme-toggle__slot">
+      <!-- Sun -->
+      <svg class="theme-toggle__icon" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6" />
+        <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <path d="M12 3v1.8M12 19.2V21M3 12h1.8M19.2 12H21" />
+          <path d="M5.6 5.6 6.9 6.9M17.1 17.1l1.3 1.3M18.4 5.6 17.1 6.9M6.9 17.1 5.6 18.4" />
+        </g>
+      </svg>
+    </span>
   </span>
 </button>
 
@@ -56,67 +67,73 @@ const { class: className = '' } = Astro.props;
   .theme-toggle {
     display: inline-flex;
     align-items: center;
-    padding: 0.35rem;
-    margin: -0.35rem;
+    padding: 0.3rem;
+    margin: -0.3rem;
     border-radius: var(--radius-pill);
-    color: var(--fg-dim, var(--text-on-ink-dim));
-    transition: color var(--dur) var(--ease);
+    flex: none;
   }
-
-  .theme-toggle:hover { color: var(--accent); }
 
   .theme-toggle__track {
     position: relative;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    justify-content: space-between;
-    width: 52px;
-    height: 26px;
-    padding-inline: 5px;
+    width: 56px;
+    height: 28px;
+    padding: 3px;
     border: 1px solid var(--rule-on-ink);
     border-radius: var(--radius-pill);
-    transition: border-color var(--dur) var(--ease);
+    transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
   }
 
-  .theme-toggle:hover .theme-toggle__track { border-color: var(--rule-metal); }
-
-  .theme-toggle__icon {
-    position: relative;
-    z-index: 1;
-    width: 13px;
-    height: 13px;
-    flex: none;
-    transition: opacity var(--dur) var(--ease);
+  .theme-toggle:hover .theme-toggle__track,
+  .theme-toggle:focus-visible .theme-toggle__track {
+    border-color: var(--rule-metal);
   }
 
-  /* The icon for the theme you are IN is bright; the other is
-     dimmed. The knob then sits over the active one. */
-  .theme-toggle__icon--dark { opacity: 1; }
-  .theme-toggle__icon--light { opacity: 0.45; }
-
-  /* :global on the ancestor — without it Astro scopes the
-     [data-theme] selector to <html>, which carries no component
-     scope id, and the rule silently never matches. */
-  :global([data-theme='light']) .theme-toggle__icon--dark { opacity: 0.45; }
-  :global([data-theme='light']) .theme-toggle__icon--light { opacity: 1; }
-
+  /* The disc. Solid, and behind the icons. */
   .theme-toggle__knob {
     position: absolute;
-    top: 50%;
+    top: 3px;
     left: 3px;
-    width: 18px;
-    height: 18px;
-    margin-top: -9px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: var(--accent);
-    /* Low opacity so the icon underneath reads through it — the
-       knob marks position without hiding the state. */
-    opacity: 0.24;
-    transition: transform var(--dur) var(--ease), background-color var(--dur) var(--ease);
+    transition: transform var(--dur) var(--ease);
   }
 
   :global([data-theme='light']) .theme-toggle__knob {
-    transform: translateX(24px);
+    transform: translateX(28px);
+  }
+
+  .theme-toggle__slot {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 100%;
+  }
+
+  .theme-toggle__icon {
+    width: 14px;
+    height: 14px;
+    /* Inactive: a quiet outline on the track. */
+    color: var(--text-on-ink-faint);
+    transition: color var(--dur) var(--ease);
+  }
+
+  /* Active icon sits on the metal disc, so it takes the dark
+     on-metal colour — 8.3:1 against champagne. */
+  .theme-toggle__slot:first-of-type .theme-toggle__icon {
+    color: var(--on-metal);
+  }
+
+  :global([data-theme='light']) .theme-toggle__slot:first-of-type .theme-toggle__icon {
+    color: var(--text-on-ink-faint);
+  }
+
+  :global([data-theme='light']) .theme-toggle__slot:last-of-type .theme-toggle__icon {
+    color: var(--on-metal);
   }
 
   @media (prefers-reduced-motion: reduce) {

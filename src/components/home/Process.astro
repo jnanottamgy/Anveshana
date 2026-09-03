@@ -70,7 +70,8 @@ import { process } from '../../data/site';
 
   .process__sticky .eyebrow { margin-bottom: var(--sp-md); }
 
-  .process__title {
+  /* :global — the class is passed into SplitText. */
+  :global(.process__title) {
     font-size: var(--fs-h2);
     color: var(--text-on-bone);
     margin-bottom: var(--sp-md);

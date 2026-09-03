@@ -97,9 +97,12 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
     min-height: 100svh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     padding-top: calc(var(--header-h) + clamp(3rem, 8vh, 6rem));
-    padding-bottom: clamp(9rem, 16vh, 12rem);
+    /* No bottom padding reserved for the fact band: the band is
+       a flex child (see .hero__foot), so the layout cannot
+       overlap it. Reserving space by hand meant guessing the
+       band's height, and the guess was 18px short — the hairline
+       cut straight through the call to action. */
     background: var(--ink);
     color: var(--text-on-ink);
     overflow: hidden;
@@ -207,10 +210,16 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
   }
 
   /* ---- Content ------------------------------------------- */
+  /* Takes all the space the fact band does not, and centres the
+     content inside it. */
   .hero__inner {
     position: relative;
     z-index: 1;
     width: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    padding-bottom: var(--sp-lg);
   }
 
   /* NB: sized in rem, not ch. A ch value here would resolve
@@ -223,7 +232,10 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
     white-space: nowrap;
   }
 
-  .hero__title {
+  /* :global with the element qualifier — the class is passed
+     into SplitText (so it needs :global), and `h1.` lifts it
+     above the global .display rule regardless of source order. */
+  :global(h1.hero__title) {
     /* Its own scale rather than --fs-display: three lines at the
        full display size push the calls to action below the fold
        on a 900px-tall viewport. */
@@ -258,12 +270,14 @@ const hold = (ms: number) => `--reveal-delay: calc(var(--stage-hold, 0ms) + ${ms
   }
 
   /* ---- Foot band ----------------------------------------- */
+  /* A flex child pinned to the bottom by auto margin rather
+     than absolute positioning, so it always sits below the
+     content instead of on top of it. */
   .hero__foot {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: relative;
     z-index: 1;
+    width: 100%;
+    margin-top: auto;
     padding-block: var(--sp-md);
     border-top: 1px solid var(--rule-on-ink-soft);
     background: linear-gradient(180deg, transparent, var(--hero-foot-fade));

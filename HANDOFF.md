@@ -309,22 +309,64 @@ better placed than its web developer to judge where the line sits.
 
 ## 8. What was verified, and how
 
-Measured on the built site, not estimated:
+Measured on the built site, not estimated.
 
-- **Accessibility.** axe-core, across 9 routes at desktop and mobile widths,
-  against WCAG 2.0 A/AA, 2.1 A/AA, 2.2 AA and best-practice rules:
-  **0 violations.** Re-run any time with `node scripts/a11y.mjs` while
-  `npm run preview` is running.
+### The checks
+
+Run all four with `npm run preview` serving on port 4321:
+
+| Command | What it catches |
+| --- | --- |
+| `npm run build` | Type errors, broken imports, bad data references. |
+| `node scripts/lint-scoped.mjs` | The Astro scoped-style trap (below). Fast, no browser. |
+| `node scripts/sweep.mjs` | Everything else — 16 routes × 2 viewports × 2 themes. |
+| `node scripts/a11y.mjs` | axe-core, every route, both themes. |
+
+`scripts/lint-scoped.mjs` exists because of a failure mode specific to
+Astro that is **invisible in code review and silent at build time**. A
+component's `<style>` block is scoped to elements written in *that*
+component's template. Pass a class as a prop into a child component and the
+element carrying it gets the *child's* scope id — so the parent's rule
+compiles to a selector that can never match. No error, no warning, no
+console message; the style simply does not apply. It shipped four separate
+times on this project: every monogram watermark squashed to 17px, the theme
+toggle knob frozen in place, and seven display headlines rendering at the
+wrong size (which pushed the home page's main button below the fold on four
+common laptop screens). The linter now fails the moment it recurs. **If you
+add a component that takes a `class` prop, run it.**
+
+`scripts/sweep.mjs` drives a real browser through the whole site and reports
+duplicate `id`s, headings out of order, unlabelled controls, dead links,
+horizontal overflow, over-length page titles and meta descriptions, content
+whose reveal animation never fired, hard-coded colours that would break in
+one theme, and any element sitting under another where it should be clickable.
+It then presses things: the mobile menu, the theme toggle, the disclaimer
+gate, and every button on every page in both themes.
+
+### Current results
+
+- **Scoped styles.** `scoped styles: clean`.
+- **Full sweep.** 16 routes × 2 viewports × 2 themes: **0 issues.**
+- **Accessibility.** axe-core against WCAG 2.0 A/AA, 2.1 A/AA, 2.2 AA and
+  best-practice rules, every route in **both** themes: **0 violations.**
+- **Contrast.** Every text-on-background pair computed from its relative
+  luminance rather than eyeballed, in both themes. Lowest passing value
+  4.61:1 against the 4.5:1 requirement. This is why the accent colour
+  changes with the surface — champagne on ink, bronze on paper: champagne on
+  the light background measured 2.06:1, a clear failure.
+- **Above the fold.** The home page's primary button measured at 1440×900,
+  1440×800, 1366×768, 1280×720 and 390×844 — visible without scrolling on
+  every one, with no overlap against the fact band.
 - **JavaScript weight.** 2.5 KB gzipped for the entire site, including all
   animation. (A typical animation library alone is 50–150 KB.)
 - **CSS weight.** ~10 KB gzipped.
 - **Fonts.** 172 KB total, self-hosted, latin subsets only.
-- **Whole site.** 1.1 MB for all fourteen pages including fonts and icons —
-  against roughly 5 MB of unoptimised photographs on the previous single-page
-  site.
-- **Structured data.** `LegalService`, `WebSite`, `Service` (×6), `FAQPage`,
-  `Person`, `BreadcrumbList`. Worth re-checking after launch with Google's
-  [Rich Results Test](https://search.google.com/test/rich-results).
+- **Whole site.** 1.1 MB for all sixteen pages including fonts and icons —
+  against roughly 5 MB of unoptimised photographs on the previous
+  single-page site.
+- **Structured data.** `LegalService`, `WebSite`, `Service` (×8), `FAQPage`,
+  `Person` (×3), `BreadcrumbList`. Worth re-checking after launch with
+  Google's [Rich Results Test](https://search.google.com/test/rich-results).
 
 ---
 

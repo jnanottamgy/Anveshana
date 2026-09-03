@@ -82,7 +82,8 @@ import { practiceAreas } from '../data/site';
   .nf__inner { max-width: 46rem; }
   .nf .eyebrow { margin-bottom: var(--sp-md); }
 
-  .nf__title {
+  /* :global — the class is passed into SplitText. */
+  :global(.nf__title) {
     font-size: clamp(2.4rem, 1.2rem + 4.2vw, 4.8rem);
     color: var(--text-on-ink-strong);
   }

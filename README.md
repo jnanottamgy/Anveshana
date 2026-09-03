@@ -50,7 +50,7 @@ src/
     fonts.css           ← @font-face declarations
   scripts/motion.js     ← the animation engine (~2.5 KB gzipped)
 public/                 ← files served as-is: fonts, icons, robots.txt
-scripts/                ← development tooling (screenshots, accessibility audit)
+scripts/                ← development tooling (linter, sweep, audit, icons)
 ```
 
 ---
@@ -67,13 +67,28 @@ plus the list of items that must be verified before launch.
 ## Development tooling
 
 ```bash
+npm run lint                  # scoped-style linter — run this after any edit
+npm run build                 # type-check and build
+npm run sweep                 # full-site sweep: 16 routes x 2 sizes x 2 themes
+npm run a11y                  # axe-core accessibility audit, both themes
+npm run check                 # lint + build, the quick pre-commit pass
+
 node scripts/make-icons.mjs   # regenerate favicons + the social share card
-node scripts/a11y.mjs         # accessibility audit (needs the preview running)
 node scripts/scan.mjs         # screenshot a page down its full length
 ```
 
-The audit and screenshot scripts need a preview server running
-(`npm run preview`) and Chromium available via Playwright.
+`npm run lint` takes a second and needs nothing running. It catches an Astro
+scoping mistake that produces **no error and no warning** — a class passed
+into a child component lands on an element carrying the child's scope id, so
+the parent's style rule silently never matches. That bug shipped four times
+here before the linter existed. Run it after touching any component that
+takes a `class` prop.
+
+`sweep`, `a11y` and `scan` drive a real browser, so they need a preview
+server running (`npm run preview`) and Chromium available via Playwright.
+`sweep` is the thorough one: it audits every page in both themes at desktop
+and phone widths, crawls every link, then presses the menu, the theme
+toggle, the disclaimer gate and every button on the page.
 
 ---
 

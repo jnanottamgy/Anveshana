@@ -216,9 +216,14 @@
   --z-raised: 10;
   --z-header: 800;
   --z-menu: 900;
-  --z-cursor: 950;
   --z-curtain: 980;
   --z-gate: 1000;
+  /* The cursor replaces the system pointer, so it has to sit
+     above EVERYTHING. Below the gate or the curtain it is hidden
+     behind them while `cursor: none` still applies — leaving the
+     visitor with no pointer at all on the one screen they must
+     click through. */
+  --z-cursor: 1100;
 
   --radius-xs: 2px;
   --radius-sm: 3px;

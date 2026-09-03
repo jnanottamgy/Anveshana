@@ -99,6 +99,10 @@ ol {
   transition: top var(--dur-fast) var(--ease);
 }
 
+/* :focus as well as :focus-visible — a skip link is only ever
+   reached by keyboard, and some browsers do not apply
+   :focus-visible to a programmatic focus. */
+.skip-link:focus,
 .skip-link:focus-visible {
   top: var(--sp-sm);
 }

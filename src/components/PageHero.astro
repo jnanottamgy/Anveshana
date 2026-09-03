@@ -131,7 +131,10 @@ const { eyebrow, lines, lead, index, breadcrumbs = [] } = Astro.props;
     font-variant-numeric: tabular-nums;
   }
 
-  .page-hero__title {
+  /* :global — this class is passed into SplitText, so the <h1>
+     carries THAT component's scope id, not this one's. Without
+     :global the rule silently never matches. */
+  :global(.page-hero__title) {
     font-size: clamp(2.5rem, 1.2rem + 4.6vw, 5.4rem);
     color: var(--text-on-ink-strong);
   }

@@ -94,6 +94,18 @@ function initReveal() {
 
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
+
+  /* Hard guarantee. The scroll sweep above depends on both a
+     scroll event AND a rAF callback arriving; if either stalls,
+     `sweeping` latches on and the net dies silently, leaving
+     content permanently invisible. This low-frequency poll can
+     only ever reveal something already on screen, costs nothing
+     while it runs, and stops itself the moment the last element
+     has appeared. Content being readable is not negotiable. */
+  const poll = setInterval(() => {
+    sweep();
+    if (!pending.size) clearInterval(poll);
+  }, 400);
 }
 
 /* ------------------------------------------------------------
@@ -351,6 +363,8 @@ function initCursor() {
   let rx = mx;
   let ry = my;
   let raf = 0;
+  /* Set whenever what sits under the pointer may have changed. */
+  let hoverDirty = true;
 
   const INTERACTIVE = 'a, button, summary, [data-cursor-hover], input, textarea, select';
 
@@ -369,6 +383,8 @@ function initCursor() {
     if (Math.abs(mx - gx) < 0.4 && Math.abs(my - gy) < 0.4) { gx = mx; gy = my; }
     if (Math.abs(mx - rx) < 0.4 && Math.abs(my - ry) < 0.4) { rx = mx; ry = my; }
 
+    if (hoverDirty) { hoverDirty = false; syncHover(); }
+
     gavel.style.translate = `${gx}px ${gy}px`;
     ring.style.translate = `${rx}px ${ry}px`;
     impact.style.translate = `${mx}px ${my}px`;
@@ -385,17 +401,21 @@ function initCursor() {
     if (e.pointerType !== 'mouse') return;
     mx = e.clientX;
     my = e.clientY;
+    hoverDirty = true;
     cursor.classList.add('is-active');
     if (!raf) raf = requestAnimationFrame(tick);
   }, { passive: true });
 
-  document.addEventListener('pointerover', (e) => {
-    if (e.target?.closest?.(INTERACTIVE)) cursor.classList.add('is-hovering');
-  }, { passive: true });
-
-  document.addEventListener('pointerout', (e) => {
-    if (e.target?.closest?.(INTERACTIVE)) cursor.classList.remove('is-hovering');
-  }, { passive: true });
+  /* Hover state is resolved by hit-testing under the pointer
+     rather than by pointerover/pointerout.
+     Those events never fire when the element under a STATIONARY
+     cursor disappears — which is exactly what happens when the
+     disclaimer gate closes under the "I Agree" button, leaving
+     the gavel stuck in its raised position over an empty page. */
+  const syncHover = () => {
+    const el = document.elementFromPoint(mx, my);
+    cursor.classList.toggle('is-hovering', Boolean(el?.closest?.(INTERACTIVE)));
+  };
 
   /* The strike. Restarting the class on every press means rapid
      clicks each get their own swing rather than the first one
@@ -408,6 +428,17 @@ function initCursor() {
     cursor.classList.add('is-striking');
     clearTimeout(strikeTimer);
     strikeTimer = setTimeout(() => cursor.classList.remove('is-striking'), 660);
+  }, { passive: true });
+
+  /* A click routinely removes or replaces what was under the
+     pointer (closing the gate, opening the menu), so re-test
+     once the DOM has settled. */
+  document.addEventListener('click', () => {
+    hoverDirty = true;
+    setTimeout(() => {
+      hoverDirty = true;
+      if (!raf) raf = requestAnimationFrame(tick);
+    }, 520);
   }, { passive: true });
 
   /* Leaving the window stops the loop as well as hiding the

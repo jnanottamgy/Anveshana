@@ -31,7 +31,17 @@ const {
   bodyClass = '',
 } = Astro.props;
 
-const pageTitle = suffix ? `${title} — ${firm.legalName}` : title;
+/* Search results truncate a title at roughly 60 characters, and
+   several practice-area names are long enough to push the full
+   firm name past that. Where the full lockup does not fit, the
+   short brand name is used instead — the page name is what the
+   searcher is scanning for, so it is the half that must survive. */
+const fullTitle = `${title} — ${firm.legalName}`;
+const pageTitle = !suffix
+  ? title
+  : fullTitle.length <= 60
+    ? fullTitle
+    : `${title} — ${firm.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? firm.url).href;
 const ogImage = new URL(image, Astro.site ?? firm.url).href;
 

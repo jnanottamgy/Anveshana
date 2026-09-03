@@ -79,7 +79,8 @@ import { commitments, forums } from '../../data/site';
 
   .intro .eyebrow { margin-bottom: var(--sp-md); }
 
-  .intro__title {
+  /* :global — the class is passed into SplitText. */
+  :global(.intro__title) {
     font-size: var(--fs-h2);
     color: var(--text-on-bone);
   }

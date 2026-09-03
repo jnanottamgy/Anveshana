@@ -93,7 +93,8 @@ const {
 
   .cta .eyebrow { margin-bottom: var(--sp-md); }
 
-  .cta__title {
+  /* :global — the class is passed into SplitText. */
+  :global(.cta__title) {
     font-size: var(--fs-h2);
     color: var(--text-on-ink-strong);
     margin-bottom: var(--sp-lg);

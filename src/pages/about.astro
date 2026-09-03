@@ -6,7 +6,7 @@ import CTABand from '../components/CTABand.astro';
 import { firm, commitments, forums, process } from '../data/site';
 
 const description =
-  'Anveshana Advocates & Consultants is a litigation-led law firm in Seshadripuram, Bengaluru. Deliberately small, so the advocate you brief is the advocate who appears.';
+  'Anveshana Advocates & Consultants is a litigation-led law firm in Bengaluru. Deliberately small, so the advocate you brief is the advocate who appears.';
 
 const schema = [
   {
@@ -162,7 +162,8 @@ const schema = [
 
   .story .eyebrow { margin-bottom: var(--sp-md); }
 
-  .story__title {
+  /* :global — the class is passed into SplitText. */
+  :global(.story__title) {
     font-size: var(--fs-h2);
     color: var(--text-on-bone);
   }

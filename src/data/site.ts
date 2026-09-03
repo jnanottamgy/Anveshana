@@ -261,7 +261,7 @@ export const practiceAreas: PracticeArea[] = [
       { name: 'Joint Ventures', note: 'Structuring, documentation and exit mechanics.' },
     ],
     metaDescription:
-      'Corporate advisory lawyers in Bengaluru. Commercial contracts, mergers and acquisitions, technology media and telecom agreements, licensing, arbitration and joint ventures.',
+      'Corporate advisory lawyers in Bengaluru. Commercial contracts, mergers and acquisitions, technology and media agreements, licensing and arbitration.',
     faqs: [
       {
         q: 'Is arbitration actually faster than going to court?',
