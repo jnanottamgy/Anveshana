@@ -25,6 +25,7 @@
  * `photo: '/portraits/<slug>'` on that person in data/site.ts.
  */
 import Monogram from './Monogram.astro';
+import portraits from '../data/portraits.json';
 import type { Person } from '../data/site';
 
 interface Props {
@@ -42,11 +43,16 @@ interface Props {
 
 const { person, variant = 'card', eager = false } = Astro.props;
 
-/* MUST match WIDTHS in scripts/make-portraits.mjs. scripts/
-   sweep.mjs asserts every file referenced here exists on disk,
-   so a mismatch fails the sweep rather than shipping a broken
-   image. */
-const WIDTHS = [360, 480, 640, 960];
+/* Read from the manifest scripts/make-portraits.mjs writes, not
+   hard-coded here. The widths genuinely differ per portrait —
+   a crop can only be as wide as its source allows, so Anish's
+   set tops out at 949 and Nirankush's at 960 — and the first
+   version of this file assumed a shared 960, which would have
+   served him a source that does not exist. A <picture> whose
+   candidates 404 shows nothing, silently. */
+const meta = person.photo
+  ? (portraits as Record<string, { widths: number[]; width: number; height: number }>)[person.slug]
+  : undefined;
 
 /* The rendered plate is ~420px on the People page and 260–340px
    in the card grid, so a 1x screen takes the 480 and a 2x screen
@@ -57,7 +63,10 @@ const SIZES =
     : '(min-width: 720px) 340px, (min-width: 460px) 46vw, 88vw';
 
 const srcset = (ext: string) =>
-  WIDTHS.map((w) => `${person.photo}-${w}.${ext} ${w}w`).join(', ');
+  (meta?.widths ?? []).map((w) => `${person.photo}-${w}.${ext} ${w}w`).join(', ');
+
+/* The largest rendition doubles as the fallback src. */
+const fallbackWidth = meta?.widths.at(-1);
 
 const initials = person.name
   .split(' ')
@@ -67,17 +76,17 @@ const initials = person.name
 const alt = `${person.honorific} ${person.name}, ${person.role} at Anveshana Advocates & Consultants`;
 ---
 
-<div class:list={['portrait', `portrait--${variant}`, person.photo && 'portrait--shot']}>
-  {person.photo ? (
+<div class:list={['portrait', `portrait--${variant}`, person.photo && meta && 'portrait--shot']}>
+  {person.photo && meta ? (
     <picture>
       <source type="image/avif" srcset={srcset('avif')} sizes={SIZES} />
       <source type="image/webp" srcset={srcset('webp')} sizes={SIZES} />
       <img
         class="portrait__img"
-        src={`${person.photo}-640.webp`}
+        src={`${person.photo}-${fallbackWidth}.webp`}
         alt={alt}
-        width="960"
-        height="1200"
+        width={meta.width}
+        height={meta.height}
         loading={eager ? 'eager' : 'lazy'}
         fetchpriority={eager ? 'high' : undefined}
         decoding="async"

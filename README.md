@@ -87,10 +87,13 @@ here before the linter existed. Run it after touching any component that
 takes a `class` prop.
 
 `npm run portraits` turns a photographer's delivery into the files the site
-serves: it crops to the 4:5 the layout uses, then writes AVIF and WebP at
-four widths. To add a portrait, drop the file in `src/portraits/<slug>.jpg`,
-run it, and set `photo: '/portraits/<slug>'` on that person in `site.ts` —
-see §6 of [HANDOFF.md](./HANDOFF.md).
+serves: it crops to the 4:5 the layout uses, writes AVIF and WebP at four
+widths, and rewrites `src/data/portraits.json` — the manifest the page reads
+to know what widths exist, since a crop can only be as wide as its source
+allows and the set genuinely differs per portrait. To add one, drop the file
+in `src/portraits/<slug>.jpg`, run it, and set `photo: '/portraits/<slug>'`
+on that person in `site.ts`. Framing a new portrait to match the existing
+set is covered in §6 of [HANDOFF.md](./HANDOFF.md).
 
 `sweep`, `a11y` and `scan` drive a real browser, so they need a preview
 server running (`npm run preview`) and Chromium available via Playwright.

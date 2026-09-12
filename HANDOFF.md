@@ -18,7 +18,7 @@ until each is confirmed.** Every one of them is marked `VERIFY` in
 | 3 | **Consultation hours** | `firm.hours` | Currently a sensible assumption, not a fact. These also feed the Google structured data, so a wrong value misleads searchers. |
 | 4 | **Courts and forums list** | `forums` | Standard for a Bengaluru litigation practice, but it is a claim about where the firm appears. Confirm or trim it. |
 | 5 | **The WhatsApp number** | `whatsapp.number` | Every consultation button on the site opens a chat with this number. Confirm it is the one the firm actually monitors — see §4. |
-| 6 | **Portraits of Anish Acharya and Deepika Mahesh** | see §6 | Nirankush Kenjige is photographed. The other two render as typographic plates, which is deliberate and does not look broken — but two real portraits would finish the page. Match the brief in §6 so the three read as one set. |
+| 6 | **Portrait of Deepika Mahesh** | see §6 | Anish Acharya and Nirankush Kenjige are photographed. Hers renders as a typographic plate, which is deliberate and does not look broken — but one more portrait finishes the page. Match the brief in §6 so the three read as one set. |
 | 7 | **Bar Council review of the copy** | whole site | See §7. Have an advocate at the firm read the site once with Rule 36 in mind. |
 
 ---
@@ -254,38 +254,68 @@ sequence.
 
 ### What is in place
 
-**Nirankush Kenjige is photographed.** The frame is a good one and the site
-is built around its qualities: a dark suit against dark shelving, warm
-practical lights, glass to one side. It sits inside the existing palette
-without being corrected toward it.
+**Anish Acharya and Nirankush Kenjige are photographed.** Both frames are
+good ones and the site is built around their qualities rather than
+correcting them toward the palette: dark suits against dark interiors, warm
+practical lights, glass to one side. They already sat inside the existing
+colours.
 
-Anish Acharya and Deepika Mahesh are **not yet photographed**, and the page
-is built so that this does not read as an omission. The photograph and the
-typographic plate share a silhouette — the same 4:5 proportion, the same
-hairline, the same dark ink field, the same mount, the same veil, the same
-hover — so a row of one portrait and two plates reads as a set rather than
-as two missing images. Each new portrait replaces a plate without disturbing
-the composition.
+Measured, the two match closely enough to read as one set — mean luminance
+59.3 against 60.3, contrast within 2%. That is not luck; see *Framing the
+set* below.
 
-### Adding the other two
+Deepika Mahesh is **not yet photographed**, and the page is built so that
+this does not read as an omission. The photograph and the typographic plate
+share a silhouette — the same 4:5 proportion, the same hairline, the same
+dark ink field, the same mount, the same veil, the same hover — so a row of
+two portraits and one plate reads as a set rather than as a missing image.
+Her portrait will replace the plate without disturbing the composition.
 
-1. Put the file in `src/portraits/<slug>.jpg`, where `<slug>` matches the
-   person's `slug` in `src/data/site.ts` — so `anish-acharya.jpg` and
-   `deepika-mahesh.jpg`.
+### Adding Deepika's portrait
+
+1. Put the file in `src/portraits/deepika-mahesh.jpg` — the name must match
+   her `slug` in `src/data/site.ts`.
 2. Run `npm run portraits`.
-3. Add `photo: '/portraits/<slug>'` to that person's record in `site.ts`.
+3. Add `photo: '/portraits/deepika-mahesh'` to her record in `site.ts`.
    Note the path carries **no width and no file extension** — the component
    appends those.
 
 That is the whole job. The crop, the formats, the sizes and the markup are
-all handled. `npm run sweep` then asserts that every file the page asks for
-actually exists, so a mistake fails the sweep instead of shipping an
-invisible broken image.
+all handled, and `npm run portraits` rewrites `src/data/portraits.json`,
+which is where the page learns what widths exist. Then check the framing
+against the section below, and run `npm run sweep` — it asserts that every
+file the page asks for actually exists, so a mistake fails the sweep instead
+of shipping an invisible broken image.
 
-### Brief for the remaining two
+### Framing the set
 
-Match the delivered frame, because the treatment is shared and a mismatch
-will show:
+This is the part that decides whether three portraits look like a firm or
+like three snapshots, and it is worth understanding before the next shoot.
+
+What the eye judges is **how large a head sits in the crop**, not how it was
+shot. Anish and Nirankush were framed almost identically at the camera —
+heads of 309 and 312 pixels — but his file is taller, so cropping both at
+full width to 4:5 left him at 22.7% of frame against Nirankush's 26.0%. He
+looked smaller and lower for no reason a viewer could name.
+
+So `scripts/make-portraits.mjs` carries a `FRAME` entry per person:
+
+- `scale` — the fraction of the source **width** to keep. `1` is the whole
+  frame; less zooms in.
+- `x`, `y` — where that rectangle sits in what is left over, `0` to `1`.
+  `y` defaults to `0`, keeping the top, because a portrait wants headroom
+  and the bottom of a standing shot is jacket.
+
+Anish is set to `{ scale: 0.874, x: 0.5, y: 0.69 }`, which brings him to the
+same 26% and the same height, and incidentally crops away most of a bright
+window that was the one blown-out area in either photograph.
+
+**To match a new portrait: aim for a head about 26% of the crop height.**
+
+### Brief for Deepika's portrait
+
+Match the two delivered frames, because the treatment is shared and a
+mismatch will show:
 
 - **4:5 portrait**, at least 960px on the short edge. 2400px is ideal —
   the pipeline downsamples, it never upscales.
@@ -298,7 +328,7 @@ will show:
 - **Standing, mid-body crop, generous headroom.** The pipeline crops from
   the top of the frame by default, so leave room above the head and expect
   the bottom of the frame to be trimmed.
-- **Composed, not grinning.** The delivered frame gets this right.
+- **Composed rather than grinning.** Both delivered frames get this right.
 
 Deliver as high-quality JPEG. If a frame needs a different crop anchor,
 set it in `ANCHOR` in `scripts/make-portraits.mjs` — `0` keeps the top of
@@ -313,7 +343,7 @@ hover. This is one line in `src/components/Portrait.astro`:
 filter: grayscale(0.62) sepia(0.09) contrast(1.06) brightness(1.02);
 ```
 
-It was chosen by rendering five candidates side by side against this
+It was chosen by rendering five candidates side by side against a real
 photograph. Flat `grayscale(1)` — what the site used before a portrait
 existed — kills the warm lights and the green of the plant, which is most of
 what the frame has going for it. Full colour lets the blue-green glass fight
@@ -325,12 +355,12 @@ will make them look like one set rather than three snapshots. Raise the
 
 ### Still worth commissioning
 
-The old imagery could not be reused: it is generic stock, and the desk
+Beyond Deepika's portrait, the old imagery could not be reused: it is generic stock, and the desk
 photograph contains a framed certificate made out to *"Adam G. Zuwerink"* —
 a stranger's name, on a law firm's website. The old team photograph is
 133 × 130 pixels. All of it is gone from the site.
 
-Beyond the two outstanding portraits, roughly half a day would cover:
+Roughly half a day would cover:
 
 1. **The chambers** — the entrance, the consultation room, a shelf of
    reports. Details rather than wide shots.
@@ -431,10 +461,13 @@ gate, and every button on every page in both themes.
 - **Whole site.** 1.1 MB for all sixteen pages including fonts and icons —
   against roughly 5 MB of unoptimised photographs on the previous
   single-page site.
-- **The portrait.** 130 KB on disk across eight files; a browser downloads
-  one of them. 10.5 KB for the AVIF a 1x laptop takes, 23.8 KB for the 2x.
-  Checked at full size that the compression holds up on the face, which is
-  the only part of a portrait where it shows.
+- **The portraits.** 245 KB on disk across sixteen files; a browser
+  downloads one of them per portrait. Roughly 10 KB for the AVIF a 1x laptop
+  takes, 24 KB for the 2x. Checked at full size that the compression holds
+  up on the face, which is the only part of a portrait where it shows.
+- **That the two portraits match.** Mean luminance 59.3 against 60.3 and
+  contrast within 2%, measured rather than eyeballed — which is why they
+  read as one set and needed no per-portrait colour correction.
 - **Structured data.** `LegalService`, `WebSite`, `Service` (×8), `FAQPage`,
   `Person` (×3, now carrying `image` where a portrait exists),
   `BreadcrumbList`. Worth re-checking after launch with

@@ -3,7 +3,15 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import CTABand from '../components/CTABand.astro';
 import Portrait from '../components/Portrait.astro';
+import portraits from '../data/portraits.json';
 import { firm, people } from '../data/site';
+
+/* The widest rendition that exists for a given portrait. Not a
+   fixed 960: a crop is only as wide as its source allows, so the
+   largest differs per person, and hard-coding one pointed Google
+   at a file that was not there. */
+const largest = (slug: string) =>
+  (portraits as Record<string, { widths: number[] }>)[slug]?.widths.at(-1);
 
 const description =
   'The advocates of Anveshana Advocates & Consultants, Bengaluru. The advocate you brief at the first consultation is the advocate who argues your matter.';
@@ -18,7 +26,9 @@ const schema = [
     knowsAbout: person.focus,
     /* Google shows a portrait against a Person result where one
        is available, and this is the only place it can find it. */
-    ...(person.photo ? { image: `${firm.url}${person.photo}-960.webp` } : {}),
+    ...(person.photo && largest(person.slug)
+      ? { image: `${firm.url}${person.photo}-${largest(person.slug)}.webp` }
+      : {}),
     ...(person.email ? { email: person.email } : {}),
   })),
   {

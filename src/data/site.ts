@@ -484,6 +484,7 @@ export const people: Person[] = [
     honorific: 'Advocate',
     role: 'Founder & Principal Advocate',
     focus: ['Criminal Law', 'Civil & Property'],
+    photo: '/portraits/anish-acharya',
     bio: [
       'Anish Acharya founded Anveshana to practise law the way he believed it ought to be practised: with prompt communication, candid advice, and complete discretion about a client’s affairs.',
       'His practice is litigation-led, with a particular concentration in criminal defence — bail and anticipatory bail, quashing, cheque dishonour and trial work — alongside civil and property disputes. Clients describe his central strength as the ability to reduce a complicated set of facts to the two or three questions a court will actually decide.',
