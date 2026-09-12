@@ -322,9 +322,10 @@ mismatch will show:
 - **Dark, uncluttered environment.** Office interior rather than a plain
   studio backdrop; the depth in the background is what makes the delivered
   frame look expensive.
-- **Warm practical lights in shot** if possible — a lamp, a downlight. The
-  site's accent is a warm metal and the photography treatment leans warm to
-  meet it.
+- **Warm practical lights in shot** — a lamp, a downlight. Both delivered
+  frames have them, the site's accent is a warm metal, and since no filter
+  is applied this is what will make the third portrait belong. Treat it as a
+  requirement, not a nicety.
 - **Standing, mid-body crop, generous headroom.** The pipeline crops from
   the top of the frame by default, so leave room above the head and expect
   the bottom of the frame to be trimmed.
@@ -334,24 +335,43 @@ Deliver as high-quality JPEG. If a frame needs a different crop anchor,
 set it in `ANCHOR` in `scripts/make-portraits.mjs` — `0` keeps the top of
 the frame, `1` the bottom, `0.5` centres.
 
-### The treatment, and how to change it
+### Colour: the photographs are shown as delivered
 
-Portraits render in a warm near-monochrome that returns to full colour on
-hover. This is one line in `src/components/Portrait.astro`:
+**Portraits carry their original colour. No filter is applied.** The firm
+asked for this, and for these two frames it is the right call — they were
+shot in the site's palette rather than needing to be pushed into it, so the
+navy ties, the warm shelving lights and the natural skin tones all sit
+inside the design without help.
+
+It is worth recording what this changes, because it moves a burden from the
+website to the camera.
+
+An earlier version rendered portraits in a warm near-monochrome that
+returned to full colour on hover. That treatment was doing a job beyond
+taste: three advocates photographed on three different days under three
+different lights would have been pulled toward a common tone, and would have
+looked like one set regardless. **Nothing does that now.** The set holds
+together exactly as far as the photography itself does — which is why the
+brief above insists on matching the light, and why that instruction is now a
+requirement at the shoot rather than a preference.
+
+The two existing portraits do match: mean luminance 59.3 against 60.3, and
+contrast within 2%, measured rather than eyeballed. A third frame shot in a
+bright white room would not, and there would be no lever here to fix it.
+
+If the firm ever wants the treatment back, it is one line in
+`src/components/Portrait.astro`, on `.portrait__img`:
 
 ```css
 filter: grayscale(0.62) sepia(0.09) contrast(1.06) brightness(1.02);
 ```
 
-It was chosen by rendering five candidates side by side against a real
-photograph. Flat `grayscale(1)` — what the site used before a portrait
-existed — kills the warm lights and the green of the plant, which is most of
-what the frame has going for it. Full colour lets the blue-green glass fight
-the champagne accent. The value above sits between them, and it does real
-work beyond taste: the three advocates will be photographed on three
-different days under three different lights, and a shared treatment is what
-will make them look like one set rather than three snapshots. Raise the
-`grayscale` figure for a more austere page, lower it for a warmer one.
+Hover then becomes the colour reveal again; add `filter` back to that rule's
+`transition` and set `filter: none` on the `:hover` and `:focus-within`
+rule. The figure above was chosen by rendering five candidates side by side
+against a real photograph: flat `grayscale(1)` killed the warm lights, full
+colour let the blue-green glass fight the champagne accent, and that value
+sat between them.
 
 ### Still worth commissioning
 
@@ -466,8 +486,9 @@ gate, and every button on every page in both themes.
   takes, 24 KB for the 2x. Checked at full size that the compression holds
   up on the face, which is the only part of a portrait where it shows.
 - **That the two portraits match.** Mean luminance 59.3 against 60.3 and
-  contrast within 2%, measured rather than eyeballed — which is why they
-  read as one set and needed no per-portrait colour correction.
+  contrast within 2%, measured rather than eyeballed. They are shown in
+  their original colour with no filter, so this is the only thing holding
+  the set together — see §6.
 - **Structured data.** `LegalService`, `WebSite`, `Service` (×8), `FAQPage`,
   `Person` (×3, now carrying `image` where a portrait exists),
   `BreadcrumbList`. Worth re-checking after launch with

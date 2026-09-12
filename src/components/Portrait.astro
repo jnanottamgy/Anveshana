@@ -125,27 +125,27 @@ const alt = `${person.honorific} ${person.name}, ${person.role} at Anveshana Adv
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Warm near-monochrome rather than flat greyscale. Two
-       reasons, one aesthetic and one practical:
-       — this frame's whole quality is its warm practical lights
-         against cool glass, and grayscale(1) throws that away;
-       — the three advocates will be photographed on three
-         different days under three different lights, and a
-         shared warm treatment is what will make them look like
-         one set instead of three snapshots. */
-    filter: grayscale(0.62) sepia(0.09) contrast(1.06) brightness(1.02);
+    /* No filter. The photographs are shown as delivered — the
+       firm's decision, and the right one for these two frames,
+       which were shot in the palette rather than needing to be
+       pushed into it.
+
+       What this costs: a shared treatment used to do the work of
+       making portraits taken on different days under different
+       lights look like one set. Nothing does that now, so the
+       set holds together only as far as the photography itself
+       does. See the brief in HANDOFF §6 — matching the light on
+       the next portrait now matters at the shoot, because it can
+       no longer be rescued here. */
     transform: scale(1.001); /* pre-promote, so hover doesn't re-raster */
-    transition:
-      filter var(--dur-slow) var(--ease),
-      transform var(--dur-slow) var(--ease);
+    transition: transform var(--dur-slow) var(--ease);
   }
 
-  /* Full colour returns on approach. A restrained editorial
-     device, and the reason the treatment above is allowed to be
-     assertive: nothing is hidden, only held back. */
+  /* Hover is now the scale alone. It used to restore colour from
+     a desaturated rest state, which is no longer a state that
+     exists. */
   .portrait:hover .portrait__img,
   .portrait:focus-within .portrait__img {
-    filter: grayscale(0) sepia(0) contrast(1.02) brightness(1);
     transform: scale(1.035);
   }
 
