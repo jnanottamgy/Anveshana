@@ -25,7 +25,13 @@ const schema = [
   },
 ];
 
-const mapSrc = `https://maps.google.com/maps?q=${firm.geo.lat},${firm.geo.lng}&z=16&output=embed`;
+/* Aimed at the coordinates rather than the firm's name, so it
+   cannot resolve to a different business. Deliberately the bare
+   coordinate form: Google also accepts `lat,lng(Label)` to name
+   the pin, but that could not be verified from the build
+   environment, and an unverifiable flourish is not worth risking
+   on the one element whose entire job is to be correct. */
+const mapSrc = `https://maps.google.com/maps?q=${firm.geo.lat},${firm.geo.lng}&z=17&output=embed`;
 
 /* What to put in the first message. Enquiries that arrive with
    these four things can be assessed immediately instead of

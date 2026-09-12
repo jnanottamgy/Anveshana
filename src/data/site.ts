@@ -34,8 +34,17 @@ export const firm = {
     country: 'IN',
   },
 
-  /* Sampled from the firm's Google Business listing URL. */
-  geo: { lat: 12.9876464, lng: 77.5784796 },
+  /* The PIN on the firm's Google Business listing.
+
+     NB for whoever updates this: in a Google Maps URL these are
+     the `!3d<lat>!4d<lng>` pair, NOT the `@<lat>,<lng>,17z` pair
+     near the front. The `@` pair is only where Google happened
+     to centre the map viewport, which it routinely offsets to
+     leave room for the side panel. An earlier version of this
+     file took the `@` pair, and it sat 279 m due east of the
+     chambers — carrying the embedded map, the directions link
+     and the Google structured data with it. */
+  geo: { lat: 12.9876412, lng: 77.5810545 },
 
   phone: '+91 99641 40121',
   phoneHref: '+919964140121',
@@ -48,10 +57,22 @@ export const firm = {
     { days: 'Sunday', time: 'By prior appointment' },
   ],
 
+  /* The canonical listing. The `data=` payload is what identifies
+     the business — the previous value stopped at the zoom level,
+     which left Google a plain name search to resolve however it
+     liked. Session parameters (`entry`, `g_ep`) are stripped:
+     they are tracking, and they go stale. */
   mapsPlace:
-    'https://www.google.com/maps/place/Anveshana+Advocates+%26+Consultants/@12.9876464,77.5784796,17z',
+    'https://www.google.com/maps/place/Anveshana+Advocates+%26+Consultants/' +
+    '@12.9876464,77.5784796,17z/data=!3m1!4b1!4m6!3m5' +
+    '!1s0x3bae171a077652e9:0x90b6425a31def462' +
+    '!8m2!3d12.9876412!4d77.5810545!16s%2Fg%2F11g0sy73cl',
+
+  /* Google's documented directions format, aimed at the exact
+     coordinates rather than at the firm's name. A name can
+     resolve to the wrong business; a coordinate cannot. */
   mapsDirections:
-    'https://www.google.com/maps/dir//Anveshana+Advocates+%26+Consultants',
+    'https://www.google.com/maps/dir/?api=1&destination=12.9876412,77.5810545',
 
   url: 'https://www.anveshanaconsultants.in',
 } as const;
