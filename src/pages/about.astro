@@ -10,14 +10,6 @@ const description =
 
 const schema = [
   {
-    '@type': 'AboutPage',
-    '@id': `${firm.url}/about/#webpage`,
-    url: `${firm.url}/about/`,
-    name: `The Firm — ${firm.legalName}`,
-    description,
-    about: { '@id': `${firm.url}/#organisation` },
-  },
-  {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: `${firm.url}/` },
@@ -27,7 +19,7 @@ const schema = [
 ];
 ---
 
-<Base title="The Firm" description={description} schema={schema}>
+<Base title="The Firm" description={description} schema={schema} pageType="AboutPage">
   <PageHero
     eyebrow="The Firm"
     lines={['The name is', 'the <em class="accent-italic">method.</em>']}

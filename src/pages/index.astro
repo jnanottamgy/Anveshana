@@ -15,15 +15,6 @@ const description =
 /* Lists the firm's services against the organisation entity, so
    a search engine can associate each practice area with it. */
 const schema = [
-  {
-    '@type': 'WebPage',
-    '@id': `${firm.url}/#webpage`,
-    url: `${firm.url}/`,
-    name: `${firm.legalName} — Law Firm in Bengaluru`,
-    isPartOf: { '@id': `${firm.url}/#website` },
-    about: { '@id': `${firm.url}/#organisation` },
-    description,
-  },
   ...practiceAreas.map((area) => ({
     '@type': 'Service',
     name: area.title,

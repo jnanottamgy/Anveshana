@@ -69,7 +69,9 @@ plus the list of items that must be verified before launch.
 
 ```bash
 npm run portraits             # rebuild portrait derivatives from src/portraits/
+npm run og                    # rebuild the per-page social share cards
 npm run lint                  # scoped-style linter — run this after any edit
+npm run seo                   # SEO audit of the built site (no browser needed)
 npm run build                 # type-check and build
 npm run sweep                 # full-site sweep: 16 routes x 2 sizes x 2 themes
 npm run a11y                  # axe-core accessibility audit, both themes
@@ -95,7 +97,21 @@ in `src/portraits/<slug>.jpg`, run it, and set `photo: '/portraits/<slug>'`
 on that person in `site.ts`. Framing a new portrait to match the existing
 set is covered in §6 of [HANDOFF.md](./HANDOFF.md).
 
-`sweep`, `a11y` and `scan` drive a real browser, so they need a preview
+`npm run seo` reads `dist/` rather than the source, because what matters is
+what a crawler receives. It checks titles and descriptions (measured on
+decoded text — `&amp;` is one character to Google, five in the source),
+canonicals, Open Graph, robots directives, heading structure, structured data
+including dangling `@id` references, sitemap coverage, and orphan pages. It
+needs a build but no browser, and takes about a second. See §9 of
+[HANDOFF.md](./HANDOFF.md) for what it covers and what only the firm can do.
+
+`npm run og` renders the share cards in Chromium so they use the site's own
+self-hosted typefaces — an SVG renderer resolves `font-family` against system
+fonts, and the original card silently rendered in DejaVu. Run it after
+changing any page title, then build again:
+`npm run build && npm run og && npm run build`.
+
+`sweep`, `a11y`, `og` and `scan` drive a real browser, so they need a preview
 server running (`npm run preview`) and Chromium available via Playwright.
 `sweep` is the thorough one: it audits every page in both themes at desktop
 and phone widths, crawls every link, then presses the menu, the theme

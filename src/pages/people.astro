@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import CTABand from '../components/CTABand.astro';
 import Portrait from '../components/Portrait.astro';
 import portraits from '../data/portraits.json';
-import { firm, people } from '../data/site';
+import { firm, people, focusArea, areasLedBy } from '../data/site';
 
 /* The widest rendition that exists for a given portrait. Not a
    fixed 960: a crop is only as wide as its source allows, so the
@@ -23,7 +23,20 @@ const schema = [
     name: `${person.honorific} ${person.name}`,
     jobTitle: person.role,
     worksFor: { '@id': `${firm.url}/#organisation` },
-    knowsAbout: person.focus,
+    /* The firm's own wording for what each advocate does, plus
+       the URL of each area page they lead.
+
+       As URLs, not as {"@id": ...} references: the Service nodes
+       live on their own pages, so an @id reference from here
+       points at nothing in this page's graph and dangles.
+       knowsAbout accepts a URL, which joins the entities without
+       inventing a node. */
+    knowsAbout: [
+      ...person.focus,
+      ...areasLedBy(person.slug).map(
+        (a) => `${firm.url}/practice-areas/${a.slug}/`
+      ),
+    ],
     /* Google shows a portrait against a Person result where one
        is available, and this is the only place it can find it. */
     ...(person.photo && largest(person.slug)
@@ -42,7 +55,7 @@ const schema = [
 
 ---
 
-<Base title="People" description={description} schema={schema}>
+<Base title="People" description={description} schema={schema} pageType="CollectionPage">
   <PageHero
     eyebrow="People"
     lines={['The advocate', 'you <em class="accent-italic">brief.</em>']}
@@ -73,7 +86,18 @@ const schema = [
               <div class="profile__meta-block">
                 <h3 class="profile__meta-label">Principal areas</h3>
                 <ul class="profile__focus">
-                  {person.focus.map((area) => <li>{area}</li>)}
+                  {person.focus.map((label) => {
+                    const slug = focusArea[label];
+                    return (
+                      <li>
+                        {slug ? (
+                          <a href={`/practice-areas/${slug}/`}>{label}</a>
+                        ) : (
+                          label
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
 
@@ -195,6 +219,22 @@ const schema = [
     content: '·';
     margin-right: 0.9rem;
     color: var(--accent);
+  }
+
+  /* The firm's own granular wording stays on the page and becomes
+     the link, rather than being replaced by the eight broader
+     area names. */
+  .profile__focus a {
+    text-decoration: underline;
+    text-decoration-color: var(--rule-on-bone);
+    text-underline-offset: 0.25em;
+    transition: color var(--dur) var(--ease),
+      text-decoration-color var(--dur) var(--ease);
+  }
+
+  .profile__focus a:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
   }
 
   .profile__email {

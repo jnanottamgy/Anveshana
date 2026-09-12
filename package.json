@@ -11,7 +11,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "portraits": "node scripts/make-portraits.mjs",
+    "og": "node scripts/make-og.mjs",
     "lint": "node scripts/lint-scoped.mjs",
+    "seo": "node scripts/seo.mjs",
     "sweep": "node scripts/sweep.mjs",
     "a11y": "node scripts/a11y.mjs",
     "check": "npm run lint && npm run build"

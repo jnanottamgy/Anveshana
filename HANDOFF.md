@@ -432,6 +432,8 @@ Run all four with `npm run preview` serving on port 4321:
 | --- | --- |
 | `npm run build` | Type errors, broken imports, bad data references. |
 | `npm run portraits` | Rebuilds the portrait derivatives from `src/portraits/`. |
+| `npm run og` | Rebuilds the per-page social share cards. |
+| `npm run seo` | Titles, descriptions, canonicals, structured data, sitemap, link graph. |
 | `node scripts/lint-scoped.mjs` | The Astro scoped-style trap (below). Fast, no browser. |
 | `node scripts/sweep.mjs` | Everything else — 16 routes × 2 viewports × 2 themes. |
 | `node scripts/a11y.mjs` | axe-core, every route, both themes. |
@@ -463,6 +465,10 @@ gate, and every button on every page in both themes.
 ### Current results
 
 - **Scoped styles.** `scoped styles: clean`.
+- **Search.** 16 pages, **0 problems and 0 warnings** — titles and
+  descriptions unique and within budget, canonicals correct, structured data
+  parsing with no dangling references, sitemap matching the build, no orphan
+  pages. See §9.
 - **Full sweep.** 16 routes × 2 viewports × 2 themes: **0 issues.**
 - **Accessibility.** axe-core against WCAG 2.0 A/AA, 2.1 A/AA, 2.2 AA and
   best-practice rules, every route in **both** themes: **0 violations.**
@@ -496,18 +502,117 @@ gate, and every button on every page in both themes.
 
 ---
 
-## 9. After launch
+## 9. Search
 
-1. **Google Search Console** — add the property, submit
-   `https://www.anveshanaconsultants.in/sitemap-index.xml`.
-2. **Google Business Profile** — make sure the name, address, phone and hours
-   match `site.ts` exactly. For a local firm this matters more for search
-   visibility than anything on the website itself.
-3. **Test the WhatsApp buttons** from a real phone on mobile data, and once
-   from a desktop browser, to confirm both the app and WhatsApp Web open with
-   the message pre-filled.
-4. **Re-check the domain** — both `anveshanaconsultants.in` and the `www.`
-   version should resolve, one redirecting to the other.
+### What the site does
+
+All of it is checked by `npm run seo`, which reads the built site and fails
+on a regression. Current state: **16 pages, 0 problems, 0 warnings.**
+
+**Titles and descriptions.** Every page has its own, none duplicated. Titles
+are kept inside Google's ~60-character window automatically — where the full
+firm name will not fit, the short brand name is used, because the page name
+is what a searcher scans for and is the half that must survive. Practice
+pages lead on the search phrase rather than the brand: *"Criminal Law in
+Bengaluru"*, not *"Anveshana — Criminal Law"*.
+
+**Structured data.** One connected entity graph on every page, not a pile of
+unrelated nodes:
+
+| Node | Where | What it does |
+| --- | --- | --- |
+| `LegalService` | every page | The firm. Address, geo, hours, phone, the full practice list, and `sameAs`. |
+| `WebSite` | every page | Ties the pages to one site entity. |
+| `WebPage` / `AboutPage` / `ContactPage` / `CollectionPage` | every page | The page itself, `isPartOf` the site and `about` the firm. |
+| `Service` ×8 | home + each practice page | Each area, with its own `OfferCatalog` of the matters handled. |
+| `FAQPage` | each practice page | Eligible for the expandable FAQ result. |
+| `Person` ×3 | People | Each advocate, with portrait and the areas they lead. |
+| `BreadcrumbList` | inner pages | The breadcrumb trail shown in results. |
+
+The audit walks the graph and **fails on a reference to an `@id` that is not
+defined** — which caught a real mistake while this was being built: the
+People page pointed at `Service` nodes that only exist on their own pages, so
+the references dangled and the entities did not actually connect.
+
+**`sameAs` is the most valuable line of markup on the site.** It points at
+the firm's Google Business Profile. Google reconciles a website and a
+Business Profile into a single entity partly on this, and for a local
+practice that entity is what the map pack ranks. **Add every new profile
+here as it is created** — LinkedIn, a Bar Council listing, a legal directory
+page. Each is another corroborating link for the same entity. It is in
+`src/layouts/Base.astro`, on `legalService.sameAs`.
+
+**The internal link graph.** Practice pages and the People page now
+reference each other, which they did not before: each area page names the
+advocate who leads it and links to them, and each advocate's practice list
+links to the area pages. Related-area links are chosen by walking forward
+through the list rather than taking the first three, because slicing gave
+almost every page the same three neighbours — Criminal, Civil and Company
+collected the site's internal links and Cyber Law received none. Every area
+now has six or seven inbound links.
+
+**Share cards.** Each page has its own 1200×630 card in `public/og/`. This
+matters more here than on most sites: every enquiry arrives through a
+WhatsApp link, so the preview is the most-viewed piece of design the firm
+owns. Regenerate with `npm run og` after changing any page title.
+
+**Crawling.** `robots.txt` allows everything and declares the sitemap. The
+sitemap carries `lastmod`, `changefreq` and `priority`, weighted so the
+practice areas and contact page rank above the legal pages. The error page
+is `noindex` and excluded from the sitemap — it was previously `index,
+follow`, which would have put a dead end in the index.
+
+### What the site cannot do — over to the firm
+
+Rankings for a local practice are won mostly off the website. In rough order
+of impact:
+
+1. **Google Business Profile.** Claim it, then make the name, address, phone
+   and hours match `site.ts` *exactly* — a mismatch splits the entity.
+   Add the practice areas as services, post the photographs, and answer the
+   Q&A. **For a Bengaluru firm this outranks everything on this list.**
+2. **Google Search Console.** Add the property and submit
+   `https://www.anveshanaconsultants.in/sitemap-index.xml`. Then actually
+   read it monthly: the Performance report tells you which phrases people
+   are already finding the firm on, which is better information than any
+   keyword tool.
+3. **Reviews on the Business Profile.** The strongest local ranking factor
+   the firm controls. Ask satisfied clients. Note the Rule 36 caution in §7
+   before soliciting them in writing.
+4. **Consistent citations.** The firm's name, address and phone should be
+   identical wherever they appear — directories, the Bar Council roll,
+   JustDial, social profiles. Inconsistent details are the commonest reason
+   a small firm's local ranking stalls.
+5. **The domain.** Confirm both `anveshanaconsultants.in` and the `www.`
+   version resolve, with one redirecting to the other. Two live copies of
+   the site compete with each other.
+6. **Re-check the rich results** after launch with Google's
+   [Rich Results Test](https://search.google.com/test/rich-results) and the
+   [Schema validator](https://validator.schema.org/).
+
+### Deliberately not done
+
+- **No `aggregateRating` or `Review` markup**, though the site displays four
+  real client testimonials. Two reasons, either sufficient. Google requires
+  ratings to be genuinely collected and verifiable, and these are quotes
+  from the old website with no rating attached — a star rating would be
+  invented. And a lawyer's site carrying star ratings in search results is
+  the clearest form of the advertising that Bar Council of India Rule 36
+  prohibits. See §7.
+- **No keyword padding.** The copy targets the phrases a client would
+  actually type, in normal sentences. Repeating *"best criminal lawyer in
+  Bengaluru"* would read as touting and is exactly what Rule 36 is about.
+- **No blog.** It is the standard advice and it is usually right, but an
+  abandoned blog is worse than none, and BCI rules constrain what a firm may
+  publish about its own cases. If the firm does want one, the honest format
+  is plain explanations of procedure — *what actually happens when an FIR is
+  registered* — not case results.
+
+### Testing the WhatsApp buttons
+
+Not SEO, but it is the conversion path and should be checked at launch: open
+the site from a real phone on mobile data, and once from a desktop browser,
+and confirm both the app and WhatsApp Web open with the message pre-filled.
 
 ---
 

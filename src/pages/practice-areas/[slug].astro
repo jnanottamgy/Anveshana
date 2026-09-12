@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import CTABand from '../../components/CTABand.astro';
-import { firm, practiceAreas } from '../../data/site';
+import { firm, practiceAreas, advocatesFor, relatedAreas } from '../../data/site';
 import type { PracticeArea } from '../../data/site';
 
 export function getStaticPaths() {
@@ -18,7 +18,8 @@ interface Props {
 
 const { area } = Astro.props;
 const url = `${firm.url}/practice-areas/${area.slug}/`;
-const related = practiceAreas.filter((a) => a.slug !== area.slug).slice(0, 3);
+const related = relatedAreas(area.slug);
+const advocates = advocatesFor(area.slug);
 
 const schema = [
   {
@@ -88,6 +89,25 @@ const schema = [
             </li>
           ))}
         </ul>
+
+        {advocates.length > 0 && (
+          <div class="detail__lead" data-reveal>
+            <h2 class="eyebrow" id="lead-title">
+              {advocates.length > 1 ? 'Advocates' : 'Advocate'}
+            </h2>
+            <ul class="lead-list">
+              {advocates.map((person) => (
+                <li>
+                  <a class="lead-list__link" href={`/people/#${person.slug}`}>
+                    <span class="lead-list__name">{person.name}</span>
+                    <span class="lead-list__role">{person.role}</span>
+                    <span class="lead-list__arrow" aria-hidden="true">&rarr;</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </aside>
     </div>
   </section>
@@ -280,6 +300,54 @@ const schema = [
     line-height: 1.8;
     color: var(--text-on-ink-dim);
   }
+
+  /* ---- Who leads the area -------------------------------- */
+  /* No border and no top margin: .scope__item already closes the
+     list with a rule, so adding either produced two hairlines
+     with dead space between them. This block just continues the
+     same rhythm as a scope item. */
+  .detail__lead {
+    padding-top: var(--sp-md);
+    padding-bottom: var(--sp-3xs);
+  }
+
+  .detail__lead .eyebrow { margin-bottom: var(--sp-sm); }
+
+  .lead-list { display: grid; gap: 0.6rem; }
+
+  .lead-list__link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 0.2rem 0.75rem;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .lead-list__name {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--text-on-bone);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .lead-list__role {
+    grid-column: 1;
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-on-bone-faint);
+  }
+
+  .lead-list__arrow {
+    grid-row: 1;
+    grid-column: 2;
+    color: var(--accent);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .lead-list__link:hover .lead-list__name { color: var(--accent); }
+  .lead-list__link:hover .lead-list__arrow { transform: translateX(4px); }
 
   /* ---- Related ------------------------------------------- */
   .related {

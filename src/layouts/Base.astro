@@ -8,7 +8,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import DisclaimerGate from '../components/DisclaimerGate.astro';
 import Monogram from '../components/Monogram.astro';
-import { firm } from '../data/site';
+import { firm, practiceAreas } from '../data/site';
 
 interface Props {
   title: string;
@@ -16,19 +16,35 @@ interface Props {
   /* Appended to the firm name in <title>. Set false on the home
      page, where the firm name leads instead. */
   suffix?: boolean;
+  /* Overrides the per-page share card. Only needed where a page
+     has no generated card. */
   image?: string;
   /* Extra JSON-LD graph nodes for this page. */
   schema?: Record<string, unknown>[];
   bodyClass?: string;
+  /* Keep a page out of the index. Used by the error page, which
+     would otherwise compete with the real pages and put a dead
+     end in the index. */
+  noindex?: boolean;
+  /* Describes the share card for screen readers and for the
+     handful of clients that surface it. */
+  imageAlt?: string;
+  /* The schema.org type for this page's own node. WebPage is
+     right for most; about, contact and collection pages have
+     more specific types that search engines do use. */
+  pageType?: 'WebPage' | 'AboutPage' | 'ContactPage' | 'CollectionPage' | 'ProfilePage';
 }
 
 const {
   title,
   description,
   suffix = true,
-  image = '/og-image.png',
+  image,
   schema = [],
   bodyClass = '',
+  noindex = false,
+  imageAlt = `${firm.legalName} — advocates in Bengaluru`,
+  pageType = 'WebPage',
 } = Astro.props;
 
 /* Search results truncate a title at roughly 60 characters, and
@@ -43,7 +59,17 @@ const pageTitle = !suffix
     ? fullTitle
     : `${title} — ${firm.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? firm.url).href;
-const ogImage = new URL(image, Astro.site ?? firm.url).href;
+
+/* Each page has its own share card, addressed by convention
+   rather than through a manifest: scripts/make-og.mjs writes
+   public/og/<path>.png and `npm run seo` fails if a page points
+   at a card that is not on disk. Every enquiry arrives through a
+   WhatsApp link, so this preview is the most-viewed piece of
+   design on the site — one generic card for sixteen pages was
+   wasting it. */
+const path = Astro.url.pathname.replace(/\/$/, '');
+const card = path === '' ? '/og/home.png' : `/og${path}.png`;
+const ogImage = new URL(image ?? card, Astro.site ?? firm.url).href;
 
 /* ---- Organisation-level structured data -------------------
    Emitted on every page so search engines have a consistent
@@ -74,6 +100,31 @@ const legalService = {
     longitude: firm.geo.lng,
   },
   hasMap: firm.mapsPlace,
+  /* Ties this site to the firm's Google Business Profile. Google
+     reconciles a website and a Business Profile into one entity
+     partly on this, and for a local practice that entity is what
+     the map pack ranks — so it is the single most valuable line
+     of markup on the site.
+
+     ADD SOCIAL PROFILES HERE as they are created (LinkedIn, a
+     Bar Council listing, an India Legal directory page). Each
+     one is another corroborating link for the same entity. */
+  sameAs: [firm.mapsPlace],
+  /* The full range of work, on every page. A visitor may land on
+     any single practice area; this is how a search engine learns
+     the firm does the other seven. */
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Practice areas',
+    itemListElement: practiceAreas.map((a) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: a.title,
+        url: `${firm.url}/practice-areas/${a.slug}/`,
+      },
+    })),
+  },
   areaServed: [
     { '@type': 'City', name: 'Bengaluru' },
     { '@type': 'State', name: 'Karnataka' },
@@ -104,9 +155,25 @@ const website = {
   inLanguage: 'en-IN',
 };
 
+/* This page's own node. Emitted here rather than per page: it
+   was hand-written on three pages and absent from the other
+   thirteen, and all three used the same #webpage @id that this
+   would have collided with. */
+const webpage = {
+  '@type': pageType,
+  '@id': `${canonical}#webpage`,
+  url: canonical,
+  name: pageTitle,
+  description,
+  isPartOf: { '@id': `${firm.url}/#website` },
+  about: { '@id': `${firm.url}/#organisation` },
+  primaryImageOfPage: { '@type': 'ImageObject', url: ogImage },
+  inLanguage: 'en-IN',
+};
+
 const graph = {
   '@context': 'https://schema.org',
-  '@graph': [legalService, website, ...schema],
+  '@graph': [legalService, website, webpage, ...schema],
 };
 
 /* Film grain. Generated rather than shipped as a PNG: it costs
@@ -128,7 +195,14 @@ const GRAIN =
 
     <meta name="theme-color" content="#0a1626" data-theme-color />
     <meta name="color-scheme" content="dark light" />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta
+      name="robots"
+      content={
+        noindex
+          ? 'noindex, follow'
+          : 'index, follow, max-image-preview:large, max-snippet:-1'
+      }
+    />
 
     <!-- Applies the stored theme before the first paint. This has
          to be inline and blocking: anything deferred lets the
@@ -182,11 +256,13 @@ const GRAIN =
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta property="og:locale" content="en_IN" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
 
     <meta name="geo.region" content="IN-KA" />
     <meta name="geo.placename" content="Bengaluru" />

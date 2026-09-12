@@ -147,6 +147,16 @@ export type PracticeArea = {
   /* Search-intent phrases, used for meta description and FAQ. */
   metaDescription: string;
   faqs: { q: string; a: string }[];
+  /* Slugs of the advocates who lead this area. Drives the link
+     between a practice page and a person — in both directions —
+     which is the one internal link a firm's site most needs and
+     the one this site was missing.
+
+     Populated ONLY from the practice list the firm gave for each
+     advocate. Employment & Labour and Cyber Law are deliberately
+     empty: nobody was named for them, and guessing would put a
+     claim about who acts on a matter into the page. */
+  leads: string[];
 };
 
 export const practiceAreas: PracticeArea[] = [
@@ -186,6 +196,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'Yes. We regularly advise companies whose directors, officers or employees have been named in a criminal complaint, including matters arising out of commercial disputes, regulatory action and workplace incidents.',
       },
     ],
+    leads: ['anish-acharya'],
   },
   {
     slug: 'civil-property',
@@ -223,6 +234,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'Your remedy depends on the terms of the lease, the length of occupation and whether rent control legislation applies. In many cases a properly drafted notice resolves the matter without litigation. Where it does not, we move for eviction and arrears together.',
       },
     ],
+    leads: ['anish-acharya'],
   },
   {
     slug: 'company-law',
@@ -245,7 +257,7 @@ export const practiceAreas: PracticeArea[] = [
       { name: "Directors' Duties", note: 'Advice on duties, disqualification and personal exposure.' },
     ],
     metaDescription:
-      'Company law advocates in Bengaluru. Incorporation and structuring, Companies Act compliance, shareholder agreements, NCLT proceedings, oppression and mismanagement.',
+      'Company law advocates in Bengaluru. Incorporation and structuring, Companies Act compliance, shareholder agreements, NCLT and oppression proceedings.',
     faqs: [
       {
         q: 'We are two founders starting out. What should we put in place first?',
@@ -260,6 +272,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'Serious but usually retrievable. Late filings attract additional fees and, if left long enough, can expose directors to disqualification. The position is almost always better if you regularise it voluntarily than if the Registrar raises it first — so bring it to us rather than waiting.',
       },
     ],
+    leads: ['deepika-mahesh'],
   },
   {
     slug: 'corporate-advisory',
@@ -297,6 +310,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'We do. Platform and SaaS terms, content and licensing arrangements, data and privacy obligations, and telecom-sector agreements are a regular part of the practice — as are the commercial disputes that arise out of them.',
       },
     ],
+    leads: ['nirankush-kenjige'],
   },
   {
     slug: 'intellectual-property',
@@ -334,6 +348,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'Depending on whether either mark is registered, the options run from a cease-and-desist notice, through opposition or rectification before the Registry, to an infringement or passing-off suit with an application for injunction. Act promptly: delay weakens both the claim and any interim relief.',
       },
     ],
+    leads: ['deepika-mahesh'],
   },
   {
     slug: 'taxation',
@@ -371,6 +386,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'It can be dealt with; it usually cannot be fixed. The structure of a transaction largely determines its tax treatment, and once the documents are executed the options narrow sharply. An hour before signing is worth considerably more than a month afterwards.',
       },
     ],
+    leads: ['deepika-mahesh'],
   },
   {
     slug: 'employment-labour',
@@ -408,6 +424,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'Follow the statutory process precisely and document it. The most common and most expensive employer error is procedural — a defective committee, a missed timeline, or an inquiry that does not meet the requirements of natural justice. We advise on the process while the inquiry is live, not after it has gone wrong.',
       },
     ],
+    leads: [],
   },
   {
     slug: 'cyber-law',
@@ -445,6 +462,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'Impersonation and identity misuse are addressed under the Information Technology Act and the criminal law, and a complaint can be pursued alongside civil action and takedown requests. Acting quickly matters, because platform records are not retained indefinitely.',
       },
     ],
+    leads: [],
   },
 ];
 
@@ -528,6 +546,56 @@ export const people: Person[] = [
    TESTIMONIALS
    Reproduced verbatim from the firm's existing website.
    ------------------------------------------------------------ */
+
+/* ------------------------------------------------------------
+   AREA <-> ADVOCATE
+   ------------------------------------------------------------
+   Two small helpers over practiceAreas[].leads, so the link
+   between a person and a practice area is derived rather than
+   written twice and allowed to drift.
+   ------------------------------------------------------------ */
+
+/** The areas a given advocate leads. */
+export const areasLedBy = (personSlug: string) =>
+  practiceAreas.filter((a) => a.leads.includes(personSlug));
+
+/** The advocates who lead a given area. */
+export const advocatesFor = (areaSlug: string) =>
+  people.filter((p) =>
+    practiceAreas.find((a) => a.slug === areaSlug)?.leads.includes(p.slug)
+  );
+
+/* The firm describes each advocate's work more finely than the
+   eight practice areas do — "Business Law", "TMT Law" and
+   "Corporate Agreements" all sit inside Corporate Advisory. This
+   maps their wording onto the page that covers it, so the
+   granular phrasing survives on the page AND becomes a link.
+   A label with no entry here simply renders as text. */
+export const focusArea: Record<string, string> = {
+  'Criminal Law': 'criminal-law',
+  'Civil & Property': 'civil-property',
+  'Company Law': 'company-law',
+  'Business Law': 'corporate-advisory',
+  'TMT Law': 'corporate-advisory',
+  'Corporate Agreements': 'corporate-advisory',
+  'Intellectual Property': 'intellectual-property',
+  Taxation: 'taxation',
+};
+
+/* Related areas, chosen cyclically rather than by slicing the
+   top of the list. `filter(...).slice(0, 3)` gave almost every
+   page the same three neighbours, so Criminal, Civil and Company
+   collected the site's internal links and Cyber Law received
+   none. Walking forward from the current area spreads them
+   evenly and guarantees every area is linked from three others. */
+export const relatedAreas = (slug: string, count = 3) => {
+  const i = practiceAreas.findIndex((a) => a.slug === slug);
+  if (i === -1) return practiceAreas.slice(0, count);
+  return Array.from(
+    { length: count },
+    (_, n) => practiceAreas[(i + n + 1) % practiceAreas.length]
+  );
+};
 
 export const testimonials = [
   {
