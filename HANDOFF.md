@@ -14,11 +14,11 @@ until each is confirmed.** Every one of them is marked `VERIFY` in
 | # | Item | Where | Why it matters |
 |---|------|-------|----------------|
 | 1 | **Biographies** for all three advocates | `people` in `site.ts` | Every bio is a professionally written draft built from the practice areas the firm supplied. **None of it is confirmed.** Replace with real text. |
-| 2 | **Spelling of Deepika Mahesh's name** | `people` | Supplied as "deepike mahesh"; rendered as **Deepika Mahesh**. Confirm the correct spelling — a misspelt partner name on a launch site is the worst kind of small error. |
+| 2 | **Spelling of Deepika Mahesh's name** | `people` | Supplied as "deepike mahesh"; written in the commented-out record as **Deepika Mahesh**. Settle it before she goes back on the site — a misspelt partner name is the worst kind of small error. |
 | 3 | **Consultation hours** | `firm.hours` | Currently a sensible assumption, not a fact. These also feed the Google structured data, so a wrong value misleads searchers. |
 | 4 | **Courts and forums list** | `forums` | Standard for a Bengaluru litigation practice, but it is a claim about where the firm appears. Confirm or trim it. |
 | 5 | **The WhatsApp number** | `whatsapp.number` | Every consultation button on the site opens a chat with this number. Confirm it is the one the firm actually monitors — see §4. |
-| 6 | **Portrait of Deepika Mahesh** | see §6 | Anish Acharya and Nirankush Kenjige are photographed. Hers renders as a typographic plate, which is deliberate and does not look broken — but one more portrait finishes the page. Match the brief in §6 so the three read as one set. |
+| 6 | **Deepika Mahesh is off the site** | `people` in `site.ts`, see §6 | Held back at the firm's request until she has a portrait: she was the only advocate without one. Her record is commented out, not deleted — search `site.ts` for `RESTORE DEEPIKA`, which marks the record and the three practice areas she led. |
 | 7 | **Bar Council review of the copy** | whole site | See §7. Have an advocate at the firm read the site once with Rule 36 in mind. |
 
 ---
@@ -80,9 +80,10 @@ The three promises, the four-stage method, and the courts list.
 
 ### The two newest areas
 **Intellectual Property** and **Taxation** were added so that the practice
-list matches what the People page claims — Deepika Mahesh leads both, and
+list matches what the firm actually does — Deepika Mahesh leads both, and
 without pages for them the site could not rank for searches like "trade mark
-attorney Bengaluru". Nirankush Kenjige's TMT work is covered inside Corporate
+attorney Bengaluru". The pages stay up while she is off the site; they simply
+show no named advocate until she is restored. Nirankush Kenjige's TMT work is covered inside Corporate
 Advisory rather than given a page of its own.
 
 Both are drafts written from the areas the firm supplied, and both carry the
@@ -264,19 +265,29 @@ Measured, the two match closely enough to read as one set — mean luminance
 59.3 against 60.3, contrast within 2%. That is not luck; see *Framing the
 set* below.
 
-Deepika Mahesh is **not yet photographed**, and the page is built so that
-this does not read as an omission. The photograph and the typographic plate
-share a silhouette — the same 4:5 proportion, the same hairline, the same
-dark ink field, the same mount, the same veil, the same hover — so a row of
-two portraits and one plate reads as a set rather than as a missing image.
-Her portrait will replace the plate without disturbing the composition.
+**Deepika Mahesh is currently off the site.** She was the only advocate
+without a photograph, and the firm chose to hold her back rather than run a
+typographic plate beside two portraits. Her record in `site.ts` is commented
+out rather than deleted, together with her slug in the `leads` of the three
+practice areas she covers — search the file for `RESTORE DEEPIKA`, which
+marks every place that has to change.
 
-### Adding Deepika's portrait
+The plate system still stands behind this. It renders for any advocate
+without a photograph, sharing a silhouette with the portraits — the same 4:5
+proportion, hairline, dark ink field, mount, veil and hover — so a part-
+photographed team reads as a set rather than as missing images. It is simply
+not in use at the moment. The home-page grid is centred, so two cards, three
+or four all look deliberate rather than leaving a gap where somebody was.
 
-1. Put the file in `src/portraits/deepika-mahesh.jpg` — the name must match
-   her `slug` in `src/data/site.ts`.
-2. Run `npm run portraits`.
-3. Add `photo: '/portraits/deepika-mahesh'` to her record in `site.ts`.
+### Putting Deepika back
+
+1. In `src/data/site.ts`, search for `RESTORE DEEPIKA`. Uncomment her record
+   in `people`, and uncomment her slug in the `leads` of **company-law**,
+   **intellectual-property** and **taxation** (three separate lines).
+2. Put her portrait in `src/portraits/deepika-mahesh.jpg` — the filename must
+   match her `slug`.
+3. Run `npm run portraits`.
+4. Add `photo: '/portraits/deepika-mahesh'` to her record.
    Note the path carries **no width and no file extension** — the component
    appends those.
 
@@ -526,7 +537,7 @@ unrelated nodes:
 | `WebPage` / `AboutPage` / `ContactPage` / `CollectionPage` | every page | The page itself, `isPartOf` the site and `about` the firm. |
 | `Service` ×8 | home + each practice page | Each area, with its own `OfferCatalog` of the matters handled. |
 | `FAQPage` | each practice page | Eligible for the expandable FAQ result. |
-| `Person` ×3 | People | Each advocate, with portrait and the areas they lead. |
+| `Person` ×2 | People | Each advocate on the site, with portrait and the areas they lead. Becomes ×3 when Deepika is restored. |
 | `BreadcrumbList` | inner pages | The breadcrumb trail shown in results. |
 
 The audit walks the graph and **fails on a reference to an `@id` that is not

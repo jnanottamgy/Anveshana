@@ -272,7 +272,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'Serious but usually retrievable. Late filings attract additional fees and, if left long enough, can expose directors to disqualification. The position is almost always better if you regularise it voluntarily than if the Registrar raises it first — so bring it to us rather than waiting.',
       },
     ],
-    leads: ['deepika-mahesh'],
+    leads: [], // RESTORE DEEPIKA: ['deepika-mahesh']
   },
   {
     slug: 'corporate-advisory',
@@ -348,7 +348,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'Depending on whether either mark is registered, the options run from a cease-and-desist notice, through opposition or rectification before the Registry, to an infringement or passing-off suit with an application for injunction. Act promptly: delay weakens both the claim and any interim relief.',
       },
     ],
-    leads: ['deepika-mahesh'],
+    leads: [], // RESTORE DEEPIKA: ['deepika-mahesh']
   },
   {
     slug: 'taxation',
@@ -386,7 +386,7 @@ export const practiceAreas: PracticeArea[] = [
         a: 'It can be dealt with; it usually cannot be fixed. The structure of a transaction largely determines its tax treatment, and once the documents are executed the options narrow sharply. An hour before signing is worth considerably more than a month afterwards.',
       },
     ],
-    leads: ['deepika-mahesh'],
+    leads: [], // RESTORE DEEPIKA: ['deepika-mahesh']
   },
   {
     slug: 'employment-labour',
@@ -527,19 +527,44 @@ export const people: Person[] = [
     ],
     verify: true,
   },
-  {
-    slug: 'deepika-mahesh',
-    name: 'Deepika Mahesh',
-    honorific: 'Advocate',
-    role: 'Partner',
-    focus: ['Intellectual Property', 'Company Law', 'Taxation'],
-    bio: [
-      'Deepika Mahesh advises on intellectual property, company law and taxation — the three areas where a business is most often let down by paperwork it did not know it needed.',
-      'Her intellectual property practice covers trade mark and copyright protection, registration and enforcement, and the licensing of brand and creative assets. On the corporate side she advises on incorporation and structuring, Companies Act compliance, shareholder arrangements and proceedings before the National Company Law Tribunal.',
-      'She also advises on direct and indirect tax questions as they arise out of transactions and disputes, which in practice is where most tax problems are made or avoided.',
-    ],
-    verify: true,
-  },
+  /* ----------------------------------------------------------
+     RESTORE DEEPIKA — held back until a portrait exists
+     ----------------------------------------------------------
+     Taken off the site at the firm's request: she is the only
+     advocate without a photograph, and a single plate beside two
+     portraits reads as a gap rather than as the deliberate set
+     it was designed to be.
+
+     To put her back:
+       1. Uncomment this record.
+       2. Uncomment her slug in `leads` on company-law,
+          intellectual-property and taxation — search this file
+          for RESTORE DEEPIKA to find all three.
+       3. Add her portrait per HANDOFF §6 (file in
+          src/portraits/deepika-mahesh.jpg, `npm run portraits`,
+          then photo: '/portraits/deepika-mahesh' below).
+
+     Nothing else needs touching: the People page, the home grid,
+     the Person schema and the practice-area advocate blocks are
+     all derived from this array and the leads mapping.
+
+     NB her name spelling was never confirmed by the firm — it
+     was supplied as "deepike mahesh" and rendered here as
+     Deepika Mahesh. Settle that before she goes back up.
+  */
+  // {
+  //   slug: 'deepika-mahesh',
+  //   name: 'Deepika Mahesh',
+  //   honorific: 'Advocate',
+  //   role: 'Partner',
+  //   focus: ['Intellectual Property', 'Company Law', 'Taxation'],
+  //   bio: [
+  //     'Deepika Mahesh advises on intellectual property, company law and taxation — the three areas where a business is most often let down by paperwork it did not know it needed.',
+  //     'Her intellectual property practice covers trade mark and copyright protection, registration and enforcement, and the licensing of brand and creative assets. On the corporate side she advises on incorporation and structuring, Companies Act compliance, shareholder arrangements and proceedings before the National Company Law Tribunal.',
+  //     'She also advises on direct and indirect tax questions as they arise out of transactions and disputes, which in practice is where most tax problems are made or avoided.',
+  //   ],
+  //   verify: true,
+  // },
 ];
 
 /* ------------------------------------------------------------

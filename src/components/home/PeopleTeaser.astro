@@ -58,11 +58,17 @@ import { people } from '../../data/site';
   }
 
   /* Two people should not stretch to fill a 1320px row — cap the
-     track so the cards keep a portrait proportion. */
+     track so the cards keep a portrait proportion.
+
+     Centred, because the track is capped: with fewer cards than
+     fill the row the remainder collects on one side and the row
+     reads as though somebody has been removed from it. Centring
+     makes any count — two, three, four — look deliberate. */
   @media (min-width: 720px) {
     .team__grid {
       grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
       gap: var(--sp-xl);
+      justify-content: center;
     }
   }
 </style>
